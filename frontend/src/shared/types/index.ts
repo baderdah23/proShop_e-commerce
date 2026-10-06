@@ -162,6 +162,7 @@ export interface OrderItem {
   order_id: string;
   product_id: string;
   product_name?: string;
+  product_sku?: string;
   quantity: number;
   unit_price: number;
   subtotal: number;
@@ -182,4 +183,10 @@ export interface Order {
   status: OrderStatus;
   items?: OrderItem[];
   created_at: string;
+  full_name?: string;
+  phone?: string;
+  country?: string;
+  city?: string;
+  street?: string;
+  building?: string;
 }

@@ -275,6 +275,7 @@ export const OrdersApi = {
     invoiceNumber: string;
     createdAt: string;
     order: Order;
+    payment: { method: string; status: string } | null;
   }> {
     return request(`/orders/${orderId}/invoice`);
   },

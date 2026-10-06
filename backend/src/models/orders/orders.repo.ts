@@ -99,6 +99,8 @@ export const findOrdersByUserIdFromDb = async (userId: string) => {
         JSON_BUILD_OBJECT(
           'order_item_id', oi.order_item_id,
           'product_id', oi.product_id,
+          'product_name', p.name,
+          'product_sku', p.sku,
           'quantity', oi.quantity,
           'unit_price', oi.unit_price,
           'subtotal', oi.subtotal
@@ -107,6 +109,7 @@ export const findOrdersByUserIdFromDb = async (userId: string) => {
     FROM orders o
     LEFT JOIN addresses a ON o.address_id = a.address_id
     LEFT JOIN order_items oi ON o.order_id = oi.order_id
+    LEFT JOIN products p ON oi.product_id = p.product_id
     WHERE o.user_id = $1
     GROUP BY o.order_id, a.address_id
     ORDER BY o.created_at DESC;
@@ -123,6 +126,8 @@ export const findAllOrdersFromDb = async () => {
           JSON_BUILD_OBJECT(
             'order_item_id', oi.order_item_id,
             'product_id', oi.product_id,
+            'product_name', p.name,
+            'product_sku', p.sku,
             'quantity', oi.quantity,
             'unit_price', oi.unit_price,
             'subtotal', oi.subtotal
@@ -133,6 +138,7 @@ export const findAllOrdersFromDb = async () => {
     FROM orders o
     INNER JOIN users u ON u.user_id = o.user_id
     LEFT JOIN order_items oi ON oi.order_id = o.order_id
+    LEFT JOIN products p ON oi.product_id = p.product_id
     GROUP BY o.order_id, u.user_id
     ORDER BY o.created_at DESC;
   `;
@@ -157,6 +163,8 @@ export const findOrderByIdFromDb = async (orderId: string, userId: string) => {
         JSON_BUILD_OBJECT(
           'order_item_id', oi.order_item_id,
           'product_id', oi.product_id,
+          'product_name', p.name,
+          'product_sku', p.sku,
           'quantity', oi.quantity,
           'unit_price', oi.unit_price,
           'subtotal', oi.subtotal
@@ -165,6 +173,7 @@ export const findOrderByIdFromDb = async (orderId: string, userId: string) => {
     FROM orders o
     LEFT JOIN addresses a ON o.address_id = a.address_id
     LEFT JOIN order_items oi ON o.order_id = oi.order_id
+    LEFT JOIN products p ON oi.product_id = p.product_id
     WHERE o.order_id = $1 AND o.user_id = $2
     GROUP BY o.order_id, a.address_id;
   `;

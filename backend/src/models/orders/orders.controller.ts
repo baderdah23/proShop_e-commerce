@@ -12,6 +12,7 @@ import {
   findCartDetailsWithProducts,
 } from "../cart/cart.repo.js";
 import { findCouponByCode, getCouponInvalidReason } from "../coupons/coupons.repo.js";
+import { findPaymentsByOrderIdFromDb } from "../payments/payments.repo.js";
 import { findAddressByIdAndUserId } from "../address/address.repo.js";
 import apiError from "../../utils/apiError.js";
 
@@ -190,6 +191,13 @@ export const getOrderInvoice = async (
       return;
     }
 
+    // Include the most recent payment record so the invoice can show
+    // the method used (credit_card / cash_on_delivery) and its status.
+    const payments = await findPaymentsByOrderIdFromDb(orderId);
+    const latestPayment = payments[0]
+      ? { method: payments[0].method, status: payments[0].status }
+      : null;
+
     return res.status(200).json({
       success: true,
       message: "Invoice fetched successfully.",
@@ -197,6 +205,7 @@ export const getOrderInvoice = async (
         invoiceNumber: `INV-${order.order_number}`,
         createdAt: order.created_at,
         order,
+        payment: latestPayment,
       },
     });
   } catch (error: any) {

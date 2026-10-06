@@ -10,7 +10,6 @@ import { AddressesApi, CartApi, OrdersApi, PaymentsApi } from "@/lib/api-client"
 import type { Address, AppliedCoupon, CartItem } from "@/shared/types";
 import { formatPrice } from "@/shared/utils";
 import { toast } from "sonner";
-import { StripeCheckoutPayment, STRIPE_PUBLISHABLE_KEY } from "./StripeCheckoutPayment";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -23,7 +22,6 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "credit_card">("cash_on_delivery");
   const [form, setForm] = useState({ fullName: "", phone: "", country: "السعودية", city: "", street: "", building: "" });
-  const [stripeClientSecret, setStripeClientSecret] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -88,11 +86,7 @@ export default function CheckoutPage() {
       createdOrderId = order.order_id;
 
       if (paymentMethod === "credit_card") {
-        const paymentResult = await PaymentsApi.process(order.order_id, "credit_card");
-        if (!paymentResult.clientSecret) {
-          throw new Error("لم يتم إنشاء جلسة الدفع بالبطاقة — تأكد من إعداد مفاتيح Stripe.");
-        }
-        setStripeClientSecret(paymentResult.clientSecret);
+        router.push(`/checkout/payment?orderId=${order.order_id}`);
         return;
       }
 
@@ -180,15 +174,10 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-sm"><span>الشحن</span><strong>{shipping ? formatPrice(shipping) : "مجاني"}</strong></div>
               {discount > 0 && <div className="flex justify-between text-sm text-green-600"><span>الخصم</span><strong>-{formatPrice(discount)}</strong></div>}
               <div className="border-t pt-3 flex justify-between font-black"><span>الإجمالي</span><strong>{formatPrice(Math.max(0, subtotal - discount + shipping))}</strong></div>
-              {stripeClientSecret ? (
-                <StripeCheckoutPayment clientSecret={stripeClientSecret} onSuccess={handleOrderSuccess} />
+              {paymentMethod === "credit_card" ? (
+                <Button type="submit" isLoading={isSubmitting} className="w-full">متابعة الدفع بالبطاقة</Button>
               ) : (
-                <>
-                  <Button type="submit" isLoading={isSubmitting} className="w-full">تأكيد الطلب</Button>
-                  {paymentMethod === "credit_card" && !STRIPE_PUBLISHABLE_KEY && (
-                    <p className="text-xs text-red-600 font-bold">أضف NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY إلى .env لأجل الدفع بالبطاقة.</p>
-                  )}
-                </>
+                <Button type="submit" isLoading={isSubmitting} className="w-full">تأكيد الطلب</Button>
               )}
             </aside>
           </form>
