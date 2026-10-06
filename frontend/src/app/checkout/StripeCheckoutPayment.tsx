@@ -29,6 +29,11 @@ function StripePaymentForm({ clientSecret, onSuccess }: StripeCheckoutPaymentPro
     }
     setIsPaying(true);
     try {
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        toast.error(submitError.message || "بيانات البطاقة غير مكتملة، تحقق منها ثم أعد المحاولة.");
+        return;
+      }
       const result = await stripe.confirmPayment({
         elements,
         clientSecret,

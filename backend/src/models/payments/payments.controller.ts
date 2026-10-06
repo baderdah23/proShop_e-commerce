@@ -4,6 +4,7 @@ import { createPaymentSchema } from "./payments.validation.js";
 import { createPaymentInDb, updatePaymentStatusByRefFromDb, findOrderIdByPaymentRefFromDb } from "./payments.repo.js";
 import { findOrderByIdFromDb, updateOrderStatusInDb } from "../orders/orders.repo.js";
 import { cancelPendingOrderAndReleaseReservation } from "../orders/orders.repo.js";
+import { clearCartAfterPurchaseFromDb } from "../cart/cart.repo.js";
 import { createStripePaymentIntent, verifyStripeWebhookEvent } from "../../services/stripe.service.js";
 import apiError from "../../utils/apiError.js";
 
@@ -34,6 +35,11 @@ export const processPayment = asyncHandler(
         amount: Number(order.total_amount),
         transactionRef: null,
       });
+
+      // COD is confirmed the moment the order is placed — the cart may only
+      // be cleared now, not at order creation (a credit-card order is not
+      // confirmed until Stripe reports the payment succeeded).
+      await clearCartAfterPurchaseFromDb(userId);
 
       res.status(201).json({
         success: true,
@@ -135,6 +141,11 @@ export const stripeWebhook = asyncHandler(
           );
           if (updatedPayment?.order_id) {
             await updateOrderStatusInDb(updatedPayment.order_id, "processing");
+            // Money received — only now does the order become a real
+            // purchase and may the buyer's cart be cleared.
+            if (updatedPayment.created_by) {
+              await clearCartAfterPurchaseFromDb(updatedPayment.created_by);
+            }
           }
         }
         break;

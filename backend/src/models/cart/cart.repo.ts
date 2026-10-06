@@ -172,3 +172,35 @@ export const removeCouponFromCartInDb = async (cartId: string) => {
   const result = await pool.query(query, [cartId]);
   return result.rows[0] || null;
 };
+
+/**
+ * Clears the user's cart and its applied coupon after a purchase is
+ * confirmed. This must NOT run at order creation — for credit-card orders
+ * the checkout page redirects to a payment step while the cart is still
+ * live, so the cart is wiped only once the payment succeeds (COD: at
+ * payment-record creation; credit_card: on the payment_intent.succeeded
+ * webhook).
+ *
+ * @param userId - The buyer whose cart should be emptied.
+ */
+export const clearCartAfterPurchaseFromDb = async (userId: string) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      `DELETE FROM cart_items WHERE cart_id = (SELECT cart_id FROM carts WHERE user_id = $1);`,
+      [userId],
+    );
+    await client.query(
+      `UPDATE carts SET coupon_id = NULL, updated_at = NOW() WHERE user_id = $1;`,
+      [userId],
+    );
+    await client.query("COMMIT");
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+};

@@ -68,18 +68,6 @@ export const createOrderWithTransaction = async (data: {
       );
     }
 
-    await client.query(
-      `DELETE FROM cart_items WHERE cart_id = (SELECT cart_id FROM carts WHERE user_id = $1);`,
-      [data.userId],
-    );
-
-    // The applied coupon is consumed with the order, so it can no longer
-    // surface on the checkout page after the purchase.
-    await client.query(
-      `UPDATE carts SET coupon_id = NULL, updated_at = NOW() WHERE user_id = $1;`,
-      [data.userId],
-    );
-
     await client.query("COMMIT");
     return createdOrder;
   } catch (error) {
