@@ -151,7 +151,18 @@ export default function CheckoutPaymentPage({
               {clientSecret ? (
                 <StripeCheckoutPayment
                   clientSecret={clientSecret}
-                  onSuccess={() => {
+                  onSuccess={async () => {
+                    // Stripe confirmed the charge in the browser; tell the
+                    // server to finalize the order and clear the cart before
+                    // redirecting. If this ever fails, the Stripe webhook
+                    // still reconciles the order.
+                    if (orderId) {
+                      try {
+                        await PaymentsApi.confirm(orderId);
+                      } catch {
+                        // ignore — the webhook is the fallback
+                      }
+                    }
                     toast.success("تم الدفع بنجاح.");
                     router.push("/account");
                   }}

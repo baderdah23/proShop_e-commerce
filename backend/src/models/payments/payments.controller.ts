@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { createPaymentSchema } from "./payments.validation.js";
-import { createPaymentInDb, updatePaymentStatusByRefFromDb, findOrderIdByPaymentRefFromDb } from "./payments.repo.js";
+import { createPaymentInDb, updatePaymentStatusByRefFromDb, findOrderIdByPaymentRefFromDb, findPaymentsByOrderIdFromDb } from "./payments.repo.js";
 import { findOrderByIdFromDb, updateOrderStatusInDb } from "../orders/orders.repo.js";
 import { cancelPendingOrderAndReleaseReservation } from "../orders/orders.repo.js";
 import { clearCartAfterPurchaseFromDb } from "../cart/cart.repo.js";
-import { createStripePaymentIntent, verifyStripeWebhookEvent } from "../../services/stripe.service.js";
+import { createStripePaymentIntent, verifyStripeWebhookEvent, getStripePaymentIntentStatus } from "../../services/stripe.service.js";
 import apiError from "../../utils/apiError.js";
 
 export const processPayment = asyncHandler(
@@ -99,6 +99,73 @@ export const cancelPayment = asyncHandler(
       success: true,
       message: "Order reservation released.",
       data: order,
+    });
+  },
+);
+
+/**
+ * Confirms a card payment from the checkout flow when Stripe reported
+ * success to the browser directly (redirect: "if_required") — i.e. the
+ * moment the cart must be cleared. The webhook also does this, but a
+ * webhook listener may not be configured (local dev, Stripe CLI not
+ * running), so the server re-checks Stripe before trusting the client:
+ *
+ * 1. the PaymentIntent held in `payments.transaction_ref` must actually be
+ *    "succeeded";
+ * 2. only then is the payment marked paid, the order moved to processing,
+ *    and the buyer's cart cleared.
+ *
+ * Idempotent: calling again after confirmation is a no-op for paid orders.
+ */
+export const confirmCardPayment = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    const userId = (req as any).user.user_id as string;
+    const orderId = Array.isArray(req.params.orderId)
+      ? req.params.orderId[0]
+      : req.params.orderId;
+
+    const order = await findOrderByIdFromDb(orderId, userId);
+    if (!order) {
+      throw new apiError("Order not found or unauthorized.", 404);
+    }
+
+    const payments = await findPaymentsByOrderIdFromDb(orderId);
+    const cardPayment = payments.find(
+      (payment) => payment.method === "credit_card" && payment.transaction_ref,
+    );
+
+    if (cardPayment) {
+      if (cardPayment.status === "paid") {
+        // Already confirmed (e.g. the webhook beat us to it). Just make
+        // sure the cart is empty and report success.
+        await clearCartAfterPurchaseFromDb(userId);
+        res.status(200).json({ success: true, message: "Payment already confirmed." });
+        return;
+      }
+
+      const intentStatus = await getStripePaymentIntentStatus(
+        cardPayment.transaction_ref,
+      );
+
+      if (intentStatus !== "succeeded") {
+        throw new apiError(
+          intentStatus === null
+            ? "تعذر التحقق من حالة الدفع لدى Stripe."
+            : "الدفع لم يكتمل بعد.",
+          409,
+        );
+      }
+
+      await updatePaymentStatusByRefFromDb(cardPayment.transaction_ref, "paid");
+      await updateOrderStatusInDb(orderId, "processing");
+    }
+
+    await clearCartAfterPurchaseFromDb(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "Payment confirmed and cart cleared.",
+      data: { orderId },
     });
   },
 );

@@ -431,4 +431,14 @@ export const PaymentsApi = {
   async cancel(orderId: string) {
     await request(`/payments/${orderId}/cancel`, { method: "POST" });
   },
+
+  /**
+   * Confirms a card payment the browser already completed through Stripe.
+   * The server re-verifies the PaymentIntent before marking the order paid
+   * and clearing the cart — this works even when no webhook listener is
+   * configured (local development without Stripe CLI).
+   */
+  async confirm(orderId: string) {
+    await request(`/payments/${orderId}/confirm`, { method: "POST" });
+  },
 };

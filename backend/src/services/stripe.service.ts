@@ -38,3 +38,25 @@ export const verifyStripeWebhookEvent = (
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
   return stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
 };
+
+/**
+ * Retrieves the current status of a Stripe PaymentIntent.
+ *
+ * Used by the client-side payment confirmation endpoint: the frontend is
+ * not trusted to claim a payment succeeded — the server re-checks Stripe
+ * before marking the order paid / clearing the cart. Returns null when the
+ * intent cannot be retrieved (unknown id, missing Stripe keys).
+ *
+ * @param paymentIntentId - The Stripe PaymentIntent id stored in `payments.transaction_ref`.
+ * @returns The Stripe status (e.g. "succeeded", "requires_payment_method") or null.
+ */
+export const getStripePaymentIntentStatus = async (
+  paymentIntentId: string,
+): Promise<string | null> => {
+  try {
+    const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    return intent.status;
+  } catch {
+    return null;
+  }
+};
