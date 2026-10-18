@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import {
   Shield01Icon,
@@ -14,8 +12,7 @@ import { Footer } from "@/shared/components/Footer";
 import { SpotlightCard } from "@/shared/components/SpotlightCard";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { HeroSlider } from "@/features/home";
-import { ProductsApi, CategoriesApi } from "@/lib/api-client";
-import { Product, Category } from "@/shared/types";
+import { STATIC_CATEGORIES, STATIC_PRODUCTS } from "@/shared/data/mock-data";
 import LogoLoop, { type LogoItem } from "@/shared/components/LogoLoop";
 import {
   SiAmd,
@@ -28,16 +25,13 @@ import {
   SiRazer,
   SiStripe,
 } from "react-icons/si";
-import {
-  getCategoryFallbackImage,
-  getCategoryImage,
-} from "@/shared/utils/product-images";
-import { isExcludedProduct } from "@/shared/utils/product-images";
 
 export default function HomePage() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [discountedProducts, setDiscountedProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const featuredProducts = STATIC_PRODUCTS.filter((p) => p.is_featured).slice(0, 4);
+  const discountedProducts = STATIC_PRODUCTS.filter(
+    (p) => p.discount_price < p.price,
+  ).slice(0, 4);
+  const categories = STATIC_CATEGORIES;
   const partnerLogos: LogoItem[] = [
     { node: <SiAmd color="#ED1C24" />, title: "AMD" },
     { node: <SiNvidia color="#76B900" />, title: "NVIDIA" },
@@ -49,19 +43,6 @@ export default function HomePage() {
     { node: <SiRazer color="#44D62C" />, title: "Razer" },
     { node: <SiStripe color="#635BFF" />, title: "Stripe" },
   ];
-
-  useEffect(() => {
-    ProductsApi.getAll().then((data) => {
-      const visibleProducts = data.products.filter(
-        (product) => !isExcludedProduct(product),
-      );
-      setFeaturedProducts(visibleProducts.slice(0, 4));
-      setDiscountedProducts(
-        visibleProducts.filter((p) => p.discount_price < p.price).slice(0, 4),
-      );
-    });
-    CategoriesApi.getAll().then(setCategories);
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
@@ -164,11 +145,8 @@ export default function HomePage() {
                 <SpotlightCard className="p-4 text-center group cursor-pointer hover:border-[#6AABF0] transition-all">
                   <div className="w-full aspect-video rounded-xl overflow-hidden bg-[#F1F5F9] mb-3">
                     <img
-                      src={getCategoryImage(cat)}
-                      alt={cat.name_ar || cat.category_name_ar || ""}
-                      onError={(event) => {
-                        event.currentTarget.src = getCategoryFallbackImage(cat);
-                      }}
+                      src={cat.image_url}
+                      alt={cat.name_ar || cat.name_en || ""}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>

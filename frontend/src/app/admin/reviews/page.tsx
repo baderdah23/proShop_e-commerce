@@ -1,30 +1,10 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StarIcon, Delete01Icon } from "hugeicons-react";
 import { formatDate } from "@/shared/utils";
-import { Review } from "@/shared/types";
-import { toast } from "sonner";
-import { ReviewsApi } from "@/lib/api-client";
+import { STATIC_REVIEWS } from "@/shared/data/mock-data";
 
 export default function AdminReviewsPage() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-
-  useEffect(() => {
-    ReviewsApi.getAll()
-      .then(setReviews)
-      .catch((error) => toast.error(error instanceof Error ? error.message : "تعذر تحميل التقييمات."));
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    try {
-      await ReviewsApi.remove(id);
-      setReviews((current) => current.filter((r) => r.review_id !== id));
-      toast.success("تم حذف التقييم بنجاح.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر حذف التقييم.");
-    }
-  };
+  const reviews = STATIC_REVIEWS;
 
   return (
     <div className="space-y-6">
@@ -59,7 +39,7 @@ export default function AdminReviewsPage() {
 
               <div className="flex items-center gap-2 self-end sm:self-center">
                 <button
-                  onClick={() => handleDelete(rev.review_id)}
+                  type="button"
                   className="px-3 py-1.5 rounded-xl border border-[#EF4444]/20 text-[#EF4444] hover:bg-[#EF4444]/10 text-xs font-semibold transition-colors flex items-center gap-1.5"
                 >
                   <Delete01Icon size={14} />

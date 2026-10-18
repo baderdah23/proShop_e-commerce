@@ -1,58 +1,12 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Ticket01Icon, Add01Icon, Delete01Icon } from "hugeicons-react";
 import { Button } from "@/shared/components/Button";
 import { Input } from "@/shared/components/Input";
 import { Badge } from "@/shared/components/Badge";
-import { Coupon } from "@/shared/types";
-import { toast } from "sonner";
-import { CouponsApi } from "@/lib/api-client";
+import { STATIC_COUPONS } from "@/shared/data/mock-data";
 
 export default function AdminCouponsPage() {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
-  const [newCode, setNewCode] = useState("");
-  const [discountValue, setDiscountValue] = useState("");
-  const [discountType, setDiscountType] = useState<"percentage" | "fixed">("percentage");
-  const [maxUses, setMaxUses] = useState("100");
-
-  useEffect(() => {
-    CouponsApi.getAll()
-      .then(setCoupons)
-      .catch((error) => toast.error(error instanceof Error ? error.message : "تعذر تحميل الكوبونات."));
-  }, []);
-
-  const handleCreateCoupon = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newCode || !discountValue) return;
-
-    try {
-      const created = await CouponsApi.create({
-        code: newCode.toUpperCase(),
-        discount_type: discountType,
-        discount_value: parseFloat(discountValue),
-        max_uses: parseInt(maxUses, 10),
-        valid_from: new Date().toISOString().split("T")[0],
-        valid_until: "2026-12-31",
-      });
-      setCoupons((current) => [created, ...current]);
-      setNewCode("");
-      setDiscountValue("");
-      toast.success("تم إنشاء الكوبون الجديد بنجاح.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر إنشاء الكوبون.");
-    }
-  };
-
-  const handleDeleteCoupon = async (id: string) => {
-    try {
-      await CouponsApi.remove(id);
-      setCoupons((current) => current.filter((c) => c.coupon_id !== id));
-      toast.success("تم حذف الكوبون.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر حذف الكوبون.");
-    }
-  };
+  const coupons = STATIC_COUPONS;
 
   return (
     <div className="space-y-6">
@@ -72,13 +26,11 @@ export default function AdminCouponsPage() {
             <h3 className="font-bold text-sm text-[#1A1D2A]">إضافة كوبون جديد</h3>
           </div>
 
-          <form onSubmit={handleCreateCoupon} className="space-y-4">
+          <form className="space-y-4">
             <Input
               label="رمز الكوبون (Coupon Code)"
               placeholder="مثال: SUMMER25"
               required
-              value={newCode}
-              onChange={(e) => setNewCode(e.target.value)}
             />
 
             <div>
@@ -88,23 +40,13 @@ export default function AdminCouponsPage() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => setDiscountType("percentage")}
-                  className={`py-2 text-xs font-bold rounded-xl border transition-all ${
-                    discountType === "percentage"
-                      ? "border-[#6AABF0] bg-[#EEF5FC] text-[#2B7BD4]"
-                      : "border-black/10 text-[#64748B]"
-                  }`}
+                  className="py-2 text-xs font-bold rounded-xl border border-[#6AABF0] bg-[#EEF5FC] text-[#2B7BD4] transition-all"
                 >
                   نسبة مئوية (%)
                 </button>
                 <button
                   type="button"
-                  onClick={() => setDiscountType("fixed")}
-                  className={`py-2 text-xs font-bold rounded-xl border transition-all ${
-                    discountType === "fixed"
-                      ? "border-[#6AABF0] bg-[#EEF5FC] text-[#2B7BD4]"
-                      : "border-black/10 text-[#64748B]"
-                  }`}
+                  className="py-2 text-xs font-bold rounded-xl border border-black/10 text-[#64748B] transition-all"
                 >
                   مبلغ ثابت ($)
                 </button>
@@ -112,19 +54,16 @@ export default function AdminCouponsPage() {
             </div>
 
             <Input
-              label={discountType === "percentage" ? "قيمة الخصم (%)" : "قيمة الخصم ($)"}
+              label="قيمة الخصم (%)"
               type="number"
-              placeholder={discountType === "percentage" ? "15" : "50"}
+              placeholder="15"
               required
-              value={discountValue}
-              onChange={(e) => setDiscountValue(e.target.value)}
             />
 
             <Input
               label="الحد الأقصى للاستخدام (Max Uses)"
               type="number"
-              value={maxUses}
-              onChange={(e) => setMaxUses(e.target.value)}
+              defaultValue="100"
             />
 
             <Button variant="primary" size="md" className="w-full gap-2 mt-2">
@@ -175,7 +114,7 @@ export default function AdminCouponsPage() {
                     </td>
                     <td className="py-3.5 px-4 text-end">
                       <button
-                        onClick={() => handleDeleteCoupon(c.coupon_id)}
+                        type="button"
                         className="p-1.5 rounded-lg border border-black/8 text-[#EF4444] hover:bg-[#EF4444]/10"
                       >
                         <Delete01Icon size={14} />

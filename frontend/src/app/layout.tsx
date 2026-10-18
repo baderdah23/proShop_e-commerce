@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Rubik } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "sonner";
-import { AuthProvider } from "@/features/auth";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -31,8 +29,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${outfit.variable} ${rubik.variable}`}>
       <body className="antialiased min-h-screen flex flex-col bg-[#F8FAFC] text-[#1A1D2A]">
-        <AuthProvider>{children}</AuthProvider>
-        <Toaster position="top-center" richColors />
+        {children}
       </body>
     </html>
   );

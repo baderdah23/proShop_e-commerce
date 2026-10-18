@@ -1,39 +1,10 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Badge } from "@/shared/components/Badge";
 import { formatPrice, formatDate } from "@/shared/utils";
-import { Order, OrderStatus } from "@/shared/types";
-import { toast } from "sonner";
-import { OrdersApi } from "@/lib/api-client";
+import { STATIC_ORDERS } from "@/shared/data/mock-data";
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-
-  useEffect(() => {
-    OrdersApi.getAll()
-      .then(setOrders)
-      .catch((error) =>
-        toast.error(error instanceof Error ? error.message : "تعذر تحميل الطلبات."),
-      );
-  }, []);
-
-  const handleUpdateStatus = async (orderId: string, newStatus: OrderStatus) => {
-    try {
-      const updatedOrder = await OrdersApi.updateStatus(orderId, newStatus);
-      setOrders((current) =>
-        current.map((order) => order.order_id === orderId ? { ...order, ...updatedOrder } : order),
-      );
-      toast.success(`تم تحديث حالة الطلب إلى "${newStatus}" بنجاح.`);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر تحديث حالة الطلب.");
-    }
-  };
-
-  const filteredOrders = orders.filter((o) =>
-    statusFilter === "all" ? true : o.status === statusFilter
-  );
+  const orders = STATIC_ORDERS;
 
   return (
     <div className="space-y-6">
@@ -50,18 +21,18 @@ export default function AdminOrdersPage() {
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center gap-2 border-b border-black/8 pb-3">
         {[
-          { label: "كافة الطلبات", value: "all" },
-          { label: "قيد الانتظار (Pending)", value: "pending" },
-          { label: "قيد التجهيز (Processing)", value: "processing" },
-          { label: "تم الشحن (Shipped)", value: "shipped" },
-          { label: "تم التوصيل (Delivered)", value: "delivered" },
-          { label: "ملغية (Cancelled)", value: "cancelled" },
+          { label: "كافة الطلبات", active: true },
+          { label: "قيد الانتظار (Pending)", active: false },
+          { label: "قيد التجهيز (Processing)", active: false },
+          { label: "تم الشحن (Shipped)", active: false },
+          { label: "تم التوصيل (Delivered)", active: false },
+          { label: "ملغية (Cancelled)", active: false },
         ].map((tab) => (
           <button
-            key={tab.value}
-            onClick={() => setStatusFilter(tab.value)}
+            key={tab.label}
+            type="button"
             className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-              statusFilter === tab.value
+              tab.active
                 ? "bg-[#6AABF0] text-white shadow-sm"
                 : "bg-white text-[#64748B] border border-black/8 hover:bg-[#F8FAFC]"
             }`}
@@ -87,7 +58,7 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
-              {filteredOrders.map((order) => (
+              {orders.map((order) => (
                 <tr key={order.order_id} className="hover:bg-[#F8FAFC]/80 transition-colors">
                   <td className="py-4 px-4 font-mono font-bold text-[#1A1D2A]">
                     {order.order_number}
@@ -126,21 +97,21 @@ export default function AdminOrdersPage() {
                   <td className="py-4 px-4 text-end">
                     <div className="flex items-center justify-end gap-1.5">
                       <button
-                        onClick={() => handleUpdateStatus(order.order_id, "processing")}
+                        type="button"
                         className="px-2 py-1 rounded-lg border border-black/8 text-[11px] hover:bg-[#F8FAFC]"
                         title="قيد التجهيز"
                       >
                         تجهيز
                       </button>
                       <button
-                        onClick={() => handleUpdateStatus(order.order_id, "shipped")}
+                        type="button"
                         className="px-2 py-1 rounded-lg bg-[#EEF5FC] text-[#2B7BD4] text-[11px] font-semibold"
                         title="تم الشحن"
                       >
                         شحن
                       </button>
                       <button
-                        onClick={() => handleUpdateStatus(order.order_id, "delivered")}
+                        type="button"
                         className="px-2 py-1 rounded-lg bg-[#22C55E]/10 text-[#16A34A] text-[11px] font-semibold"
                         title="تم التوصيل"
                       >

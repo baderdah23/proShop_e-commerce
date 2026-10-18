@@ -1,10 +1,8 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Shield01Icon } from "hugeicons-react";
 import { Badge } from "@/shared/components/Badge";
 import { formatDate } from "@/shared/utils";
-import { UsersApi } from "@/lib/api-client";
+import { STATIC_USERS } from "@/shared/data/mock-data";
 
 interface MockCustomer {
   id: string;
@@ -19,34 +17,24 @@ interface MockCustomer {
 }
 
 export default function AdminCustomersPage() {
-  const [customers, setCustomers] = useState<MockCustomer[]>([]);
-
-  useEffect(() => {
-    UsersApi.getAll()
-      .then((users) =>
-        setCustomers(
-          users.map((user) => ({
-            id: user.user_id,
-            name: user.full_name,
-            email: user.email,
-            phone: user.phone,
-            role: user.role,
-            ordersCount: 0,
-            totalSpent: 0,
-            isActive: user.is_active,
-            joinedDate: user.created_at,
-          })),
-        ),
-      )
-      .catch(() => setCustomers([]));
-  }, []);
+  const customers: MockCustomer[] = STATIC_USERS.map((user) => ({
+    id: user.user_id,
+    name: user.full_name,
+    email: user.email,
+    phone: user.phone,
+    role: user.role,
+    ordersCount: user.role === "admin" ? 0 : 2,
+    totalSpent: user.role === "admin" ? 0 : 1869,
+    isActive: user.is_active,
+    joinedDate: user.created_at,
+  }));
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-black text-[#1A1D2A]">إدارة العملاء والمستخدمين</h2>
         <p className="text-xs text-[#64748B] mt-0.5">
-          عرض قائمة المستخدمين المسجلين، أدوارهم ومشترياتهم، مهيأ لجدول users في الباك إند
+          عرض قائمة المستخدمين المسجلين، أدوارهم ومشترياتهم
         </p>
       </div>
 

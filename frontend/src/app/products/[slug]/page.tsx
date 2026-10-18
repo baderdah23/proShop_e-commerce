@@ -1,15 +1,11 @@
-"use client";
-
-import React, { use, useEffect, useMemo, useState } from "react";
+import React, { use } from "react";
 import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { Button } from "@/shared/components/Button";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { formatPrice } from "@/shared/utils";
-import { Product, Review } from "@/shared/types";
-import { CartApi, ProductsApi, ReviewsApi, WishlistApi } from "@/lib/api-client";
-import { useAuth } from "@/features/auth";
+import { STATIC_PRODUCTS, STATIC_REVIEWS } from "@/shared/data/mock-data";
 import {
   StarIcon,
   Shield01Icon,
@@ -20,11 +16,6 @@ import {
   Add01Icon,
   FavouriteIcon,
 } from "hugeicons-react";
-import { toast } from "sonner";
-import {
-  getProductImageSources,
-  isExcludedProduct,
-} from "@/shared/utils/product-images";
 
 export default function ProductDetailPage({
   searchParams,
@@ -34,132 +25,26 @@ export default function ProductDetailPage({
   const resolvedSearchParams = use(searchParams);
   const productId = resolvedSearchParams.id;
 
-  const { user } = useAuth();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [showReviewModal, setShowReviewModal] = useState(false);
-  const [authorName, setAuthorName] = useState("");
-  const [ratingVal, setRatingVal] = useState(5);
-  const [commentText, setCommentText] = useState("");
-  const [failedImages, setFailedImages] = useState<string[]>([]);
-  const [isInWishlist, setIsInWishlist] = useState(false);
-
-  useEffect(() => {
-    if (!productId) {
-      return;
-    }
-    Promise.all([
-      ProductsApi.getById(productId),
-      ProductsApi.getAll({ limit: 100 }),
-      ReviewsApi.getByProductId(productId),
-      WishlistApi.getAll().catch(() => []),
-    ])
-      .then(([loadedProduct, productResult, loadedReviews, wishlist]) => {
-        if (!loadedProduct) {
-          setLoadError("المنتج غير موجود.");
-          return;
-        }
-        if (isExcludedProduct(loadedProduct)) {
-          setLoadError("هذا المنتج غير متاح للعرض.");
-          return;
-        }
-        setProduct(loadedProduct);
-        setReviews(loadedReviews);
-        setIsInWishlist(
-          wishlist.some(
-            (wishlistItem) => wishlistItem.product_id === loadedProduct.product_id,
-          ),
-        );
-        setRelatedProducts(
-          productResult.products.filter(
-            (item) =>
-              item.product_id !== loadedProduct.product_id &&
-              !isExcludedProduct(item) &&
-              (item.category_id === loadedProduct.category_id ||
-                item.brand_id === loadedProduct.brand_id),
-          ),
-        );
-      })
-      .catch((error) =>
-        setLoadError(error instanceof Error ? error.message : "تعذر تحميل المنتج."),
-      )
-      .finally(() => setIsLoading(false));
-  }, [productId]);
-
-  const galleryImages = useMemo(() => {
-    if (!product) return [];
-    return getProductImageSources(product).filter(
-      (image) => !failedImages.includes(image),
-    );
-  }, [failedImages, product]);
-
-  if (isLoading || !product) {
-    return (
-      <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center text-sm font-bold">
-          {loadError || (!productId ? "رابط المنتج غير صالح." : "جارٍ تحميل المنتج...")}
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-  const activeImage = galleryImages.includes(selectedImage)
-    ? selectedImage
-    : galleryImages[0] ?? "";
-  const handleAddReview = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!authorName.trim() || !commentText.trim()) {
-      toast.error("يرجى كتابة الاسم والتعليق.");
-      return;
-    }
-
-    if (!user) {
-      toast.error("يجب تسجيل الدخول لإضافة تقييم.");
-      return;
-    }
-    try {
-      const newReview = await ReviewsApi.create({
-        product_id: product.product_id,
-        customerName: authorName,
-        rating: ratingVal,
-        comment: commentText,
-      });
-      setReviews((currentReviews) => [newReview, ...currentReviews]);
-      setShowReviewModal(false);
-      setAuthorName("");
-      setCommentText("");
-      toast.success("شكراً لك! تم إضافة تقييمك للمنتج بنجاح.");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر إضافة التقييم.");
-    }
-  };
-
-  const toggleWishlist = async () => {
-    if (!user) {
-      toast.error("يجب تسجيل الدخول لإضافة المنتجات إلى المفضلة.");
-      return;
-    }
-    try {
-      if (isInWishlist) {
-        await WishlistApi.remove(product.product_id);
-        setIsInWishlist(false);
-        toast.success("تمت الإزالة من المفضلة.");
-      } else {
-        await WishlistApi.add(product.product_id);
-        setIsInWishlist(true);
-        toast.success("تمت الإضافة إلى المفضلة.");
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر تحديث المفضلة.");
-    }
-  };
-
+  const product =
+    STATIC_PRODUCTS.find((p) => p.product_id === productId || p.slug === productId) ||
+    STATIC_PRODUCTS[0];
+  const reviews = STATIC_REVIEWS.filter(
+    (review) => review.product_id === product.product_id,
+  );
+  const relatedProducts = STATIC_PRODUCTS.filter(
+    (item) =>
+      item.product_id !== product.product_id &&
+      (item.category_id === product.category_id ||
+        item.brand_id === product.brand_id),
+  );
+  const galleryImages = [
+    product.image_url,
+    ...(product.images?.map((image) => image.image_url) ?? []),
+  ].filter(
+    (source, index, all): source is string =>
+      Boolean(source) && all.indexOf(source) === index,
+  );
+  const activeImage = galleryImages[0] ?? "";
   const hasDiscount = product.discount_price < product.price;
 
   return (
@@ -194,20 +79,11 @@ export default function ProductDetailPage({
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-[#F8FAFC] border border-black/5 flex items-center justify-center group">
               <img
                 src={activeImage}
-                alt={`${product.name} - صورة ${galleryImages.indexOf(activeImage) + 1}`}
+                alt={`${product.name} - صورة 1`}
                 width={720}
                 height={720}
                 fetchPriority="high"
                 className="w-full h-full object-contain object-center p-3"
-                onError={() => {
-                  if (activeImage) {
-                    setFailedImages((current) =>
-                      current.includes(activeImage)
-                        ? current
-                        : [...current, activeImage],
-                    );
-                  }
-                }}
               />
               {hasDiscount && (
                 <span className="absolute top-4 start-4 bg-[#EF4444] text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-md">
@@ -220,7 +96,6 @@ export default function ProductDetailPage({
                 <button
                   key={image}
                   type="button"
-                  onClick={() => setSelectedImage(image)}
                   aria-label={`عرض صورة المنتج ${index + 1}`}
                   aria-current={activeImage === image}
                   className={`relative aspect-square overflow-hidden rounded-xl border-2 bg-[#F8FAFC] transition-all ${
@@ -236,11 +111,6 @@ export default function ProductDetailPage({
                     height={180}
                     loading={index === 0 ? "eager" : "lazy"}
                     className="h-full w-full object-contain p-2"
-                    onError={() => {
-                      setFailedImages((current) =>
-                        current.includes(image) ? current : [...current, image],
-                      );
-                    }}
                   />
                 </button>
               ))}
@@ -340,16 +210,16 @@ export default function ProductDetailPage({
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <div className="flex items-center justify-between sm:justify-start border border-black/10 rounded-xl overflow-hidden bg-white p-1">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    type="button"
                     className="w-10 h-10 flex items-center justify-center text-sm font-bold text-[#64748B] hover:bg-[#F8FAFC] rounded-lg transition-colors cursor-pointer"
                   >
                     -
                   </button>
                   <span className="w-12 text-center text-sm font-bold text-[#1A1D2A]">
-                    {quantity}
+                    1
                   </span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
+                    type="button"
                     className="w-10 h-10 flex items-center justify-center text-sm font-bold text-[#64748B] hover:bg-[#F8FAFC] rounded-lg transition-colors cursor-pointer"
                   >
                     +
@@ -359,35 +229,17 @@ export default function ProductDetailPage({
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={toggleWishlist}
-                  aria-label={isInWishlist ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
-                  aria-pressed={isInWishlist}
-                  title={isInWishlist ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+                  aria-label="إضافة إلى المفضلة"
+                  title="إضافة إلى المفضلة"
                   className="gap-2 px-4 cursor-pointer"
                 >
-                  <FavouriteIcon
-                    size={20}
-                    color={isInWishlist ? "#EF4444" : "#475569"}
-                    className={isInWishlist ? "fill-[#EF4444]" : ""}
-                  />
+                  <FavouriteIcon size={20} color="#475569" />
                 </Button>
 
                 <Button
                   variant="primary"
                   size="lg"
                   className="flex-1 gap-2.5 text-base py-3.5 shadow-lg shadow-[#6AABF0]/30 cursor-pointer"
-                  onClick={async () => {
-                    if (!user) {
-                      toast.error("يجب تسجيل الدخول لإضافة المنتج إلى السلة.");
-                      return;
-                    }
-                    try {
-                      await CartApi.addItem(product.product_id, quantity);
-                      toast.success(`تمت إضافة ${quantity} قطع إلى سلة المشتريات بنجاح.`);
-                    } catch (error) {
-                      toast.error(error instanceof Error ? error.message : "تعذر إضافة المنتج.");
-                    }
-                  }}
                 >
                   <ShoppingBag01Icon size={20} />
                   <span>إضافة إلى سلة المشتريات</span>
@@ -411,7 +263,6 @@ export default function ProductDetailPage({
             <Button
               variant="outline"
               size="md"
-              onClick={() => setShowReviewModal(true)}
               className="gap-2 cursor-pointer self-start sm:self-auto"
             >
               <Add01Icon size={16} />
@@ -443,75 +294,6 @@ export default function ProductDetailPage({
               </div>
             ))}
           </div>
-
-          {/* Add Review Modal */}
-          {showReviewModal && (
-            <form
-              onSubmit={handleAddReview}
-              className="p-6 rounded-2xl bg-[#EEF5FC]/60 border border-[#AACFF0]/60 space-y-4 max-w-xl"
-            >
-              <h3 className="font-bold text-sm text-[#1A1D2A]">كتابة تقييم جديد</h3>
-
-              <div>
-                <label className="text-xs font-semibold text-[#475569] block mb-1">اسمك الكريم</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="مثال: عبد الرحمن خالد"
-                  value={authorName}
-                  onChange={(e) => setAuthorName(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-black/10 text-xs focus:outline-none focus:border-[#6AABF0]"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-[#475569] block mb-1">التقييم العام</label>
-                <div className="flex gap-2">
-                  {[5, 4, 3, 2, 1].map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setRatingVal(r)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        ratingVal === r
-                          ? "bg-[#F59E0B] text-white"
-                          : "bg-white text-[#475569] border border-black/10"
-                      }`}
-                    >
-                      {r} ★
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-[#475569] block mb-1">رأيك وتجربتك</label>
-                <textarea
-                  required
-                  rows={3}
-                  placeholder="شارك تفاصيل أداء المنتج وملاحظاتك..."
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-white border border-black/10 text-xs focus:outline-none focus:border-[#6AABF0]"
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Button variant="primary" size="sm" type="submit" className="cursor-pointer">
-                  نشر التقييم
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  type="button"
-                  onClick={() => setShowReviewModal(false)}
-                  className="cursor-pointer"
-                >
-                  إلغاء
-                </Button>
-              </div>
-            </form>
-          )}
         </section>
 
         {/* Similar / Related Products Section */}

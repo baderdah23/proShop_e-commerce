@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import {
   Add01Icon,
@@ -12,41 +10,10 @@ import {
 import { Button } from "@/shared/components/Button";
 import { Badge } from "@/shared/components/Badge";
 import { formatPrice } from "@/shared/utils";
-import { Product } from "@/shared/types";
-import { ProductsApi } from "@/lib/api-client";
-import { toast } from "sonner";
+import { STATIC_PRODUCTS } from "@/shared/data/mock-data";
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    ProductsApi.getAll({ limit: 100 })
-      .then((result) => setProducts(result.products))
-      .catch((error) =>
-        toast.error(error instanceof Error ? error.message : "تعذر تحميل المنتجات."),
-      )
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const handleDelete = async (id: string, name: string) => {
-    if (confirm(`هل أنت متأكد من رغبتك في حذف المنتج: "${name}"؟`)) {
-      try {
-        await ProductsApi.remove(id);
-        setProducts((current) => current.filter((p) => p.product_id !== id));
-        toast.success("تم حذف المنتج بنجاح.");
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : "تعذر حذف المنتج.");
-      }
-    }
-  };
-
-  const filteredProducts = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.sku.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const products = STATIC_PRODUCTS;
 
   return (
     <div className="space-y-6">
@@ -55,7 +22,7 @@ export default function AdminProductsPage() {
         <div>
           <h2 className="text-xl font-black text-[#1A1D2A]">إدارة المنتجات</h2>
           <p className="text-xs text-[#64748B] mt-0.5">
-            عرض وتعديل وحذف منتجات المتجر والمخزون، مهيأ لمطابقة جدول products في الباك إند
+            عرض وتعديل وحذف منتجات المتجر والمخزون
           </p>
         </div>
 
@@ -78,15 +45,13 @@ export default function AdminProductsPage() {
           <input
             type="text"
             placeholder="ابحث بالاسم أو رمز SKU..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full ps-10 pe-4 py-2 bg-[#F8FAFC] border border-black/8 rounded-xl text-xs focus:outline-none focus:border-[#6AABF0] focus:ring-2 focus:ring-[#6AABF0]/15"
           />
         </div>
 
         <div className="flex items-center gap-2 self-end sm:self-auto text-xs text-[#64748B]">
           <span>إجمالي المنتجات المعروضة: </span>
-          <span className="font-bold text-[#1A1D2A]">{filteredProducts.length}</span>
+          <span className="font-bold text-[#1A1D2A]">{products.length}</span>
         </div>
       </div>
 
@@ -106,7 +71,7 @@ export default function AdminProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-black/5">
-              {isLoading ? <tr><td colSpan={7} className="py-12 text-center">جارٍ التحميل...</td></tr> : filteredProducts.map((product) => (
+              {products.map((product) => (
                 <tr key={product.product_id} className="hover:bg-[#F8FAFC]/80 transition-colors">
                   <td className="py-3.5 px-4">
                     <div className="flex items-center gap-3">
@@ -177,7 +142,6 @@ export default function AdminProductsPage() {
                       </Link>
                       <button
                         type="button"
-                        onClick={() => toast.info("تعديل تفاصيل المنتج")}
                         className="p-1.5 rounded-lg border border-black/8 text-[#64748B] hover:text-[#2B7BD4] hover:bg-[#EEF5FC]"
                         title="تعديل"
                       >
@@ -185,7 +149,6 @@ export default function AdminProductsPage() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleDelete(product.product_id, product.name)}
                         className="p-1.5 rounded-lg border border-black/8 text-[#EF4444] hover:bg-[#EF4444]/10"
                         title="حذف"
                       >

@@ -1,12 +1,9 @@
-"use client";
-
-import { use, useEffect, useState } from "react";
+import { use } from "react";
 import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { Button } from "@/shared/components/Button";
-import { useAuth } from "@/features/auth";
-import { OrdersApi } from "@/lib/api-client";
+import { STATIC_ORDERS } from "@/shared/data/mock-data";
 import type { Order } from "@/shared/types";
 import { formatPrice } from "@/shared/utils";
 
@@ -38,35 +35,28 @@ const paymentStatusLabels: Record<string, string> = {
 };
 
 export default function InvoicePage({ params }: { params: Promise<{ orderId: string }> }) {
-  const { user } = useAuth();
   const { orderId } = use(params);
-  const [invoice, setInvoice] = useState<InvoiceData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!orderId) return;
-    OrdersApi.getInvoice(orderId)
-      .then(setInvoice)
-      .catch((loadError) => setError(loadError instanceof Error ? loadError.message : "تعذر تحميل الفاتورة."))
-      .finally(() => setIsLoading(false));
-  }, [orderId, user]);
-
-  if (!user) return <Shell><div className="flex-1 flex items-center justify-center font-bold">يجب تسجيل الدخول أولاً.</div></Shell>;
+  const foundOrder =
+    STATIC_ORDERS.find((o) => o.order_id === orderId) || STATIC_ORDERS[0];
+  const invoice: InvoiceData | null = foundOrder
+    ? {
+        invoiceNumber: `INV-${foundOrder.order_number}`,
+        createdAt: foundOrder.created_at || new Date().toISOString(),
+        order: foundOrder,
+        payment: { method: "credit_card", status: "succeeded" },
+      }
+    : null;
 
   return (
     <Shell>
       <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-10">
         <div className="print:hidden flex items-center justify-between mb-6">
-          <Button type="button" onClick={() => window.print()}>طباعة الفاتورة</Button>
+          <Button type="button">طباعة الفاتورة</Button>
           <Link href="/account" className="text-sm font-bold text-[#2B7BD4] underline">العودة لحسابي</Link>
         </div>
 
-        {isLoading && <div className="bg-white border rounded-3xl p-10 flex justify-center"><div className="w-8 h-8 border-2 border-[#6AABF0] border-t-transparent rounded-full animate-spin" /></div>}
-
-        {!isLoading && error && <div className="bg-white border rounded-3xl p-8"><p className="font-bold text-red-600">{error}</p></div>}
-
-        {!isLoading && !error && invoice && <InvoiceDoc invoice={invoice} />}
+        {invoice && <InvoiceDoc invoice={invoice} />}
       </main>
     </Shell>
   );

@@ -1,40 +1,11 @@
-"use client";
-
-import React, { useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { Button } from "@/shared/components/Button";
 import { Input } from "@/shared/components/Input";
 import { Mail01Icon, LockPasswordIcon, User02Icon, Call02Icon, Store01Icon } from "hugeicons-react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/features/auth";
 
 export default function SignupPage() {
-  const router = useRouter();
-  const { signup } = useAuth();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      await signup(fullName, email, phone, password);
-      toast.success("تم إنشاء الحساب بنجاح! أهلاً بك في متجرنا.");
-      router.push("/");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر إنشاء الحساب.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
@@ -51,14 +22,12 @@ export default function SignupPage() {
             </p>
           </div>
 
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form className="space-y-4">
             <Input
               label="الاسم الكامل"
               placeholder="مثال: محمد أحمد"
               required
               icon={<User02Icon size={16} />}
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
             />
 
             <Input
@@ -67,8 +36,6 @@ export default function SignupPage() {
               placeholder="name@example.com"
               required
               icon={<Mail01Icon size={16} />}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
             />
 
             <Input
@@ -77,8 +44,6 @@ export default function SignupPage() {
               placeholder="+966 50 000 0000"
               required
               icon={<Call02Icon size={16} />}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
             />
 
             <Input
@@ -87,15 +52,12 @@ export default function SignupPage() {
               placeholder="••••••••"
               required
               icon={<LockPasswordIcon size={16} />}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
 
             <Button
               variant="primary"
               size="lg"
               className="w-full shadow-lg shadow-[#6AABF0]/25 mt-2"
-              isLoading={isLoading}
             >
               إنشاء الحساب
             </Button>

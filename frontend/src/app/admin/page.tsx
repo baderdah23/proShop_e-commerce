@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import {
   ShoppingBag01Icon,
@@ -16,23 +14,16 @@ import { SpotlightCard } from "@/shared/components/SpotlightCard";
 import { Button } from "@/shared/components/Button";
 import { Badge } from "@/shared/components/Badge";
 import { formatPrice, formatDate } from "@/shared/utils";
-import { OrdersApi, ProductsApi, UsersApi } from "@/lib/api-client";
-import { Order, Product } from "@/shared/types";
+import {
+  STATIC_ORDERS,
+  STATIC_PRODUCTS,
+  STATIC_USERS,
+} from "@/shared/data/mock-data";
 
 export default function AdminDashboardPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [totalCustomers, setTotalCustomers] = useState(0);
-
-  useEffect(() => {
-    Promise.all([OrdersApi.getAll(), ProductsApi.getAll({ limit: 100 }), UsersApi.getAll()])
-      .then(([loadedOrders, loadedProducts, users]) => {
-        setOrders(loadedOrders);
-        setProducts(loadedProducts.products);
-        setTotalCustomers(users.filter((user) => user.role === "customer").length);
-      })
-      .catch(() => undefined);
-  }, []);
+  const orders = STATIC_ORDERS;
+  const products = STATIC_PRODUCTS;
+  const totalCustomers = STATIC_USERS.filter((user) => user.role === "customer").length;
 
   const totalSales = orders.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
   const totalOrders = orders.length;
@@ -45,7 +36,7 @@ export default function AdminDashboardPage() {
         <div>
           <h2 className="text-xl font-black text-[#1A1D2A]">مرحباً بك في لوحة تحكم المتجر 👋</h2>
           <p className="text-xs text-[#64748B] mt-1">
-            إليك ملخص الأداء والإحصائيات الحية لمتجرك اليوم. النظام متصل وجاهز للربط بالباك إند.
+            إليك ملخص الأداء والإحصائيات الحية لمتجرك اليوم.
           </p>
         </div>
 
