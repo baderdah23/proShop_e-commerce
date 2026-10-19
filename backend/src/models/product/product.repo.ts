@@ -87,6 +87,8 @@ const getAllProducts = async (
     price_desc: "products.price DESC",
     newest: "products.created_at DESC",
     oldest: "products.created_at ASC",
+    rating_asc: "products.rating_avg ASC",
+    rating_desc: "products.rating_avg DESC",
   };
 
   if (filters.search) {
