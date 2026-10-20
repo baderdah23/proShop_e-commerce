@@ -1,6 +1,10 @@
-import React from "react";
 import Link from "next/link";
-import { Store01Icon, Mail01Icon, Call02Icon, Shield01Icon } from "hugeicons-react";
+import {
+  Store01Icon,
+  Mail01Icon,
+  Call02Icon,
+  Shield01Icon,
+} from "hugeicons-react";
 
 export function Footer() {
   return (
@@ -18,7 +22,9 @@ export function Footer() {
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
-              الوجهة الرائدة لتجميعات الألعاب الاحترافية، أجهزة الإنتاج وصناع المحتوى، وقطع الحواسيب في الشرق الأوسط. ضمان رسمي وشحن سريع وموثوق.
+              الوجهة الرائدة لتجميعات الألعاب الاحترافية، أجهزة الإنتاج وصناع
+              المحتوى، وقطع الحواسيب في الشرق الأوسط. ضمان رسمي وشحن سريع
+              وموثوق.
             </p>
             <div className="flex items-center gap-2 pt-2">
               <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
@@ -30,7 +36,9 @@ export function Footer() {
 
           {/* Col 2: Quick Links */}
           <div>
-            <h4 className="font-bold text-sm text-slate-200 mb-4">روابط سريعة</h4>
+            <h4 className="font-bold text-sm text-slate-200 mb-4">
+              روابط سريعة
+            </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
                 <Link href="/" className="hover:text-white transition-colors">
@@ -38,17 +46,26 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="hover:text-white transition-colors">
+                <Link
+                  href="/products"
+                  className="hover:text-white transition-colors"
+                >
                   كافة المنتجات والعروض
                 </Link>
               </li>
               <li>
-                <Link href="/categories" className="hover:text-white transition-colors">
+                <Link
+                  href="/categories"
+                  className="hover:text-white transition-colors"
+                >
                   تصفح الفئات
                 </Link>
               </li>
               <li>
-                <Link href="/cart" className="hover:text-white transition-colors">
+                <Link
+                  href="/cart"
+                  className="hover:text-white transition-colors"
+                >
                   سلة المشتريات
                 </Link>
               </li>
@@ -57,25 +74,39 @@ export function Footer() {
 
           {/* Col 3: Categories */}
           <div>
-            <h4 className="font-bold text-sm text-slate-200 mb-4">أشهر الأقسام</h4>
+            <h4 className="font-bold text-sm text-slate-200 mb-4">
+              أشهر الأقسام
+            </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
-                <Link href="/products?category=1" className="hover:text-white transition-colors">
+                <Link
+                  href="/products?category=1"
+                  className="hover:text-white transition-colors"
+                >
                   كروت الشاشة (GPUs)
                 </Link>
               </li>
               <li>
-                <Link href="/products?category=2" className="hover:text-white transition-colors">
+                <Link
+                  href="/products?category=2"
+                  className="hover:text-white transition-colors"
+                >
                   المعالجات (CPUs)
                 </Link>
               </li>
               <li>
-                <Link href="/products?category=3" className="hover:text-white transition-colors">
+                <Link
+                  href="/products?category=3"
+                  className="hover:text-white transition-colors"
+                >
                   لابتوبات الألعاب عالية الأداء
                 </Link>
               </li>
               <li>
-                <Link href="/products?category=4" className="hover:text-white transition-colors">
+                <Link
+                  href="/products?category=4"
+                  className="hover:text-white transition-colors"
+                >
                   لوحات الأم والرامات
                 </Link>
               </li>
@@ -84,7 +115,9 @@ export function Footer() {
 
           {/* Col 4: Contact & Newsletter */}
           <div className="space-y-3">
-            <h4 className="font-bold text-sm text-slate-200 mb-4">خدمة العملاء</h4>
+            <h4 className="font-bold text-sm text-slate-200 mb-4">
+              خدمة العملاء
+            </h4>
             <div className="flex items-center gap-3 text-xs text-slate-400">
               <Call02Icon size={16} color="#6AABF0" />
               <span dir="ltr">+966 50 123 4567</span>
@@ -94,7 +127,9 @@ export function Footer() {
               <span>support@pro-ecommerce.com</span>
             </div>
             <div className="pt-2">
-              <p className="text-[11px] text-slate-400 mb-2">اشترك في النشرة البريدية للحصول على أكواد الخصم:</p>
+              <p className="text-[11px] text-slate-400 mb-2">
+                اشترك في النشرة البريدية للحصول على أكواد الخصم:
+              </p>
               <div className="flex items-center gap-2">
                 <input
                   type="email"
@@ -116,10 +151,16 @@ export function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>© {new Date().getFullYear()} PROSTORE. جميع الحقوق محفوظة.</p>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="hover:text-slate-300 transition-colors">
+            <Link
+              href="/privacy"
+              className="hover:text-slate-300 transition-colors"
+            >
               سياسة الخصوصية
             </Link>
-            <Link href="/terms" className="hover:text-slate-300 transition-colors">
+            <Link
+              href="/terms"
+              className="hover:text-slate-300 transition-colors"
+            >
               شروط الاستخدام
             </Link>
           </div>

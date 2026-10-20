@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Rubik } from "next/font/google";
+import { Toaster } from "@/shared/components/Toast";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className={`${outfit.variable} ${rubik.variable}`}>
       <body className="antialiased min-h-screen flex flex-col bg-[#F8FAFC] text-[#1A1D2A]">
         {children}
+        <Toaster />
       </body>
     </html>
   );

@@ -484,6 +484,12 @@ export const LogoLoop = React.memo<LogoLoopProps>(
         style={containerStyle}
         role="region"
         aria-label={ariaLabel}
+        // The marquee translates the track leftward and relies on duplicated
+        // copies sitting to the RIGHT of the first copy. Under an RTL page the
+        // browser mirrors the flex row (copies extend left instead), which
+        // leaves the right edge empty and breaks the seamless loop — so pin
+        // the component's internal layout to LTR regardless of page direction.
+        dir="ltr"
       >
         {fadeOut && (
           <>

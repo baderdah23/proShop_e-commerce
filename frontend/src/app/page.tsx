@@ -27,7 +27,10 @@ import {
 } from "react-icons/si";
 
 export default function HomePage() {
-  const featuredProducts = STATIC_PRODUCTS.filter((p) => p.is_featured).slice(0, 4);
+  const featuredProducts = STATIC_PRODUCTS.filter((p) => p.is_featured).slice(
+    0,
+    4,
+  );
   const discountedProducts = STATIC_PRODUCTS.filter(
     (p) => p.discount_price < p.price,
   ).slice(0, 4);
@@ -172,7 +175,7 @@ export default function HomePage() {
                 توفير فوري
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-[#1A1D2A]">
-                أقوى العروض والخصومات الحصرية 🔥
+                احدث المنتجات لدينا 🔥
               </h2>
             </div>
             <Link

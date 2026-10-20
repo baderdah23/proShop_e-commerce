@@ -12,7 +12,11 @@ import {
   Cancel01Icon,
   Store01Icon,
 } from "hugeicons-react";
-import { DEMO_USER, STATIC_CART, STATIC_WISHLIST } from "@/shared/data/mock-data";
+import {
+  DEMO_USER,
+  STATIC_CART,
+  STATIC_WISHLIST,
+} from "@/shared/data/mock-data";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,8 +28,10 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full bg-[#F8FBFF]/95 backdrop-blur-xl border-b border-[#D9E6F2] shadow-[0_6px_24px_rgba(20,32,51,0.06)]">
       {/* Top Banner */}
       <div className="bg-[#142B45] text-white text-[12px] py-2 px-4 text-center font-medium">
-        <span>⚡ شحن مجاني وسريع لكافة الطلبات فوق 100$ | كود خصم إضافي: </span>
-        <span className="font-bold underline tracking-wider text-[#AACFF0]">PRO2026</span>
+        <span> شحن مجاني وسريع لكافة الطلبات فوق 100$ | كود خصم إضافي: </span>
+        <span className="font-bold underline tracking-wider text-[#AACFF0]">
+          PRO2026
+        </span>
       </div>
 
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 h-[76px] flex items-center justify-between gap-4">
@@ -67,7 +73,9 @@ export function Navbar() {
           <Link
             href="/"
             className={`transition-colors ${
-              pathname === "/" ? "text-[#2B7BD4] font-bold" : "hover:text-[#6AABF0]"
+              pathname === "/"
+                ? "text-[#2B7BD4] font-bold"
+                : "hover:text-[#6AABF0]"
             }`}
           >
             الرئيسية
@@ -75,7 +83,9 @@ export function Navbar() {
           <Link
             href="/products"
             className={`transition-colors ${
-              pathname === "/products" ? "text-[#2B7BD4] font-bold" : "hover:text-[#6AABF0]"
+              pathname === "/products"
+                ? "text-[#2B7BD4] font-bold"
+                : "hover:text-[#6AABF0]"
             }`}
           >
             كافة المنتجات
@@ -83,7 +93,9 @@ export function Navbar() {
           <Link
             href="/categories"
             className={`transition-colors ${
-              pathname === "/categories" ? "text-[#2B7BD4] font-bold" : "hover:text-[#6AABF0]"
+              pathname === "/categories"
+                ? "text-[#2B7BD4] font-bold"
+                : "hover:text-[#6AABF0]"
             }`}
           >
             التصنيفات
@@ -99,7 +111,11 @@ export function Navbar() {
             className="relative w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#EF4444] transition-colors"
           >
             <FavouriteIcon size={20} />
-            {wishlistCount > 0 && <span className="absolute -top-1 -end-1 w-4 h-4 rounded-full bg-[#EF4444] text-[10px] font-bold text-white flex items-center justify-center shadow-xs">{wishlistCount}</span>}
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -end-1 w-4 h-4 rounded-full bg-[#EF4444] text-[10px] font-bold text-white flex items-center justify-center shadow-xs">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
 
           {/* Cart Icon */}
@@ -109,7 +125,11 @@ export function Navbar() {
             className="relative w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#2B7BD4] transition-colors"
           >
             <ShoppingBag01Icon size={20} />
-            {cartCount > 0 && <span className="absolute -top-1 -end-1 w-4 h-4 rounded-full bg-[#6AABF0] text-[10px] font-bold text-white flex items-center justify-center shadow-xs">{cartCount}</span>}
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -end-1 w-4 h-4 rounded-full bg-[#6AABF0] text-[10px] font-bold text-white flex items-center justify-center shadow-xs">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
           <div className="hidden sm:flex items-center gap-2">
@@ -134,7 +154,11 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569]"
           >
-            {mobileMenuOpen ? <Cancel01Icon size={20} /> : <Menu01Icon size={20} />}
+            {mobileMenuOpen ? (
+              <Cancel01Icon size={20} />
+            ) : (
+              <Menu01Icon size={20} />
+            )}
           </button>
         </div>
       </div>
