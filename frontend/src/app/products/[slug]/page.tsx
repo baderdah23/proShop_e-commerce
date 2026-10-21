@@ -1,11 +1,9 @@
-import React, { use } from "react";
 import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { Button } from "@/shared/components/Button";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { formatPrice } from "@/shared/utils";
-import { STATIC_PRODUCTS, STATIC_REVIEWS } from "@/shared/data/mock-data";
 import {
   StarIcon,
   Shield01Icon,
@@ -16,36 +14,22 @@ import {
   Add01Icon,
   FavouriteIcon,
 } from "hugeicons-react";
+import { serverFetch } from "@/lib/api/server";
 
-export default function ProductDetailPage({
+export default async function ProductDetailPage({
   searchParams,
 }: {
   searchParams: Promise<{ id?: string }>;
 }) {
-  const resolvedSearchParams = use(searchParams);
-  const productId = resolvedSearchParams.id;
+  const { id: productId } = await searchParams;
 
-  const product =
-    STATIC_PRODUCTS.find((p) => p.product_id === productId || p.slug === productId) ||
-    STATIC_PRODUCTS[0];
-  const reviews = STATIC_REVIEWS.filter(
-    (review) => review.product_id === product.product_id,
+  const productRes = await serverFetch(`products/${productId}`);
+  const product = productRes?.product;
+
+  const relatedProductsRes = await serverFetch(
+    `products?category=${product.category_id}&limit=4`,
   );
-  const relatedProducts = STATIC_PRODUCTS.filter(
-    (item) =>
-      item.product_id !== product.product_id &&
-      (item.category_id === product.category_id ||
-        item.brand_id === product.brand_id),
-  );
-  const galleryImages = [
-    product.image_url,
-    ...(product.images?.map((image) => image.image_url) ?? []),
-  ].filter(
-    (source, index, all): source is string =>
-      Boolean(source) && all.indexOf(source) === index,
-  );
-  const activeImage = galleryImages[0] ?? "";
-  const hasDiscount = product.discount_price < product.price;
+  const relatedProducts = relatedProductsRes?.products;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
@@ -58,7 +42,10 @@ export default function ProductDetailPage({
             الرئيسية
           </Link>
           <span>/</span>
-          <Link href="/products" className="hover:text-[#2B7BD4] transition-colors">
+          <Link
+            href="/products"
+            className="hover:text-[#2B7BD4] transition-colors"
+          >
             المنتجات
           </Link>
           <span>/</span>
@@ -69,7 +56,9 @@ export default function ProductDetailPage({
             {product.category_name}
           </Link>
           <span>/</span>
-          <span className="text-[#1A1D2A] font-bold truncate max-w-xs">{product.name}</span>
+          <span className="text-[#1A1D2A] font-bold truncate max-w-xs">
+            {product.name}
+          </span>
         </nav>
 
         {/* Product Showcase Card */}
@@ -78,34 +67,38 @@ export default function ProductDetailPage({
           <div className="lg:col-span-5 space-y-4">
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-[#F8FAFC] border border-black/5 flex items-center justify-center group">
               <img
-                src={activeImage}
+                src={product.images?.[0]?.image_url}
                 alt={`${product.name} - صورة 1`}
                 width={720}
                 height={720}
                 fetchPriority="high"
                 className="w-full h-full object-contain object-center p-3"
               />
-              {hasDiscount && (
+              {product.discount_price && (
                 <span className="absolute top-4 start-4 bg-[#EF4444] text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-md">
                   خصم خاص
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-3 gap-3" role="list" aria-label="صور المنتج">
-              {galleryImages.map((image, index) => (
+            <div
+              className="grid grid-cols-3 gap-3"
+              role="list"
+              aria-label="صور المنتج"
+            >
+              {product.images?.map((image, index) => (
                 <button
-                  key={image}
+                  key={image.image_id}
                   type="button"
                   aria-label={`عرض صورة المنتج ${index + 1}`}
-                  aria-current={activeImage === image}
+                  aria-current={image.is_primary}
                   className={`relative aspect-square overflow-hidden rounded-xl border-2 bg-[#F8FAFC] transition-all ${
-                    activeImage === image
+                    image.is_primary
                       ? "border-[#2B7BD4] ring-4 ring-[#2B7BD4]/15"
                       : "border-transparent hover:border-[#AACFF0]"
                   }`}
                 >
                   <img
-                    src={image}
+                    src={image.image_url}
                     alt=""
                     width={180}
                     height={180}
@@ -119,15 +112,26 @@ export default function ProductDetailPage({
             {/* Quality badges */}
             <div className="grid grid-cols-3 gap-2.5 pt-2 text-center">
               <div className="p-3 rounded-xl bg-[#EEF5FC] border border-[#AACFF0]/40 text-[#1F63B3]">
-                <Shield01Icon size={18} className="mx-auto mb-1 text-[#2B7BD4]" />
-                <span className="text-[11px] font-bold block">ضمان {product.warranty_months} شهراً</span>
+                <Shield01Icon
+                  size={18}
+                  className="mx-auto mb-1 text-[#2B7BD4]"
+                />
+                <span className="text-[11px] font-bold block">
+                  ضمان {product.warranty_months} شهراً
+                </span>
               </div>
               <div className="p-3 rounded-xl bg-[#EEF5FC] border border-[#AACFF0]/40 text-[#1F63B3]">
-                <DeliveryTruck01Icon size={18} className="mx-auto mb-1 text-[#2B7BD4]" />
+                <DeliveryTruck01Icon
+                  size={18}
+                  className="mx-auto mb-1 text-[#2B7BD4]"
+                />
                 <span className="text-[11px] font-bold block">شحن فوري</span>
               </div>
               <div className="p-3 rounded-xl bg-[#F0FDF4] border border-[#22C55E]/20 text-[#16A34A]">
-                <CheckmarkCircle01Icon size={18} className="mx-auto mb-1 text-[#22C55E]" />
+                <CheckmarkCircle01Icon
+                  size={18}
+                  className="mx-auto mb-1 text-[#22C55E]"
+                />
                 <span className="text-[11px] font-bold block">أصلي 100%</span>
               </div>
             </div>
@@ -142,9 +146,14 @@ export default function ProductDetailPage({
                   {product.category_name}
                 </span>
                 <span className="text-xs font-semibold text-[#64748B]">
-                  الماركة: <strong className="text-[#1A1D2A]">{product.brand_name}</strong>
+                  الماركة:{" "}
+                  <strong className="text-[#1A1D2A]">
+                    {product.brand_name}
+                  </strong>
                 </span>
-                <span className="text-xs font-mono text-[#94A3B8]">SKU: {product.sku}</span>
+                <span className="text-xs font-mono text-[#94A3B8]">
+                  SKU: {product.sku}
+                </span>
               </div>
 
               {/* Title */}
@@ -155,12 +164,18 @@ export default function ProductDetailPage({
               {/* Rating and Stock */}
               <div className="flex items-center gap-3 text-xs">
                 <div className="flex items-center text-[#F59E0B]">
-                  <StarIcon size={16} color="#F59E0B" className="fill-[#F59E0B]" />
+                  <StarIcon
+                    size={16}
+                    color="#F59E0B"
+                    className="fill-[#F59E0B]"
+                  />
                   <span className="ms-1.5 font-bold text-[#1A1D2A] text-sm">
                     {product.rating_avg}
                   </span>
                 </div>
-                <span className="text-[#94A3B8]">({reviews.length} تقييم)</span>
+                <span className="text-[#94A3B8]">
+                  ({product.rating_count} تقييم)
+                </span>
                 <span className="text-[#CBD5E1]">•</span>
                 <span className="text-[#16A34A] font-bold bg-[#22C55E]/10 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                   <CheckmarkCircle01Icon size={14} color="#22C55E" />
@@ -173,7 +188,7 @@ export default function ProductDetailPage({
                 <span className="text-3xl sm:text-4xl font-black text-[#1A1D2A] tracking-tight">
                   {formatPrice(product.discount_price || product.price)}
                 </span>
-                {hasDiscount && (
+                {product.discount_price && (
                   <span className="text-base text-[#94A3B8] line-through font-semibold">
                     {formatPrice(product.price)}
                   </span>
@@ -254,7 +269,7 @@ export default function ProductDetailPage({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-black/5">
             <div>
               <h2 className="text-xl sm:text-2xl font-black text-[#1A1D2A]">
-                تقييمات وآراء المشترين ({reviews.length})
+                تقييمات وآراء المشترين ({product.rating_count})
               </h2>
               <p className="text-xs text-[#64748B] mt-1">
                 تجارب حقيقية لعملاء قاموا باقتناء هذا المنتج واستخدامه
@@ -272,7 +287,7 @@ export default function ProductDetailPage({
 
           {/* Reviews Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {reviews.map((rev) => (
+            {product?.reviews?.map((rev) => (
               <div
                 key={rev.review_id}
                 className="p-5 rounded-2xl bg-[#F8FAFC] border border-black/5 space-y-2.5"
@@ -282,22 +297,31 @@ export default function ProductDetailPage({
                     <div className="w-8 h-8 rounded-full bg-[#EEF5FC] text-[#2B7BD4] flex items-center justify-center font-bold text-xs">
                       {rev.customer_name.charAt(0)}
                     </div>
-                    <span className="font-bold text-xs text-[#1A1D2A]">{rev.customer_name}</span>
+                    <span className="font-bold text-xs text-[#1A1D2A]">
+                      {rev.customer_name}
+                    </span>
                   </div>
                   <div className="flex items-center text-[#F59E0B]">
                     {Array.from({ length: rev.rating }).map((_, i) => (
-                      <StarIcon key={i} size={14} color="#F59E0B" className="fill-[#F59E0B]" />
+                      <StarIcon
+                        key={i}
+                        size={14}
+                        color="#F59E0B"
+                        className="fill-[#F59E0B]"
+                      />
                     ))}
                   </div>
                 </div>
-                <p className="text-xs text-[#475569] leading-relaxed">&ldquo;{rev.comment}&rdquo;</p>
+                <p className="text-xs text-[#475569] leading-relaxed">
+                  &ldquo;{rev.comment}&rdquo;
+                </p>
               </div>
             ))}
           </div>
         </section>
 
         {/* Similar / Related Products Section */}
-        {relatedProducts.length > 0 && (
+        {relatedProducts?.length > 0 && (
           <section className="space-y-6">
             <div className="flex items-end justify-between">
               <div>
@@ -318,7 +342,7 @@ export default function ProductDetailPage({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.slice(0, 4).map((p) => (
+              {relatedProducts?.slice(0, 4).map((p) => (
                 <ProductCard key={p.product_id} product={p} />
               ))}
             </div>

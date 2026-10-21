@@ -12,7 +12,7 @@ import { Footer } from "@/shared/components/Footer";
 import { SpotlightCard } from "@/shared/components/SpotlightCard";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { HeroSlider } from "@/features/home";
-import { STATIC_CATEGORIES, STATIC_PRODUCTS } from "@/shared/data/mock-data";
+import { STATIC_PRODUCTS } from "@/shared/data/mock-data";
 import LogoLoop, { type LogoItem } from "@/shared/components/LogoLoop";
 import {
   SiAmd,
@@ -25,16 +25,38 @@ import {
   SiRazer,
   SiStripe,
 } from "react-icons/si";
+import { serverFetch } from "@/lib/api/server";
 
-export default function HomePage() {
-  const featuredProducts = STATIC_PRODUCTS.filter((p) => p.is_featured).slice(
-    0,
-    4,
+type SubCategories = {
+  sub_category_id: number;
+  name_ar: string;
+  name_en: string;
+  slug: string;
+};
+
+type Category = {
+  category_id: number;
+  category_name_ar: string;
+  category_name_en: string;
+  category_slug: string;
+  image_url: string;
+  subcategories: SubCategories[];
+};
+
+export default async function HomePage() {
+  const featuredProductsResponse = await serverFetch(
+    "products?sort=rating_desc&page=1&limit=4",
   );
-  const discountedProducts = STATIC_PRODUCTS.filter(
-    (p) => p.discount_price < p.price,
-  ).slice(0, 4);
-  const categories = STATIC_CATEGORIES;
+  const featuredProducts = featuredProductsResponse?.products || [];
+
+  const newProductsResponse = await serverFetch(
+    "products?sort=newest&page=1&limit=4",
+  );
+  const newProducts = newProductsResponse?.products || [];
+
+  const categories = await serverFetch("categories?limit=5");
+  const catData: Category[] = categories?.categories || [];
+
   const partnerLogos: LogoItem[] = [
     { node: <SiAmd color="#ED1C24" />, title: "AMD" },
     { node: <SiNvidia color="#76B900" />, title: "NVIDIA" },
@@ -140,7 +162,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categories.map((cat) => (
+            {catData.map((cat) => (
               <Link
                 key={cat.category_id}
                 href={`/products?category=${cat.category_id}`}
@@ -149,15 +171,15 @@ export default function HomePage() {
                   <div className="w-full aspect-video rounded-xl overflow-hidden bg-[#F1F5F9] mb-3">
                     <img
                       src={cat.image_url}
-                      alt={cat.name_ar || cat.name_en || ""}
+                      alt={cat.category_name_ar || cat.category_name_en || ""}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <h3 className="font-bold text-sm text-[#1A1D2A] group-hover:text-[#6AABF0] transition-colors">
-                    {cat.name_ar}
+                    {cat.category_name_ar}
                   </h3>
                   <span className="text-[11px] text-[#94A3B8]">
-                    {cat.name_en}
+                    {cat.category_name_en}
                   </span>
                 </SpotlightCard>
               </Link>
@@ -188,7 +210,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {discountedProducts.map((product) => (
+            {newProducts.map((product) => (
               <ProductCard key={product.product_id} product={product} />
             ))}
           </div>

@@ -2,17 +2,25 @@ import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { SpotlightCard } from "@/shared/components/SpotlightCard";
-import { STATIC_CATEGORIES, STATIC_PRODUCTS } from "@/shared/data/mock-data";
+import { serverFetch } from "@/lib/api/server";
+import type { Category } from "@/shared/types";
 import { ArrowRight01Icon, Folder01Icon } from "hugeicons-react";
 
-export default function CategoriesPage() {
-  const categories = STATIC_CATEGORIES;
-  const counts: Record<number, number> = {};
-  categories.forEach((cat) => {
-    counts[cat.category_id] = STATIC_PRODUCTS.filter(
-      (p) => p.category_id === cat.category_id,
-    ).length;
-  });
+interface CategoriesResponse {
+  success: boolean;
+  results: number;
+  categories: Category[];
+}
+
+export default async function CategoriesPage() {
+  let categories: Category[] = [];
+
+  try {
+    const response = await serverFetch<CategoriesResponse>("categories");
+    categories = response.categories ?? [];
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
@@ -28,41 +36,50 @@ export default function CategoriesPage() {
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((category) => (
-            <Link
-              key={category.category_id}
-              href={`/products?category=${category.category_id}`}
-            >
-              <SpotlightCard className="p-6 h-full flex flex-col justify-between group">
-                <div className="space-y-4">
-                  <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100">
-                    <img
-                      src={category.image_url}
-                      alt={category.name_ar || category.name_en || ""}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute top-3 start-3 px-3 py-1 rounded-lg bg-black/60 text-white text-[11px] font-bold">
-                      {counts[category.category_id] || 0} منتجات
-                    </span>
+        {categories.length === 0 ? (
+          <div className="p-12 text-center bg-white rounded-2xl border border-black/8">
+            <p className="text-sm font-bold text-[#1A1D2A]">
+              لا توجد تصنيفات لعرضها حالياً
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((category) => (
+              <Link
+                key={category.category_id}
+                href={`/products?category=${category.category_id}`}
+              >
+                <SpotlightCard className="p-6 h-full flex flex-col justify-between group">
+                  <div className="space-y-4">
+                    <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-100">
+                      <img
+                        src={category.image_url}
+                        alt={
+                          category.category_name_ar ||
+                          category.category_name_en ||
+                          ""
+                        }
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-black text-slate-900 group-hover:text-blue-600">
+                        {category.category_name_ar || category.category_name_en}
+                      </h2>
+                      <p className="text-xs text-slate-400 font-medium">
+                        {category.category_name_en}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-lg font-black text-slate-900 group-hover:text-blue-600">
-                      {category.name_ar || category.name_en}
-                    </h2>
-                    <p className="text-xs text-slate-400 font-medium">
-                      {category.name_en}
-                    </p>
+                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
+                    <span>استعراض المنتجات</span>
+                    <ArrowRight01Icon size={16} className="rotate-180" />
                   </div>
-                </div>
-                <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
-                  <span>استعراض المنتجات</span>
-                  <ArrowRight01Icon size={16} className="rotate-180" />
-                </div>
-              </SpotlightCard>
-            </Link>
-          ))}
-        </div>
+                </SpotlightCard>
+              </Link>
+            ))}
+          </div>
+        )}
       </main>
       <Footer />
     </div>

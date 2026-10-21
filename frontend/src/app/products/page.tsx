@@ -1,17 +1,46 @@
+import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { ProductCard } from "@/features/products/components/ProductCard";
-import {
-  STATIC_BRANDS,
-  STATIC_CATEGORIES,
-  STATIC_PRODUCTS,
-} from "@/shared/data/mock-data";
-import { FilterIcon, Search01Icon } from "hugeicons-react";
+import { serverFetch } from "@/lib/api/server";
+import type { Brand, Category, Product } from "@/shared/types";
+import { ArrowRight01Icon, FilterIcon, Search01Icon } from "hugeicons-react";
 
-export default function ProductsPage() {
-  const products = STATIC_PRODUCTS;
-  const categories = STATIC_CATEGORIES;
-  const brands = STATIC_BRANDS;
+const PAGE_SIZE = 18;
+
+interface ProductsResponse {
+  success: boolean;
+  results: number;
+  total?: number;
+  page?: number;
+  products: Product[];
+}
+
+type SearchParams = Record<string, string | string[] | undefined>;
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
+  const rawPage = Array.isArray(params.page) ? params.page[0] : params.page;
+  const page = Math.max(1, Number.parseInt(rawPage ?? "1", 10) || 1);
+
+  const [productsRes, categoriesRes, brandsRes] = await Promise.all([
+    fetchOrFallback<ProductsResponse | null>(
+      `products?limit=${PAGE_SIZE}&page=${page}`,
+      null,
+    ),
+    fetchOrFallback<{ categories: Category[] } | null>("categories", null),
+    fetchOrFallback<{ brands: Brand[] } | null>("brands", null),
+  ]);
+
+  const products = productsRes?.products ?? [];
+  const total = productsRes?.total ?? products.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const categories = categoriesRes?.categories ?? [];
+  const brands = brandsRes?.brands ?? [];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
@@ -22,7 +51,7 @@ export default function ProductsPage() {
             كافة المنتجات والعتاد
           </h1>
           <p className="text-xs sm:text-sm text-[#64748B]">
-            استكشف {products.length} منتجاً متاحاً من أفضل المصنعين.
+            استكشف {total} منتجاً متاحاً من أفضل المصنعين.
           </p>
         </div>
 
@@ -45,7 +74,10 @@ export default function ProductsPage() {
                 title="الفئات"
                 items={categories.map((category) => ({
                   id: category.category_id,
-                  label: category.name_ar || category.name_en || "",
+                  label:
+                    category.category_name_ar ||
+                    category.category_name_en ||
+                    "",
                 }))}
               />
               <FilterList
@@ -72,9 +104,7 @@ export default function ProductsPage() {
                   className="w-full ps-9 pe-3 py-2 bg-[#F8FAFC] border border-black/8 rounded-xl text-xs focus:outline-none focus:border-[#6AABF0]"
                 />
               </div>
-              <select
-                className="bg-[#F8FAFC] border border-black/8 rounded-xl px-3 py-1.5 text-xs"
-              >
+              <select className="bg-[#F8FAFC] border border-black/8 rounded-xl px-3 py-1.5 text-xs">
                 <option value="newest">الأحدث</option>
                 <option value="price_asc">السعر: من الأقل للأعلى</option>
                 <option value="price_desc">السعر: من الأعلى للأقل</option>
@@ -95,11 +125,120 @@ export default function ProductsPage() {
                 </p>
               </div>
             )}
+
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              params={params}
+            />
           </div>
         </div>
       </main>
       <Footer />
     </div>
+  );
+}
+
+async function fetchOrFallback<T>(path: string, fallback: T): Promise<T> {
+  try {
+    return await serverFetch<T>(path);
+  } catch (error) {
+    console.error(`Failed to fetch ${path}:`, error);
+    return fallback;
+  }
+}
+
+function buildPageHref(pageNumber: number, params: SearchParams): string {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (typeof value === "string") query.set(key, value);
+  });
+  query.set("page", String(pageNumber));
+  return `/products?${query.toString()}`;
+}
+
+function visiblePages(currentPage: number, totalPages: number): number[] {
+  const maxVisible = 5;
+  const start = Math.max(
+    1,
+    Math.min(currentPage - 2, totalPages - maxVisible + 1),
+  );
+  const count = Math.min(maxVisible, totalPages);
+  return Array.from({ length: count }, (_, index) => start + index);
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  params,
+}: {
+  currentPage: number;
+  totalPages: number;
+  params: SearchParams;
+}) {
+  if (totalPages <= 1) return null;
+
+  return (
+    <nav
+      aria-label="التنقل بين صفحات المنتجات"
+      className="flex items-center justify-center gap-1.5 pt-4"
+    >
+      {currentPage > 1 ? (
+        <Link
+          href={buildPageHref(currentPage - 1, params)}
+          className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl bg-white border border-black/8 shadow-sm text-xs font-bold text-[#475569] hover:border-[#6AABF0] hover:text-[#1F63B3] transition-colors"
+        >
+          <ArrowRight01Icon size={14} />
+          السابق
+        </Link>
+      ) : (
+        <span
+          aria-disabled="true"
+          className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl bg-white border border-black/8 text-xs font-bold text-[#CBD5E1] opacity-60"
+        >
+          <ArrowRight01Icon size={14} />
+          السابق
+        </span>
+      )}
+
+      {visiblePages(currentPage, totalPages).map((pageNumber) =>
+        pageNumber === currentPage ? (
+          <span
+            key={pageNumber}
+            aria-current="page"
+            className="inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-xl bg-[#2B7BD4] text-white text-xs font-bold"
+          >
+            {pageNumber}
+          </span>
+        ) : (
+          <Link
+            key={pageNumber}
+            href={buildPageHref(pageNumber, params)}
+            className="inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-xl bg-white border border-black/8 shadow-sm text-xs font-bold text-[#475569] hover:border-[#6AABF0] hover:text-[#1F63B3] transition-colors"
+          >
+            {pageNumber}
+          </Link>
+        ),
+      )}
+
+      {currentPage < totalPages ? (
+        <Link
+          href={buildPageHref(currentPage + 1, params)}
+          className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl bg-white border border-black/8 shadow-sm text-xs font-bold text-[#475569] hover:border-[#6AABF0] hover:text-[#1F63B3] transition-colors"
+        >
+          التالي
+          <ArrowRight01Icon size={14} className="rotate-180" />
+        </Link>
+      ) : (
+        <span
+          aria-disabled="true"
+          className="inline-flex items-center gap-1.5 h-9 px-3 rounded-xl bg-white border border-black/8 text-xs font-bold text-[#CBD5E1] opacity-60"
+        >
+          التالي
+          <ArrowRight01Icon size={14} className="rotate-180" />
+        </span>
+      )}
+    </nav>
   );
 }
 

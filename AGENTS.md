@@ -5,6 +5,7 @@
 **Version:** 1.1 · **Status:** Active · **Applies to:** every AI-assisted and human contribution to this codebase
 
 **Changelog:**
+
 - **1.1** — Added Section 1.6 (Verify, Don't Assume), Section 22 (Dependency Policy), and Section 23 (Change Impact & API Stability). Strengthened the diff-review checklist (1.2), obsolete-code removal (3), the pre-completion checklist (20), and several AI Agent Operating Protocol rules (21) with more specific, actionable detail.
 - **1.0** — Initial release.
 
@@ -13,8 +14,8 @@
 ## How to Use This Document
 
 - **Audience**: any AI coding agent, and any human, working in this repository.
-- **Stack assumption**: this document is written for a **TypeScript + React** frontend and a **Supabase (Postgres)** backend, matching the technologies referenced throughout. If the real stack differs, apply the underlying principle and translate the framework-specific detail — the rule is what's mandatory, not the specific API it's illustrated with.
-- **Precedence**: an explicit, specific instruction from the user in a given task overrides this document *for that task*. Silence is not an override — if the user hasn't said otherwise, this document governs by default. An instruction that would violate Section 1 (secrets, security) should be flagged rather than silently followed.
+- **Stack assumption**: this document is written for a **TypeScript + next** frontend and a **express (Postgres)** backend, matching the technologies referenced throughout. If the real stack differs, apply the underlying principle and translate the framework-specific detail — the rule is what's mandatory, not the specific API it's illustrated with.
+- **Precedence**: an explicit, specific instruction from the user in a given task overrides this document _for that task_. Silence is not an override — if the user hasn't said otherwise, this document governs by default. An instruction that would violate Section 1 (secrets, security) should be flagged rather than silently followed.
 - **This is a living document.** When a real decision here goes stale, update this file in the same change that changes the practice — don't let the code and the doc drift apart.
 
 ## Table of Contents
@@ -149,28 +150,28 @@ An invented detail that happens to be plausible is still wrong — and it's more
 
 Every decision in this codebase is filtered through these principles, in roughly this priority order when they conflict: **correctness and security → maintainability → performance → brevity.**
 
-| Principle | What it means here |
-|---|---|
-| Production-first mindset | Code is written as if it ships today, to real users, under real load — not as a prototype to be redone later. |
-| Long-term maintainability | Optimize for the engineer reading this in 18 months with no context, not for typing speed today. |
-| Readability over cleverness | If a reviewer has to pause to decode an expression, rewrite it. Clever one-liners lose to boring, obvious code. |
-| Simplicity over unnecessary abstraction | Don't build a plugin system for two call sites. Add abstraction when a real third use case appears — not preemptively. |
-| Scalability by design | Structure code so it survives 10x usage and 10x team size without a rewrite — without over-engineering for scale that may never come. |
-| Security by default | The secure option is the default option; insecure behavior must be opted into explicitly, never the path of least resistance. |
-| Performance first | Consider the performance cost of a design before shipping it, not after users complain. |
-| Reliability first | Prefer solutions that fail predictably and recover gracefully over solutions that are merely fast when everything goes right. |
-| Developer Experience (DX) | Good naming, good types, good errors, good local tooling. A confused teammate is a bug in the codebase, not just in the docs. |
-| User Experience (UX) | Loading, empty, and error states are part of the feature, not optional edge cases. |
-| Accessibility | Usable with a keyboard, a screen reader, or low vision, by default — see Section 18. |
-| SEO | Public-facing pages are indexable and understandable by search engines by default — see Section 19. |
-| Clean Architecture | Business logic doesn't know that React or Supabase exists. Frameworks are details, plugged in at the edges. |
-| SOLID | See breakdown below. |
-| DRY | Don't duplicate a single source of truth for a business rule. Duplicating *similar-looking* code that will evolve independently is not a DRY violation — premature deduplication creates false coupling. |
-| KISS | The simplest design that correctly solves the actual problem wins over the more "impressive" one. |
-| YAGNI | Don't build for a requirement that doesn't exist yet. Configurability is added when a second real use case demands it. |
-| Separation of Concerns | UI, business logic, and data access are distinct layers with a one-directional dependency (Section 4.3). |
-| Composition over inheritance | Prefer small, composable functions/hooks/components over deep class or component inheritance chains. |
-| Convention over configuration | Follow the structure and naming in this document so nothing needs a config file to be understood. |
+| Principle                               | What it means here                                                                                                                                                                                       |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Production-first mindset                | Code is written as if it ships today, to real users, under real load — not as a prototype to be redone later.                                                                                            |
+| Long-term maintainability               | Optimize for the engineer reading this in 18 months with no context, not for typing speed today.                                                                                                         |
+| Readability over cleverness             | If a reviewer has to pause to decode an expression, rewrite it. Clever one-liners lose to boring, obvious code.                                                                                          |
+| Simplicity over unnecessary abstraction | Don't build a plugin system for two call sites. Add abstraction when a real third use case appears — not preemptively.                                                                                   |
+| Scalability by design                   | Structure code so it survives 10x usage and 10x team size without a rewrite — without over-engineering for scale that may never come.                                                                    |
+| Security by default                     | The secure option is the default option; insecure behavior must be opted into explicitly, never the path of least resistance.                                                                            |
+| Performance first                       | Consider the performance cost of a design before shipping it, not after users complain.                                                                                                                  |
+| Reliability first                       | Prefer solutions that fail predictably and recover gracefully over solutions that are merely fast when everything goes right.                                                                            |
+| Developer Experience (DX)               | Good naming, good types, good errors, good local tooling. A confused teammate is a bug in the codebase, not just in the docs.                                                                            |
+| User Experience (UX)                    | Loading, empty, and error states are part of the feature, not optional edge cases.                                                                                                                       |
+| Accessibility                           | Usable with a keyboard, a screen reader, or low vision, by default — see Section 18.                                                                                                                     |
+| SEO                                     | Public-facing pages are indexable and understandable by search engines by default — see Section 19.                                                                                                      |
+| Clean Architecture                      | Business logic doesn't know that React or Supabase exists. Frameworks are details, plugged in at the edges.                                                                                              |
+| SOLID                                   | See breakdown below.                                                                                                                                                                                     |
+| DRY                                     | Don't duplicate a single source of truth for a business rule. Duplicating _similar-looking_ code that will evolve independently is not a DRY violation — premature deduplication creates false coupling. |
+| KISS                                    | The simplest design that correctly solves the actual problem wins over the more "impressive" one.                                                                                                        |
+| YAGNI                                   | Don't build for a requirement that doesn't exist yet. Configurability is added when a second real use case demands it.                                                                                   |
+| Separation of Concerns                  | UI, business logic, and data access are distinct layers with a one-directional dependency (Section 4.3).                                                                                                 |
+| Composition over inheritance            | Prefer small, composable functions/hooks/components over deep class or component inheritance chains.                                                                                                     |
+| Convention over configuration           | Follow the structure and naming in this document so nothing needs a config file to be understood.                                                                                                        |
 
 **SOLID, applied to this codebase:**
 
@@ -209,7 +210,7 @@ Every decision in this codebase is filtered through these principles, in roughly
 
 ### 4.1 Guiding shape
 
-Feature-based, not type-based, at the top level. Group by what the code is *for*, not what kind of file it is — this is what lets the codebase scale from 1 developer to 100 without every feature touching the same three folders.
+Feature-based, not type-based, at the top level. Group by what the code is _for_, not what kind of file it is — this is what lets the codebase scale from 1 developer to 100 without every feature touching the same three folders.
 
 ```
 src/
@@ -259,14 +260,14 @@ UI (components)  →  hooks  →  services / api layer  →  data layer (Supabas
 
 ### 4.4 Organization by concern
 
-| Concern | Lives in | Rule |
-|---|---|---|
-| UI | `components/` | Presentational where possible; container components that fetch data are named/marked as such. |
-| Reusable stateful logic | `hooks/` | One hook, one responsibility. A hook that just wraps a single `useState` isn't worth extracting. |
-| Data access | `api/` or `services/` | All Supabase/API calls go through this layer — never directly in a component. |
-| Cross-cutting types | `types/` | Shared domain types (e.g., `User`, `Invoice`). Feature-local types stay in the feature. |
-| Configuration | `config/` | Constants, feature flags, env-derived config — never scattered magic values in components. |
-| Database access rules | migrations + RLS policies | See Section 14. |
+| Concern                 | Lives in                  | Rule                                                                                             |
+| ----------------------- | ------------------------- | ------------------------------------------------------------------------------------------------ |
+| UI                      | `components/`             | Presentational where possible; container components that fetch data are named/marked as such.    |
+| Reusable stateful logic | `hooks/`                  | One hook, one responsibility. A hook that just wraps a single `useState` isn't worth extracting. |
+| Data access             | `api/` or `services/`     | All Supabase/API calls go through this layer — never directly in a component.                    |
+| Cross-cutting types     | `types/`                  | Shared domain types (e.g., `User`, `Invoice`). Feature-local types stay in the feature.          |
+| Configuration           | `config/`                 | Constants, feature flags, env-derived config — never scattered magic values in components.       |
+| Database access rules   | migrations + RLS policies | See Section 14.                                                                                  |
 
 New code follows this structure without being asked. If a task doesn't fit cleanly, that's a signal to ask where it belongs rather than guessing and creating a new top-level folder.
 
@@ -291,13 +292,13 @@ Prefer, in this order: reusable → composable → modular → isolated → test
 
 **Soft size ceilings** — guidelines, not hard limits. Use judgment, but treat crossing these as a prompt to reconsider structure:
 
-| Unit | Ceiling | Action when exceeded |
-|---|---|---|
-| Function | ~50 lines | Extract sub-steps into named helper functions. |
-| React component | ~200–250 lines | Split into subcomponents or extract logic into a hook. |
-| File | ~300–400 lines | Split by responsibility — usually a sign two concerns are living in one file. |
-| Function parameters | 3 positional args | Switch to a single options object. |
-| Nesting depth | 3 levels | Use early returns / guard clauses instead of nested `if`s. |
+| Unit                | Ceiling           | Action when exceeded                                                          |
+| ------------------- | ----------------- | ----------------------------------------------------------------------------- |
+| Function            | ~50 lines         | Extract sub-steps into named helper functions.                                |
+| React component     | ~200–250 lines    | Split into subcomponents or extract logic into a hook.                        |
+| File                | ~300–400 lines    | Split by responsibility — usually a sign two concerns are living in one file. |
+| Function parameters | 3 positional args | Switch to a single options object.                                            |
+| Nesting depth       | 3 levels          | Use early returns / guard clauses instead of nested `if`s.                    |
 
 - Avoid tightly coupled code: a change in one module shouldn't force edits in unrelated modules. If it does, the dependency direction (Section 4.3) is probably being violated.
 - Prefer pure functions for business logic — same input, same output, no hidden side effects — because they're trivial to test and trivial to reason about.
@@ -352,7 +353,7 @@ Security is not a section to review at the end — it's a constraint on every de
 
 ### Authentication & Authorization
 
-- Authentication verifies *who*; authorization verifies *what they're allowed to do* — implement and check both, never assume one implies the other.
+- Authentication verifies _who_; authorization verifies _what they're allowed to do_ — implement and check both, never assume one implies the other.
 - Every server endpoint checks the caller's identity and permissions explicitly. "The UI doesn't show that button" is not an access control — hidden UI is not a permission check.
 - Use Supabase Row Level Security (RLS) as the actual access-control layer for data, not an extra precaution behind an already-trusted API. Baseline policy pattern:
 
@@ -385,7 +386,7 @@ create policy "insert_own_rows"
 
 - See Section 1.3 — non-negotiable.
 - All secrets load from environment variables server-side only: never committed, never logged, never included in error messages sent to the client.
-- Client-exposed env vars (`NEXT_PUBLIC_*`, `VITE_*`) are, by definition, public. Treat anything with that prefix as if it were printed on a billboard — a Supabase project URL and anon key are meant to be public *because RLS is what actually protects the data*, not the key's secrecy.
+- Client-exposed env vars (`NEXT_PUBLIC_*`, `VITE_*`) are, by definition, public. Treat anything with that prefix as if it were printed on a billboard — a Supabase project URL and anon key are meant to be public _because RLS is what actually protects the data_, not the key's secrecy.
 
 ### File uploads & storage
 
@@ -537,10 +538,10 @@ type State = { isLoading: boolean; isError: boolean; data?: Data };
 
 // Prefer — only valid states exist
 type State =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'error'; error: Error }
-  | { status: 'success'; data: Data };
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "error"; error: Error }
+  | { status: "success"; data: Data };
 ```
 
 - Generics for genuinely reusable logic (a `useQuery<T>`-style hook) — not applied reflexively to functions with one call site.
@@ -586,7 +587,7 @@ type ApiError = { success: false; error: { code: string; message: string } };
 - Log meaningful events: request lifecycle, errors, state transitions that matter for debugging (payment succeeded/failed, auth failures) — not every function entry/exit.
 - **Never log**: secrets, tokens, passwords, full card numbers, or anything else classified as sensitive under Section 8. Redact or omit fields; don't rely on remembering to scrub logs later.
 - Structure logs (JSON, with consistent fields — timestamp, level, request ID, message, context) so they're queryable, not just human-readable strings.
-- Error messages are actionable: state what failed and, where safe, why. "Failed to update invoice: RLS policy denied write for user X" is useful in a log; "Something went wrong" is not — even if that's all the *user* sees, the log itself carries the detail.
+- Error messages are actionable: state what failed and, where safe, why. "Failed to update invoice: RLS policy denied write for user X" is useful in a log; "Something went wrong" is not — even if that's all the _user_ sees, the log itself carries the detail.
 - User-facing error messages are generic and non-leaky; the detailed version goes to the log, correlated by request ID, not to the response body.
 
 ---
@@ -691,14 +692,14 @@ Every dependency is a liability as much as a convenience — it's code the team 
 
 Before introducing anything new, evaluate:
 
-| Criterion | What to check |
-|---|---|
-| Maintenance | Is it actively maintained? When was the last release? |
-| Bundle size | What does it cost the client bundle relative to what it does (Section 7)? |
-| Security | Any known vulnerabilities? A reasonable dependency footprint of its own? |
-| Popularity & community | Is it widely used enough that problems have known solutions? |
-| Documentation quality | Can a future maintainer actually learn it from the docs? |
-| Long-term viability | Is it likely to still be maintained and compatible a few years from now? |
+| Criterion              | What to check                                                             |
+| ---------------------- | ------------------------------------------------------------------------- |
+| Maintenance            | Is it actively maintained? When was the last release?                     |
+| Bundle size            | What does it cost the client bundle relative to what it does (Section 7)? |
+| Security               | Any known vulnerabilities? A reasonable dependency footprint of its own?  |
+| Popularity & community | Is it widely used enough that problems have known solutions?              |
+| Documentation quality  | Can a future maintainer actually learn it from the docs?                  |
+| Long-term viability    | Is it likely to still be maintained and compatible a few years from now?  |
 
 A dependency that fails several of these is a rejected choice even if it's the fastest path to a working demo today. Document the choice per Section 10 once it passes.
 
