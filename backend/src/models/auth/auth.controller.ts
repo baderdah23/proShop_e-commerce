@@ -33,9 +33,13 @@ export const sginup = async (req: Request, res: Response) => {
     const validatedData = UserSchema.safeParse(req.body);
 
     if (!validatedData.success) {
-      return res
-        .status(400)
-        .json({ success: false, message: validatedData.error });
+      // `message` is the field the frontend reads for display, so send the
+      // first human-readable issue instead of the serialized Zod error object.
+      return res.status(400).json({
+        success: false,
+        message:
+          validatedData.error.issues[0]?.message || "بيانات التسجيل غير صالحة.",
+      });
     }
     const { full_name, phone, password } = validatedData.data;
     const email = validatedData.data.email.trim().toLowerCase();

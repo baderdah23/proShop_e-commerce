@@ -3,7 +3,10 @@ import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { Button } from "@/shared/components/Button";
 import { ProductCard } from "@/features/products/components/ProductCard";
+import { ProductGallery } from "@/features/products/components/ProductGallery";
+import { AddReviewButton } from "@/features/products/components/AddReviewButton";
 import { formatPrice } from "@/shared/utils";
+import type { Product, Review } from "@/shared/types";
 import {
   StarIcon,
   Shield01Icon,
@@ -11,10 +14,13 @@ import {
   ShoppingBag01Icon,
   CheckmarkCircle01Icon,
   ArrowRight01Icon,
-  Add01Icon,
   FavouriteIcon,
 } from "hugeicons-react";
-import { serverFetch } from "@/lib/api/server";
+import { fetchOrFallback } from "@/lib/api/fetch-or-fallback";
+
+type ProductResponse = { success: boolean; product: Product };
+type ReviewsResponse = { success: boolean; data: Review[] };
+type ProductsListResponse = { success: boolean; products: Product[] };
 
 export default async function ProductDetailPage({
   searchParams,
@@ -23,13 +29,40 @@ export default async function ProductDetailPage({
 }) {
   const { id: productId } = await searchParams;
 
-  const productRes = await serverFetch(`products/${productId}`);
-  const product = productRes?.product;
+  // المنتج والمراجعات مستقلتان — تُجلبان معاً. المنتجات المرتبطة تعتمد
+  // على category_id فلابد تنتظر اكتمال المنتج أولاً (طابور مائي لو عكّستها).
+  const [productRes, reviewsRes] = await Promise.all([
+    fetchOrFallback<ProductResponse | null>(`products/${productId}`, null),
+    fetchOrFallback<ReviewsResponse | null>(
+      `reviews/product/${productId}`,
+      null,
+    ),
+  ]);
 
-  const relatedProductsRes = await serverFetch(
+  const product = productRes?.product;
+  const reviews = reviewsRes?.data ?? [];
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="p-12 text-center bg-white rounded-2xl border border-black/8">
+            <p className="text-sm font-bold text-[#1A1D2A]">
+              لم نجد هذا المنتج
+            </p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const relatedProductsRes = await fetchOrFallback<ProductsListResponse | null>(
     `products?category=${product.category_id}&limit=4`,
+    null,
   );
-  const relatedProducts = relatedProductsRes?.products;
+  const relatedProducts = relatedProductsRes?.products ?? [];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
@@ -64,50 +97,18 @@ export default async function ProductDetailPage({
         {/* Product Showcase Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 bg-white p-6 sm:p-10 rounded-3xl border border-black/8 shadow-sm">
           {/* Product Gallery (5 Cols) */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-[#F8FAFC] border border-black/5 flex items-center justify-center group">
-              <img
-                src={product.images?.[0]?.image_url}
-                alt={`${product.name} - صورة 1`}
-                width={720}
-                height={720}
-                fetchPriority="high"
-                className="w-full h-full object-contain object-center p-3"
-              />
-              {product.discount_price && (
-                <span className="absolute top-4 start-4 bg-[#EF4444] text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-md">
-                  خصم خاص
-                </span>
-              )}
-            </div>
-            <div
-              className="grid grid-cols-3 gap-3"
-              role="list"
-              aria-label="صور المنتج"
-            >
-              {product.images?.map((image, index) => (
-                <button
-                  key={image.image_id}
-                  type="button"
-                  aria-label={`عرض صورة المنتج ${index + 1}`}
-                  aria-current={image.is_primary}
-                  className={`relative aspect-square overflow-hidden rounded-xl border-2 bg-[#F8FAFC] transition-all ${
-                    image.is_primary
-                      ? "border-[#2B7BD4] ring-4 ring-[#2B7BD4]/15"
-                      : "border-transparent hover:border-[#AACFF0]"
-                  }`}
-                >
-                  <img
-                    src={image.image_url}
-                    alt=""
-                    width={180}
-                    height={180}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    className="h-full w-full object-contain p-2"
-                  />
-                </button>
-              ))}
-            </div>
+          <div className="lg:col-span-5">
+            <ProductGallery
+              images={product.images ?? []}
+              productName={product.name}
+              badge={
+                product.discount_price ? (
+                  <span className="absolute top-4 start-4 bg-[#EF4444] text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-md">
+                    خصم خاص
+                  </span>
+                ) : undefined
+              }
+            />
 
             {/* Quality badges */}
             <div className="grid grid-cols-3 gap-2.5 pt-2 text-center">
@@ -275,19 +276,15 @@ export default async function ProductDetailPage({
                 تجارب حقيقية لعملاء قاموا باقتناء هذا المنتج واستخدامه
               </p>
             </div>
-            <Button
-              variant="outline"
-              size="md"
-              className="gap-2 cursor-pointer self-start sm:self-auto"
-            >
-              <Add01Icon size={16} />
-              <span>أضف تقييمك للمنتج</span>
-            </Button>
+            <AddReviewButton
+              product_id={product.product_id}
+              customerName="ahmed"
+            />
           </div>
 
           {/* Reviews Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {product?.reviews?.map((rev) => (
+            {reviews.map((rev) => (
               <div
                 key={rev.review_id}
                 className="p-5 rounded-2xl bg-[#F8FAFC] border border-black/5 space-y-2.5"
@@ -321,7 +318,7 @@ export default async function ProductDetailPage({
         </section>
 
         {/* Similar / Related Products Section */}
-        {relatedProducts?.length > 0 && (
+        {relatedProducts.length > 0 && (
           <section className="space-y-6">
             <div className="flex items-end justify-between">
               <div>
@@ -342,7 +339,7 @@ export default async function ProductDetailPage({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts?.slice(0, 4).map((p) => (
+              {relatedProducts.slice(0, 4).map((p) => (
                 <ProductCard key={p.product_id} product={p} />
               ))}
             </div>

@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pro-Store API Documentation · توثيق واجهة برمجة التطبيقات</title>
+<style>
+  :root {
+    --bg: #f8fafc; --card: #ffffff; --ink: #1a1d2a; --muted: #64748b;
+    --line: #e2e8f0; --blue: #2b7bd4; --green: #16a34a; --red: #dc2626;
+    --orange: #d97706; --code-bg: #0f172a; --code-ink: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif; line-height: 1.7; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 80px; }
+  header.hero { background: linear-gradient(135deg, #142b45, #2b70ba); color: #fff;
+                border-radius: 18px; padding: 34px 30px; margin-bottom: 26px; }
+  header.hero h1 { margin: 0 0 8px; font-size: 26px; }
+  header.hero p { margin: 4px 0; opacity: .95; }
+  .ar { direction: rtl; text-align: right; font-family: Tahoma, "Noto Sans Arabic", "Segoe UI", sans-serif; }
+  h2.res { margin: 44px 0 6px; padding: 10px 16px; background: #142b45; color: #fff;
+           border-radius: 12px; font-size: 20px; scroll-margin-top: 16px; }
+  h2.res .en { font-weight: 400; font-size: 15px; opacity: .85; }
+  .res-intro { background: var(--card); border: 1px solid var(--line); border-radius: 0 0 12px 12px;
+               padding: 12px 16px; margin: 0 0 18px; color: var(--muted); font-size: 14.5px; }
+  section.ep { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+               padding: 16px 18px; margin-bottom: 16px; scroll-margin-top: 16px; }
+  .ep-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .method { font-weight: 800; font-size: 12px; letter-spacing: .5px; color: #fff;
+            padding: 3px 10px; border-radius: 7px; }
+  .GET { background: #16a34a; } .POST { background: #2563eb; }
+  .PATCH { background: #d97706; } .DELETE { background: #dc2626; }
+  .path { font-family: Consolas, monospace; font-weight: 700; font-size: 15px; }
+  .auth { font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+  .auth.public { background: #dcfce7; color: #15803d; }
+  .auth.user { background: #dbeafe; color: #1d4ed8; }
+  .auth.admin { background: #fee2e2; color: #b91c1c; }
+  .desc { margin: 4px 0 10px; font-size: 14.5px; }
+  .desc .ar { margin-bottom: 4px; color: #334155; }
+  .desc .en { color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 10px; }
+  th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; font-size: 12.5px; }
+  td.ar-cell { direction: rtl; text-align: right; font-family: Tahoma, "Noto Sans Arabic", sans-serif; }
+  .req { color: var(--red); font-weight: 700; }
+  .opt { color: var(--muted); }
+  details { border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 12px; font-weight: 700; font-size: 13.5px;
+                    background: #f1f5f9; user-select: none; }
+  details[open] summary { border-bottom: 1px solid var(--line); }
+  .body { padding: 10px 12px; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 12px 14px; border-radius: 8px;
+        overflow-x: auto; font-family: Consolas, "Courier New", monospace; font-size: 12.8px;
+        line-height: 1.55; margin: 6px 0; direction: ltr; text-align: left; }
+  .label { font-size: 12.5px; font-weight: 700; color: var(--muted); margin: 10px 0 2px; }
+  .toc { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+         padding: 16px 20px; margin-bottom: 26px; }
+  .toc h2 { margin: 0 0 10px; font-size: 17px; }
+  .toc ul { columns: 2; list-style: none; padding: 0; margin: 0; font-size: 14px; }
+  .toc li { margin: 3px 0; }
+  .toc a { color: var(--blue); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px;
+         padding: 14px 18px; margin: 18px 0; font-size: 14px; }
+  .box.warn { background: #fffbeb; border-color: #fde68a; }
+  .box h3 { margin: 0 0 6px; font-size: 15px; }
+  .box ul { margin: 6px 0; padding-inline-start: 20px; }
+  code.inline { background: #f1f5f9; border: 1px solid var(--line); border-radius: 5px;
+                padding: 1px 6px; font-family: Consolas, monospace; font-size: 13px; }
+  footer { margin-top: 50px; text-align: center; color: var(--muted); font-size: 13px; }
+  @media (max-width: 640px) { .toc ul { columns: 1; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Pro-Store API · توثيق الـ API</h1>
+  <p class="ar" style="font-size:16px">هذه الصفحة هي الدليل الكامل لجميع نقاط الاتصال (Endpoints) في واجهة المتجر الخلفية. كل نقطة موثّقة بالعربية والإنجليزية مع أمثلة حقيقية على المدخلات والمخرجات.</p>
+  <p style="font-size:15px; margin-top:10px">This page is the complete guide to every endpoint of the store backend. Each endpoint is documented in Arabic and English with real input &amp; output examples.</p>
+</header>
+
+<!-- ============ INTRO ============ -->
+<div class="box">
+  <h3>🌍 عنوان الخادم / Base URL</h3>
+  <p>كل المسارات تبدأ من جذر الخادم — <strong>بدون</strong> بادئة مثل <code class="inline">/api/v1</code>:</p>
+  <p class="ar" dir="rtl">كل المسارات تبدأ من جذر الخادم مباشرة بدون أي بادئة.</p>
+  <pre>http://localhost:8000          ← محلياً (لوحة التطوير)
+https://YOUR-BACKEND-DOMAIN    ← على الاستضافة (Vercel مثلاً)</pre>
+</div>
+
+<div class="box">
+  <h3>🔐 المصادقة / Authentication</h3>
+  <p class="ar">التوثيق يتم عبر <strong>كوكي (Cookie)</strong> اسمها <code class="inline">token</code> تصدرها خوادم <code class="inline">/auth/login</code> و <code class="inline">/auth/signup</code>. هي httpOnly أي لا تُرى من جافاسكربت. عند إرسال أي طلب يحتاج تسجيل دخول، أرسل الكوكي مع الطلب تلقائياً (<code class="inline">credentials: 'include'</code> في المتصفح، أو <code class="inline">-b cookies.txt</code> في curl).</p>
+  <p>Authentication uses a cookie named <code class="inline">token</code>, issued by <code class="inline">/auth/login</code> and <code class="inline">/auth/signup</code>. It is <strong>httpOnly</strong> (JavaScript cannot read it). Send it automatically with protected requests.</p>
+  <div class="label">💡 مثال سريع على تسجيل الدخول ثم طلب السلة / Quick example: login then fetch cart</div>
+  <pre># 1) تسجيل الدخول وحفظ الكوكي
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"Passw0rd!"}' \
+  -c cookies.txt
+
+# 2) استخدام الكوكي في الطلبات المحمية
+curl http://localhost:8000/cart -b cookies.txt</pre>
+</div>
+
+<div class="box">
+  <h3>🧾 شكل الاستجابة القياسي / Standard Response Shape</h3>
+  <table>
+    <tr><th>الحالة / Case</th><th>الشكل / Shape</th></tr>
+    <tr>
+      <td>✅ نجاح<br><span class="en">Success</span></td>
+      <td><code class="inline">{ "success": true, "message": "...", ... }</code><br>
+      بعض الواجهات ترجع <code class="inline">"data"</code> وبعضها مفتاح خاص بالمورد مثل <code class="inline">"products"</code> أو <code class="inline">"user"</code>.</td>
+    </tr>
+    <tr>
+      <td>❌ خطأ<br><span class="en">Error</span></td>
+      <td><code class="inline">{ "success": false, "error": { "status": "fail", "statusCode": 400, "message": "..." } }</code><br>
+      وبعض الواجهات ترجع: <code class="inline">{ "success": false, "message": "..." }</code></td>
+    </tr>
+  </table>
+  <table>
+    <tr><th>الكود / Code</th><th>المعنى / Meaning</th></tr>
+    <tr><td>200</td><td>نجاح / OK</td></tr>
+    <tr><td>201</td><td>تم الإنشاء / Created</td></tr>
+    <tr><td>400</td><td>طلب خاطئ أو بيانات ناقصة / Bad request</td></tr>
+    <tr><td>401</td><td>غير مسجّل الدخول / Unauthorized</td></tr>
+    <tr><td>403</td><td>ليس لديك صلاحية (مثلاً أدمن فقط) / Forbidden</td></tr>
+    <tr><td>404</td><td>غير موجود / Not found</td></tr>
+    <tr><td>409</td><td>تعارض (مثل دفع مُعاد محاولته) / Conflict</td></tr>
+    <tr><td>500</td><td>خطأ في الخادم / Server error</td></tr>
+  </table>
+</div>
+
+<div class="box">
+  <h3>📄 الترقيم / Pagination</h3>
+  <p>بعض القوائم تدعم <code class="inline">?page=</code> (افتراضي 1) و <code class="inline">?limit=</code>. المنتجات ترجع أيضاً <code class="inline">"total"</code> (عدد الكلي) و <code class="inline">"page"</code>.</p>
+  <p class="ar" dir="rtl">ملاحظة: عند رجوع قائمة <strong>فارغة</strong> من بعض واجهات التصنيفات/المنتجات قد يرجع 404 بدلاً من مصفوفة فارغة — هذا سلوك معروف في الواجهات المبنية بـ factory.</p>
+  <pre>GET /products?page=2&amp;limit=10&amp;sort=price_asc</pre>
+</div>
+
+<!-- ============ TOC ============ -->
+<nav class="toc">
+  <h2>📑 جدول المحتويات / Table of Contents</h2>
+  <ul>
+    <li><a href="#health">🧪 Health · صحة الخادم</a></li>
+    <li><a href="#auth">🔐 Auth · الحساب (8)</a></li>
+    <li><a href="#categories">📁 Categories · التصنيفات (5)</a></li>
+    <li><a href="#subcategories">📂 Sub-Categories · التصنيفات الفرعية (5)</a></li>
+    <li><a href="#brands">🏷️ Brands · الماركات (5)</a></li>
+    <li><a href="#products">📦 Products · المنتجات (5)</a></li>
+    <li><a href="#users">👥 Users · المستخدمون (5)</a></li>
+    <li><a href="#reviews">⭐ Reviews · التقييمات (6)</a></li>
+    <li><a href="#coupons">🎟️ Coupons · الكوبونات (4)</a></li>
+    <li><a href="#cart">🛒 Cart · السلة (7)</a></li>
+    <li><a href="#orders">🧾 Orders · الطلبات (5)</a></li>
+    <li><a href="#addresses">📍 Addresses · العناوين (4)</a></li>
+    <li><a href="#wishlist">💜 Wishlist · المفضلة (3)</a></li>
+    <li><a href="#payments">💳 Payments · الدفع (5)</a></li>
+  </ul>
+</nav>
+
+<!-- ============ HEALTH ============ -->
+<h2 class="res" id="health">🧪 Health <span class="en">· صحة الخادم</span></h2>
+<div class="res-intro">فحص سريع أن الخادم يعمل. / Quick check that the server is alive.</div>
+
+<section class="ep">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc">
+    <div class="ar">يعيد نصاً بسيطاً للتأكد أن الخادم شغّال.</div>
+    <div class="en">Returns a plain text to confirm the server is running.</div>
+  </div>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <pre>welcome !</pre>
+    </div>
+  </details>
+</section>
+
+<!-- ============ AUTH ============ -->
+<h2 class="res" id="auth">🔐 Auth <span class="en">· الحسابات والمصادقة</span></h2>
+<div class="res-intro">
+  التسجيل، الدخول، الملف الشخصي، واستعادة كلمة المرور. التوكن يُرسل كوكي اسمه <code class="inline">token</code> لمدة 30 يوم.<br>
+  Sign up, login, profile and password recovery. The JWT is set as a <code class="inline">token</code> cookie valid for 30 days.
+</div>
+
+<section class="ep" id="post-auth-signup">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/auth/signup</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc">
+    <div class="ar">إنشاء حساب جديد. عند النجاح تُصدر كوكي التوكن تلقائياً.</div>
+    <div class="en">Create a new account. On success the <code class="inline">token</code> cookie is set automatically.</div>
+  </div>
+  <details open>
+    <summary>📥 Input · المدخلات (JSON body)</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>full_name</code></td><td>string</td><td class="req">✔</td><td class="ar-cell">3 أحرف على الأقل</td></tr>
+        <tr><td><code>email</code></td><td>string</td><td class="req">✔</td><td>valid email, unique</td></tr>
+        <tr><td><code>phone</code></td><td>string</td><td class="req">✔</td><td>9–20 رقم، يقبل + في البداية</td></tr>
+        <tr><td><code>password</code></td><td>string</td><td class="req">✔</td><td class="ar-cell">6+ أحرف، وتشمل حرف كبير + صغير + رقم + رمز خاص</td></tr>
+      </table>
+      <div class="label">مثال الطلب / Request example</div>
+      <pre>{
+  "full_name": "أحمد محمد",
+  "email": "ahmed@example.com",
+  "phone": "+966501234567",
+  "password": "Secret1!"
+}</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 201 Created</div>
+      <pre>{
+  "success": true,
+  "message": "user created successfully",
+  "user": {
+    "user_id": "3f1c9a2e-....",
+    "full_name": "أحمد محمد",
+    "email": "ahmed@example.com",
+    "phone": "+966501234567",
+    "role": "customer",
+    "is_active": true,
+    "created_at": "2026-02-20T10:00:00.000Z"
+  }
+}</pre>
+      <div class="label">❌ 400 — بريد مكرر / duplicate email</div>
+      <pre>{ "success": false, "message": "email or password is wrong" }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="post-auth-login">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/auth/login</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc">
+    <div class="ar">تسجيل الدخول. عند النجاح تُصدر كوكي التوكن.</div>
+    <div class="en">Login. On success the <code class="inline">token</code> cookie is set.</div>
+  </div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th></tr>
+        <tr><td><code>email</code></td><td>string</td><td class="req">✔</td></tr>
+        <tr><td><code>password</code></td><td>string</td><td class="req">✔</td></tr>
+      </table>
+      <pre>{ "email": "ahmed@example.com", "password": "Secret1!" }</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 200 OK</div>
+      <pre>{
+  "success": true,
+  "message": "logged in successfully",
+  "user": {
+    "user_id": "3f1c9a2e-....",
+    "full_name": "أحمد محمد",
+    "email": "ahmed@example.com",
+    "phone": "+966501234567",
+    "role": "customer",
+    "is_active": true
+  }
+}</pre>
+      <div class="label">❌ 400 — بيانات خاطئة / wrong credentials</div>
+      <pre>{ "success": false, "message": "email or password is wrong" }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-auth-me">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/auth/me</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc">
+    <div class="ar">إرجاع بيانات المستخدم الحالي (بناءً على كوكي التوكن).</div>
+    <div class="en">Return the current logged-in user (from the token cookie).</div>
+  </div>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 200 OK</div>
+      <pre>{
+  "success": true,
+  "user": {
+    "user_id": "3f1c9a2e-....",
+    "full_name": "أحمد محمد",
+    "email": "ahmed@example.com",
+    "phone": "+966501234567",
+    "role": "customer",
+    "is_active": true,
+    "created_at": "2026-02-20T10:00:00.000Z"
+  }
+}</pre>
+      <div class="label">❌ 401 — بدون كوكي / no token</div>
+      <pre>{ "success": false, "message": "Not authorized, No token" }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="patch-auth-me">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/auth/me</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc">
+    <div class="ar">تحديث الاسم والبريد والهاتف للمستخدم الحالي. جميع الحقول مطلوبة.</div>
+    <div class="en">Update the current user's name, email and phone. All fields are required.</div>
+  </div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>full_name</code></td><td>string</td><td class="req">✔</td><td>3–150</td></tr>
+        <tr><td><code>email</code></td><td>string</td><td class="req">✔</td><td>valid email</td></tr>
+        <tr><td><code>phone</code></td><td>string</td><td class="req">✔</td><td>7–20</td></tr>
+      </table>
+      <pre>{ "full_name": "أحمد العتيبي", "email": "new@example.com", "phone": "0501234567" }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="post-auth-logout">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/auth/logout</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc">
+    <div class="ar">حذف كوكي التوكن (تسجيل الخروج).</div>
+    <div class="en">Clear the token cookie (logout).</div>
+  </div>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body"><pre>{ "success": true, "message": "logged out successfully" }</pre></div>
+  </details>
+</section>
+
+<section class="ep" id="post-auth-forgot">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/auth/forgot-password</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc">
+    <div class="ar">إرسال كود إعادة تعيين (6 أرقام) إلى بريد المستخدم عبر الإيميل. الكود صالح 10 دقائق.</div>
+    <div class="en">Send a 6-digit password-reset code to the user's email. The code expires in 10 minutes.</div>
+  </div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table><tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th></tr>
+      <tr><td><code>email</code></td><td>string</td><td class="req">✔</td></tr></table>
+      <pre>{ "email": "ahmed@example.com" }</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 200 OK — (تم إرسال الكود)</div>
+      <pre>{ "success": true, "message": "..." }</pre>
+      <div class="label">❌ 400 — بريد غير مسجل / unknown email</div>
+      <pre>{ "success": false, "message": "something email wrong" }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="post-auth-verify">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/auth/verify-reset-code</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc">
+    <div class="ar">التحقق من صحة كود إعادة التعيين قبل تغيير كلمة المرور.</div>
+    <div class="en">Verify the reset code before changing the password.</div>
+  </div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th></tr>
+        <tr><td><code>email</code></td><td>string</td><td class="req">✔</td></tr>
+        <tr><td><code>resetCode</code></td><td>string</td><td class="req">✔ — 6 خانات</td></tr>
+      </table>
+      <pre>{ "email": "ahmed@example.com", "resetCode": "483920" }</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 200 OK</div><pre>{ "success": true, "message": "rest code is valid" }</pre>
+      <div class="label">❌ 400 — كود خاطئ أو منتهي / wrong or expired code</div><pre>{ "success": false, "message": "..." }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="post-auth-reset">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/auth/reset-password</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc">
+    <div class="ar">تعيين كلمة مرور جديدة باستخدام كود التحقق.</div>
+    <div class="en">Set a new password using the verified reset code.</div>
+  </div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>email</code></td><td>string</td><td class="req">✔</td><td>valid email</td></tr>
+        <tr><td><code>password</code></td><td>string</td><td class="req">✔</td><td class="ar-cell">نفس قواعد قوة كلمة المرور</td></tr>
+        <tr><td><code>resetCode</code></td><td>string</td><td class="req">✔</td><td>6 خانات</td></tr>
+      </table>
+      <pre>{ "email": "ahmed@example.com", "password": "NewPass1!", "resetCode": "483920" }</pre>
+    </div>
+  </details>
+</section>
+
+<!-- ============ CATEGORIES ============ -->
+<h2 class="res" id="categories">📁 Categories <span class="en">· التصنيفات</span></h2>
+<div class="res-intro">
+  التصنيفات الرئيسية. الإنشاء/التعديل/الحذف للـ أدمن فقط. الترقيم مدعوم في القوائم.<br>
+  Main categories. Create/update/delete are admin-only. The list supports pagination.
+</div>
+
+<section class="ep" id="post-categories">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/categories</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">إنشاء تصنيف جديد. السلاجم (slug) يُولَّد تلقائياً من الاسم الإنجليزي.</div><div class="en">Create a category. The slug is auto-generated from the English name.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>name_ar</code></td><td>string</td><td class="req">✔</td><td>3–100</td></tr>
+        <tr><td><code>name_en</code></td><td>string</td><td class="req">✔</td><td>3–100</td></tr>
+        <tr><td><code>image_url</code></td><td>string</td><td class="req">✔</td><td>≤ 500 حرف (رابط صورة)</td></tr>
+      </table>
+      <pre>{ "name_ar": "شاشات", "name_en": "Monitors", "image_url": "https://cdn.example.com/monitors.jpg" }</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 201 Created</div>
+      <pre>{
+  "success": true,
+  "results": 1,
+  "category": {
+    "category_id": 12,
+    "category_name_ar": "شاشات",
+    "category_name_en": "Monitors",
+    "category_slug": "monitors",
+    "image_url": "https://cdn.example.com/monitors.jpg"
+  }
+}</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-categories">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/categories</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc"><div class="ar">قائمة التصنيفات مع التصنيفات الفرعية داخل كل تصنيف. يدعم <code class="inline">?page=</code> (افتراضي 1) و <code class="inline">?limit=</code> (افتراضي 10).</div><div class="en">List categories with nested sub-categories. Supports <code class="inline">?page=</code> (default 1) and <code class="inline">?limit=</code> (default 10).</div></div>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <pre>GET /categories?page=1&amp;limit=5</pre>
+      <pre>{
+  "success": true,
+  "results": 2,
+  "categories": [
+    {
+      "category_id": 12,
+      "category_name_ar": "شاشات",
+      "category_name_en": "Monitors",
+      "category_slug": "monitors",
+      "image_url": "https://cdn.example.com/monitors.jpg",
+      "subcategories": [
+        { "sub_category_id": 3, "name_ar": "شاشات ألعاب", "name_en": "Gaming Monitors", "slug": "gaming-monitors" }
+      ]
+    }
+  ]
+}</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-categories-id">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/categories/:id</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc"><div class="ar">تصنيف واحد بالرقم (category_id رقمي).</div><div class="en">Single category by numeric id.</div></div>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <pre>{ "success": true, "results": 1, "category": { "category_id": 12, "category_name_ar": "شاشات", "category_name_en": "Monitors", "category_slug": "monitors", "image_url": "...", "subcategories": [] } }</pre>
+      <div class="label">❌ 404</div><pre>{ "success": false, "error": { "status": "fail", "statusCode": 404, "message": "Category not found" } }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="patch-categories-id">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/categories/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">تحديث أجزاء من التصنيف — أرسل فقط ما تريد تغييره (الحقول اختيارية كلها).</div><div class="en">Partial update — send only the fields you want to change (all optional).</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <pre>{ "name_en": "Gaming Monitors", "image_url": "https://cdn.example.com/new.jpg" }</pre>
+      <p class="ar" dir="rtl">إذا غيّرت <code class="inline">name_en</code> فإن الـ slug يُحدَّث تلقائياً.</p>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="delete-categories-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/categories/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">حذف تصنيف.</div><div class="en">Delete a category.</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{ "success": true, "results": 1, "category": { ... } }</pre>
+  </div></details>
+</section>
+
+<!-- ============ SUB-CATEGORIES ============ -->
+<h2 class="res" id="subcategories">📂 Sub-Categories <span class="en">· التصنيفات الفرعية</span></h2>
+<div class="res-intro">تصنيفات فرعية تابعة لتصنيف رئيسي. قوائمها تتطلب تسجيل دخول (أي مستخدم)، والإنشاء/التعديل/الحذف أدمن فقط. / Sub-categories belong to a main category. Listing requires login; create/update/delete are admin-only.</div>
+
+<section class="ep" id="post-subcategories">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/sub-categories</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">إنشاء تصنيف فرعي.</div><div class="en">Create a sub-category.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>name_ar</code></td><td>string</td><td class="req">✔</td><td>3–100</td></tr>
+        <tr><td><code>name_en</code></td><td>string</td><td class="req">✔</td><td>3–100</td></tr>
+        <tr><td><code>category_id</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">رقم التصنيف الأب</td></tr>
+      </table>
+      <pre>{ "name_ar": "شاشات ألعاب", "name_en": "Gaming Monitors", "category_id": 12 }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-subcategories">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/sub-categories</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">كل التصنيفات الفرعية (بدون ترقيم).</div><div class="en">All sub-categories (no pagination).</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "subCategories": [
+    { "sub_category_id": 3, "subcategory_name": "شاشات ألعاب", "category_id": 12, "category_name": "Monitors" }
+  ]
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-subcategories-id">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/sub-categories/:id</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">تصنيف فرعي واحد.</div><div class="en">Single sub-category.</div></div>
+</section>
+
+<section class="ep" id="patch-subcategories-id">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/sub-categories/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">تحديث أجزاء — الحقول الاختيارية: <code class="inline">name_ar</code>, <code class="inline">name_en</code>, <code class="inline">category_id</code>.</div><div class="en">Partial update — optional fields: <code class="inline">name_ar</code>, <code class="inline">name_en</code>, <code class="inline">category_id</code>.</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "name_en": "4K Monitors" }</pre></div></details>
+</section>
+
+<section class="ep" id="delete-subcategories-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/sub-categories/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">حذف تصنيف فرعي.</div><div class="en">Delete a sub-category.</div></div>
+</section>
+
+<!-- ============ BRANDS ============ -->
+<h2 class="res" id="brands">🏷️ Brands <span class="en">· الماركات</span></h2>
+<div class="res-intro">ماركات المنتجات. القوائم عامة، والتعديل أدمن فقط، بدون ترقيم. / Product brands. Listing is public, mutations are admin-only, no pagination.</div>
+
+<section class="ep" id="post-brands">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/brands</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">إنشاء ماركة.</div><div class="en">Create a brand.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>name</code></td><td>string</td><td class="req">✔</td><td>3–100</td></tr>
+        <tr><td><code>logo_url</code></td><td>string</td><td class="req">✔</td><td>≤ 255</td></tr>
+      </table>
+      <pre>{ "name": "Samsung", "logo_url": "https://cdn.example.com/samsung.png" }</pre>
+    </div>
+  </details>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true, "results": 1,
+  "brand": { "brand_id": 5, "name": "Samsung", "slug": "samsung", "logo_url": "https://cdn.example.com/samsung.png" }
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-brands">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/brands</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc"><div class="ar">كل الماركات.</div><div class="en">All brands.</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{ "success": true, "brands": [ { "brand_id": 5, "name": "Samsung", "slug": "samsung", "logo_url": "..." } ] }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-brands-id">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/brands/:id</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc"><div class="ar">ماركة واحدة.</div><div class="en">Single brand.</div></div>
+</section>
+
+<section class="ep" id="patch-brands-id">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/brands/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">تحديث أجزاء — الحقول الاختيارية: <code class="inline">name</code>, <code class="inline">slug</code>, <code class="inline">logo_url</code>.</div><div class="en">Partial update — optional: <code class="inline">name</code>, <code class="inline">slug</code>, <code class="inline">logo_url</code>.</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "logo_url": "https://cdn.example.com/samsung-v2.png" }</pre></div></details>
+</section>
+
+<section class="ep" id="delete-brands-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/brands/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">حذف ماركة.</div><div class="en">Delete a brand.</div></div>
+</section>
+
+<!-- ============ PRODUCTS ============ -->
+<h2 class="res" id="products">📦 Products <span class="en">· المنتجات</span></h2>
+<div class="res-intro">
+  المنتجات مع الصور والفلاتر. الإنشاء/التعديل/الحذف أدمن فقط.<br>
+  Products with images and rich filters. Create/update/delete are admin-only.
+</div>
+
+<section class="ep" id="post-products">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/products</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">إنشاء منتج. يتحقق من وجود التصنيف والماركة، ومن أن التصنيف الفرعي ينتمي للتصنيف المحدد.</div><div class="en">Create a product. Validates that the category &amp; brand exist and the sub-category belongs to the category.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>sku</code></td><td>string</td><td class="req">✔</td><td>3–50</td></tr>
+        <tr><td><code>name</code></td><td>string</td><td class="req">✔</td><td>3–255</td></tr>
+        <tr><td><code>description_ar</code></td><td>string</td><td class="req">✔</td><td>3–255</td></tr>
+        <tr><td><code>description_en</code></td><td>string</td><td class="req">✔</td><td>3–255</td></tr>
+        <tr><td><code>specs_ar</code></td><td>string</td><td class="req">✔</td><td>3–255</td></tr>
+        <tr><td><code>specs_en</code></td><td>string</td><td class="req">✔</td><td>3–255</td></tr>
+        <tr><td><code>category_id</code></td><td>number</td><td class="req">✔</td><td>&gt; 0</td></tr>
+        <tr><td><code>sub_category_id</code></td><td>number</td><td class="opt">اختياري</td><td>&gt; 0</td></tr>
+        <tr><td><code>brand_id</code></td><td>number</td><td class="req">✔</td><td>&gt; 0</td></tr>
+        <tr><td><code>price</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">موجب</td></tr>
+        <tr><td><code>discount_price</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">موجب</td></tr>
+        <tr><td><code>currency</code></td><td>string</td><td class="opt">اختياري</td><td>3 حروف — افتراضي <code>USD</code></td></tr>
+        <tr><td><code>stock_quantity</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">≥ 0</td></tr>
+        <tr><td><code>is_featured</code></td><td>boolean</td><td class="opt">اختياري</td><td>افتراضي false</td></tr>
+        <tr><td><code>images</code></td><td>array</td><td class="req">✔</td><td class="ar-cell">كل عنصر: <code>image_url</code> (≤500)، <code>is_primary</code> (افتراضي false)، <code>sort_order</code> (افتراضي 0)</td></tr>
+      </table>
+      <div class="label">مثال طلب كامل / Full request example</div>
+      <pre>{
+  "sku": "GPU-RTX4090-OC",
+  "name": "ASUS ROG RTX 4090 OC",
+  "description_ar": "كرت شاشة احترافي للألعاب والتصميم",
+  "description_en": "Professional gaming &amp; design GPU",
+  "specs_ar": "ذاكرة 24GB GDDR6X",
+  "specs_en": "24GB GDDR6X memory",
+  "category_id": 12,
+  "sub_category_id": 3,
+  "brand_id": 5,
+  "price": 1999,
+  "discount_price": 1849,
+  "currency": "USD",
+  "stock_quantity": 25,
+  "is_featured": true,
+  "images": [
+    { "image_url": "https://cdn.example.com/gpu-1.jpg", "is_primary": true, "sort_order": 0 },
+    { "image_url": "https://cdn.example.com/gpu-2.jpg", "is_primary": false, "sort_order": 1 }
+  ]
+}</pre>
+    </div>
+  </details>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <div class="label">✅ 201 Created</div>
+    <pre>{ "success": true, "results": 1, "product": { "product_id": "a1b2c3d4-....", "sku": "GPU-RTX4090-OC", "name": "ASUS ROG RTX 4090 OC", ... } }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-products">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/products</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc"><div class="ar">قائمة المنتجات مع فلاتر قوية وترتيب وترقيم.</div><div class="en">Product list with powerful filters, sorting and pagination.</div></div>
+  <details open>
+    <summary>📥 Input · معاملات الاستعلام Query Params</summary>
+    <div class="body">
+      <table>
+        <tr><th>المعامل Param</th><th>النوع Type</th><th>الشرح Description</th></tr>
+        <tr><td><code>page</code></td><td>number</td><td class="ar-cell">الصفحة — افتراضي 1</td></tr>
+        <tr><td><code>limit</code></td><td>number</td><td class="ar-cell">عدد العناصر — افتراضي 20</td></tr>
+        <tr><td><code>search</code></td><td>string</td><td class="ar-cell">بحث في اسم المنتج (جزئي)</td></tr>
+        <tr><td><code>category</code></td><td>string/number</td><td class="ar-cell">رقم ID أو اسم التصنيف بالضبط (يبحث في name_en)</td></tr>
+        <tr><td><code>subcategory</code></td><td>string/number</td><td class="ar-cell">رقم ID أو اسم التصنيف الفرعي</td></tr>
+        <tr><td><code>brand</code></td><td>string/number</td><td class="ar-cell">رقم ID أو اسم الماركة</td></tr>
+        <tr><td><code>minPrice</code></td><td>number</td><td class="ar-cell">أقل سعر</td></tr>
+        <tr><td><code>maxPrice</code></td><td>number</td><td class="ar-cell">أعلى سعر</td></tr>
+        <tr><td><code>sort</code></td><td>string</td><td class="ar-cell"><code>price_asc</code> أو <code>price_desc</code> أو <code>newest</code> (افتراضي) أو <code>oldest</code></td></tr>
+      </table>
+      <pre>GET /products?category=Monitors&amp;brand=Samsung&amp;minPrice=100&amp;maxPrice=900&amp;sort=price_asc&amp;page=1&amp;limit=10</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <pre>{
+  "success": true,
+  "results": 1,
+  "total": 34,
+  "page": 1,
+  "products": [
+    {
+      "product_id": "a1b2c3d4-....",
+      "sku": "MON-SAMS-32",
+      "name": "Samsung 32&quot; Odyssey G7",
+      "price": 499,
+      "discount_price": 449,
+      "currency": "USD",
+      "stock_quantity": 18,
+      "rating_avg": 4.5,
+      "rating_count": 12,
+      "category_name": "Monitors",
+      "category_image_url": "https://cdn.example.com/monitors.jpg",
+      "brand_name": "Samsung",
+      "image_url": "https://cdn.example.com/g7-1.jpg",
+      "images": [
+        { "image_id": 1, "product_id": "a1b2c3d4-...", "image_url": "https://cdn.example.com/g7-1.jpg", "is_primary": true, "sort_order": 0 }
+      ]
+    }
+  ]
+}</pre>
+      <div class="label">❌ 404 — فلتر يشير لاسم غير موجود / filter name does not exist</div>
+      <pre>{ "success": false, "error": { "status": "fail", "statusCode": 404, "message": "Category not found" } }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-products-id">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/products/:id</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc"><div class="ar">منتج واحد بالـ UUID مع كل صوره وأسماء التصنيف والماركة.</div><div class="en">Single product by UUID with its images, category and brand names.</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{ "success": true, "results": 1, "product": { "product_id": "a1b2c3d4-...", "name": "Samsung 32&quot; Odyssey G7", "category_name": "Monitors", "brand_name": "Samsung", "images": [ ... ] } }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="patch-products-id">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/products/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">تحديث أجزاء — أرسل فقط الحقول المطلوبة. إذا أرسلت <code class="inline">images</code> تُحذف الصور القديمة وتُدرج الجديدة.</div><div class="en">Partial update — send only what you want. If you send <code class="inline">images</code>, old images are replaced.</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body">
+    <pre>{ "discount_price": 1699, "stock_quantity": 7 }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="delete-products-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/products/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">حذف منتج.</div><div class="en">Delete a product.</div></div>
+</section>
+
+<!-- ============ USERS ============ -->
+<h2 class="res" id="users">👥 Users <span class="en">· إدارة المستخدمين (أدمن)</span></h2>
+<div class="res-intro">كل هذه الواجهات للـ أدمن فقط. / All of these endpoints are admin-only.</div>
+
+<section class="ep" id="post-users">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/users</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">إنشاء مستخدم من لوحة الإدارة.</div><div class="en">Create a user from the admin panel.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>full_name</code></td><td>string</td><td class="req">✔</td><td>≥ 3</td></tr>
+        <tr><td><code>email</code></td><td>string</td><td class="req">✔</td><td>valid email</td></tr>
+        <tr><td><code>phone</code></td><td>string</td><td class="req">✔</td><td>≥ 11</td></tr>
+        <tr><td><code>password</code></td><td>string</td><td class="req">✔</td><td class="ar-cell">≥ 6 ويتضمن رمزاً خاصاً</td></tr>
+      </table>
+      <pre>{ "full_name": "موظف الدعم", "email": "support@example.com", "phone": "0500000000", "password": "Support1!" }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-users">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/users</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">قائمة المستخدمين — تدعم <code class="inline">?page=</code> (افتراضي 1) و <code class="inline">?limit=</code> (افتراضي 10). لا ترجع كلمة المرور.</div><div class="en">List users — supports <code class="inline">?page=</code> (default 1) and <code class="inline">?limit=</code> (default 10). Password is never returned.</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "results": 2,
+  "users": [
+    { "user_id": "3f1c9a2e-...", "full_name": "أحمد محمد", "email": "ahmed@example.com", "phone": "+966501234567", "role": "customer", "is_active": true, "created_at": "..." }
+  ]
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-users-id">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/users/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">مستخدم واحد بالكامل.</div><div class="en">Single user.</div></div>
+</section>
+
+<section class="ep" id="patch-users-id">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/users/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">تحديث أجزاء — الحقول الاختيارية: <code class="inline">full_name</code>, <code class="inline">email</code>, <code class="inline">phone</code>, <code class="inline">password</code>.</div><div class="en">Partial update — optional fields: <code class="inline">full_name</code>, <code class="inline">email</code>, <code class="inline">phone</code>, <code class="inline">password</code>.</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "phone": "0511111111" }</pre></div></details>
+</section>
+
+<section class="ep" id="delete-users-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/users/:id</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">حذف مستخدم.</div><div class="en">Delete a user.</div></div>
+</section>
+
+<!-- ============ REVIEWS ============ -->
+<h2 class="res" id="reviews">⭐ Reviews <span class="en">· التقييمات</span></h2>
+<div class="res-intro">
+  تقييمات المنتجات. المستخدم يستطيع تقييم منتج مرة واحدة فقط. التقييم يتطلب تسجيل دخول.<br>
+  Product reviews. One review per user per product. Creating requires login.
+</div>
+
+<section class="ep" id="post-reviews">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/reviews</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">إضافة تقييم لمنتج. ممنوع التكرار لنفس المنتج.</div><div class="en">Add a review for a product. Duplicates for the same product are rejected.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>product_id</code></td><td>string (UUID)</td><td class="req">✔</td><td class="ar-cell">رقم المنتج</td></tr>
+        <tr><td><code>customerName</code></td><td>string</td><td class="req">✔</td><td>≥ 2</td></tr>
+        <tr><td><code>rating</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">من 1 إلى 5</td></tr>
+        <tr><td><code>comment</code></td><td>string</td><td class="req">✔</td><td>≥ 3</td></tr>
+      </table>
+      <pre>{
+  "product_id": "a1b2c3d4-....",
+  "customerName": "أحمد",
+  "rating": 5,
+  "comment": "منتج ممتاز وسرعة التوصيل عالية"
+}</pre>
+    </div>
+  </details>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <div class="label">✅ 200 OK</div>
+    <pre>{
+  "success": true,
+  "message": "...",
+  "data": {
+    "review_id": 42,
+    "product_id": "a1b2c3d4-...",
+    "user_id": "3f1c9a2e-...",
+    "customer_name": "أحمد",
+    "rating": 5,
+    "comment": "منتج ممتاز وسرعة التوصيل عالية",
+    "review_date": "2026-02-20T12:00:00.000Z"
+  }
+}</pre>
+    <div class="label">❌ 400 — مقيّم مسبقاً / already reviewed</div>
+    <pre>{ "success": false, "error": { "status": "fail", "statusCode": 400, "message": "Review already exists" } }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-reviews-product-id">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/reviews/product/:id</span><span class="auth public">🔓 عام / Public</span></div>
+  <div class="desc"><div class="ar">كل تقييمات منتج معين، الأحدث أولاً.</div><div class="en">All reviews of a product, newest first.</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "reviews": [
+    { "review_id": 42, "product_id": "a1b2c3d4-...", "customer_name": "أحمد", "rating": 5, "comment": "منتج ممتاز", "review_date": "2026-02-20T12:00:00.000Z" }
+  ]
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-reviews-admin">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/reviews</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">كل التقييمات (للأدمن).</div><div class="en">All reviews (admin).</div></div>
+</section>
+
+<section class="ep" id="get-reviews-id">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/reviews/:id</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">تقييم واحد.</div><div class="en">Single review.</div></div>
+</section>
+
+<section class="ep" id="patch-reviews-id">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/reviews/:id</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">تحديث تقييم — الحقول الاختيارية: <code class="inline">rating</code> (1–5)، <code class="inline">comment</code> (≥ 3 أحرف).</div><div class="en">Update a review — optional fields: <code class="inline">rating</code> (1–5), <code class="inline">comment</code> (≥ 3 chars).</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "rating": 4, "comment": "جيد جداً بعد تحديث التجربة" }</pre></div></details>
+</section>
+
+<section class="ep" id="delete-reviews-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/reviews/:id</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">حذف تقييم.</div><div class="en">Delete a review.</div></div>
+</section>
+
+<!-- ============ COUPONS ============ -->
+<h2 class="res" id="coupons">🎟️ Coupons <span class="en">· كوبونات الخصم</span></h2>
+<div class="res-intro">
+  كوبونات الخصم تُخزَّن بأحرف كبيرة (uppercase). التحقق والاستخدام للمسجلين، والإنشاء/القائمة/الحذف أدمن فقط.<br>
+  Coupon codes are stored uppercase. Validation &amp; usage require login; create/list/delete are admin-only.
+</div>
+
+<section class="ep" id="post-coupons-validate">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/coupons/validate</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">التحقق من كوبون قبل تطبيقه — يتأكد أنه نشط، ولم يستنفد استخداماته، وضمن تاريخي الصلاحية.</div><div class="en">Check a coupon before applying — verifies it is active, not exhausted, and within its validity dates.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table><tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th></tr>
+      <tr><td><code>code</code></td><td>string</td><td class="req">✔ ≥ 1</td></tr></table>
+      <pre>{ "code": "PRO2026" }</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 200 OK</div>
+      <pre>{ "success": true, "data": { "coupon_id": "coup_1", "code": "PRO2026", "discount_type": "percentage", "discount_value": 15 } }</pre>
+      <div class="label">❌ 400 غير صالح (منتهي/معطل/مُستنفد) · ❌ 404 غير موجود</div>
+      <pre>{ "success": false, "error": { "status": "fail", "statusCode": 400, "message": "..." } }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="post-coupons">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/coupons</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">إنشاء كوبون جديد.</div><div class="en">Create a new coupon.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>code</code></td><td>string</td><td class="req">✔</td><td>3–50 — يُحوَّل تلقائياً لأحرف كبيرة</td></tr>
+        <tr><td><code>discount_type</code></td><td>string</td><td class="req">✔</td><td><code>percentage</code> أو <code>fixed</code></td></tr>
+        <tr><td><code>discount_value</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">موجب (نسبة % أو مبلغ $)</td></tr>
+        <tr><td><code>max_uses</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">أقصى عدد استخدامات</td></tr>
+        <tr><td><code>valid_from</code></td><td>string</td><td class="req">✔</td><td class="ar-cell">تاريخ البداية (YYYY-MM-DD)</td></tr>
+        <tr><td><code>valid_until</code></td><td>string</td><td class="req">✔</td><td class="ar-cell">تاريخ النهاية</td></tr>
+        <tr><td><code>is_active</code></td><td>boolean</td><td class="opt">اختياري</td><td>افتراضي true</td></tr>
+      </table>
+      <pre>{
+  "code": "SUMMER25",
+  "discount_type": "percentage",
+  "discount_value": 25,
+  "max_uses": 500,
+  "valid_from": "2026-06-01",
+  "valid_until": "2026-08-31"
+}</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-coupons">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/coupons</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">كل الكوبونات، الأحدث أولاً.</div><div class="en">All coupons, newest first.</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "data": [
+    { "coupon_id": "coup_1", "code": "PRO2026", "discount_type": "percentage", "discount_value": 15, "max_uses": 500, "used_count": 85, "valid_from": "2026-01-01", "valid_until": "2026-12-31", "is_active": true }
+  ]
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="delete-coupons-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/coupons/:couponId</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">حذف كوبون.</div><div class="en">Delete a coupon.</div></div>
+</section>
+
+<!-- ============ CART ============ -->
+<h2 class="res" id="cart">🛒 Cart <span class="en">· السلة</span></h2>
+<div class="res-intro">
+  كل واجهات السلة تتطلب تسجيل دخول. السلة تُنشأ تلقائياً عند أول طلب. السعر المعروض للمنتجات هو <code class="inline">discount_price</code>.<br>
+  All cart endpoints require login. The cart is auto-created on first access. Product price shown is the <code class="inline">discount_price</code>.
+</div>
+
+<section class="ep" id="get-cart">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/cart</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">جلب السلة الحالية (يُنشئها إذا لم تكن موجودة).</div><div class="en">Get my cart (creates it if missing).</div></div>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <pre>{
+  "success": true,
+  "message": "...",
+  "data": {
+    "cart_id": "cart_1",
+    "items": [
+      {
+        "cart_item_id": "ci_1",
+        "quantity": 2,
+        "added_at": "2026-02-20T10:00:00.000Z",
+        "product_id": "a1b2c3d4-...",
+        "product_name": "Samsung Galaxy S24 Ultra",
+        "product_price": 1114,
+        "product_image": "https://cdn.example.com/s24.jpg",
+        "product_images": [ ... ],
+        "category_image_url": "https://cdn.example.com/phones.jpg",
+        "total_item_price": 2228
+      }
+    ],
+    "total_items": 2,
+    "subtotal": 2228,
+    "applied_coupon": null
+  }
+}</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="post-cart-items">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/cart/items</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">إضافة منتج للسلة — إذا كان موجوداً تُزداد كميته.</div><div class="en">Add a product to the cart — if it already exists, its quantity is incremented.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>productId</code></td><td>string (UUID)</td><td class="req">✔</td><td class="ar-cell">ملاحظة: بالإنجليزية productId وليس product_id</td></tr>
+        <tr><td><code>quantity</code></td><td>number</td><td class="req">✔</td><td class="ar-cell">موجب</td></tr>
+      </table>
+      <pre>{ "productId": "a1b2c3d4-....", "quantity": 1 }</pre>
+    </div>
+  </details>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <div class="label">✅ 200 OK — صف السلة بعد الإضافة</div>
+    <pre>{ "success": true, "data": { "cart_item_id": "ci_1", "cart_id": "cart_1", "product_id": "a1b2c3d4-...", "quantity": 1, "added_at": "..." } }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="put-cart-items-id">
+  <div class="ep-head"><span class="method PUT">PUT</span><span class="path">/cart/items/:cartItemId</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">تغيير كمية عنصر في السلة.</div><div class="en">Change the quantity of a cart item.</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "quantity": 3 }</pre></div></details>
+</section>
+
+<section class="ep" id="delete-cart-items-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/cart/items/:cartItemId</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">حذف عنصر من السلة.</div><div class="en">Remove one item from the cart.</div></div>
+</section>
+
+<section class="ep" id="delete-cart-clear">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/cart/clear</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">تفريغ السلة بالكامل (تحتفظ بالسلة نفسها).</div><div class="en">Clear all items from the cart (cart itself is kept).</div></div>
+</section>
+
+<section class="ep" id="post-cart-coupon">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/cart/coupon</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">تطبيق كوبون على السلة (يتحقق من صحته أولاً).</div><div class="en">Apply a coupon to the cart (validates it first).</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "code": "PRO2026" }</pre></div></details>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{ "success": true, "data": { "coupon_id": "coup_1", "code": "PRO2026", "discount_type": "percentage", "discount_value": 15 } }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="delete-cart-coupon">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/cart/coupon</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">إزالة الكوبون المطبق من السلة.</div><div class="en">Remove the applied coupon from the cart.</div></div>
+</section>
+
+<!-- ============ ORDERS ============ -->
+<h2 class="res" id="orders">🧾 Orders <span class="en">· الطلبات</span></h2>
+<div class="res-intro">
+  إنشاء الطلبات وعرضها وتغيير حالتها. إنشاء الطلب يخصم المخزون ويزيد عداد الكوبون في معاملة واحدة (transaction).<br>
+  Create, list and update orders. Creating an order decrements inventory and increments coupon usage in one transaction.
+</div>
+
+<section class="ep" id="post-orders">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/orders</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">إنشاء طلب من السلة الحالية. السلة لا تُفرَّغ هنا — تُفرَّغ عند تأكيد الدفع.</div><div class="en">Create an order from the current cart. The cart is NOT cleared here — it is cleared on payment confirmation.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>addressId</code></td><td>string (UUID)</td><td class="req">✔</td><td class="ar-cell">يجب أن يكون عنواناً يخص المستخدم</td></tr>
+        <tr><td><code>couponCode</code></td><td>string</td><td class="opt">اختياري</td><td class="ar-cell">احتياطي — كوبون السلة المطبّق له الأولوية</td></tr>
+        <tr><td><code>shippingFee</code></td><td>number</td><td class="opt">اختياري</td><td class="ar-cell">افتراضي 0</td></tr>
+      </table>
+      <pre>{ "addressId": "addr_1-uuid...", "shippingFee": 0 }</pre>
+      <p class="ar" dir="rtl">المعادلة: <code class="inline">subtotal</code> = مجموع العناصر · <code class="inline">discount_amount</code> = قيمة الخصم · <code class="inline">total_amount</code> = max(0, subtotal − discount + shipping).</p>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 201 Created</div>
+      <pre>{
+  "success": true,
+  "message": "...",
+  "data": {
+    "order_id": "ord_1-uuid...",
+    "order_number": "ORD-1740000000-1234",
+    "user_id": "3f1c9a2e-...",
+    "address_id": "addr_1-uuid...",
+    "subtotal": 2228,
+    "discount_amount": 334.2,
+    "shipping_fee": 0,
+    "total_amount": 1893.8,
+    "status": "pending",
+    "created_at": "..."
+  }
+}</pre>
+      <div class="label">❌ 400 — السلة فارغة / cart is empty</div>
+      <pre>{ "success": false, "error": { "status": "fail", "statusCode": 400, "message": "..." } }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-orders-my">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/orders/my-orders</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">طلباتي مع تفاصيل العناصر والعنوان، الأحدث أولاً.</div><div class="en">My orders with items and address details, newest first.</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "data": [
+    {
+      "order_id": "ord_1-uuid...",
+      "order_number": "ORD-1740000000-1234",
+      "status": "delivered",
+      "total_amount": 1893.8,
+      "created_at": "...",
+      "full_name": "أحمد محمد",
+      "phone": "0501234567",
+      "street": "طريق الملك فهد",
+      "building": "برج النخيل",
+      "city": "الرياض",
+      "country": "السعودية",
+      "items": [
+        { "order_item_id": "oi_1", "product_id": "a1b2c3d4-...", "product_name": "Samsung Galaxy S24 Ultra", "product_sku": "SGP01", "quantity": 2, "unit_price": 1114, "subtotal": 2228 }
+      ]
+    }
+  ]
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-orders-admin">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/orders</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">كل الطلبات مع اسم وبريد العميل (للأدمن).</div><div class="en">All orders with customer name &amp; email (admin).</div></div>
+</section>
+
+<section class="ep" id="patch-orders-status">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/orders/:orderId/status</span><span class="auth admin">🛡️ أدمن / Admin</span></div>
+  <div class="desc"><div class="ar">تحديث حالة الطلب.</div><div class="en">Update the order status.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table><tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القيم المسموحة Allowed</th></tr>
+      <tr><td><code>status</code></td><td>string</td><td class="req">✔</td><td><code>pending</code> · <code>processing</code> · <code>shipped</code> · <code>delivered</code> · <code>cancelled</code></td></tr></table>
+      <pre>{ "status": "shipped" }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="get-orders-invoice">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/orders/:orderId/invoice</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">فاتورة الطلب (لصاحب الطلب فقط).</div><div class="en">Order invoice (owner only).</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "data": {
+    "invoiceNumber": "INV-ORD-1740000000-1234",
+    "createdAt": "...",
+    "order": { ... }, 
+    "payment": { "method": "credit_card", "status": "paid" }
+  }
+}</pre>
+    <p class="ar" dir="rtl"><code class="inline">payment</code> قد يكون <code class="inline">null</code> إذا لم تُسجَّل دفعة بعد.</p>
+  </div></details>
+</section>
+
+<!-- ============ ADDRESSES ============ -->
+<h2 class="res" id="addresses">📍 Addresses <span class="en">· العناوين</span></h2>
+<div class="res-intro">
+  عناوين المستخدم — كلها خاصة بصاحب الحساب ومتطلبة تسجيل دخول. أول عنوان يصبح افتراضياً تلقائياً.<br>
+  User addresses — scoped to the owner and require login. The first address becomes the default automatically.
+</div>
+
+<section class="ep" id="get-addresses">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/addresses</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">عناويني (الافتراضي أولاً).</div><div class="en">My addresses (default first).</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "data": [
+    {
+      "address_id": "addr_1-uuid...",
+      "label": "المنزل",
+      "full_name": "أحمد محمد",
+      "phone": "0501234567",
+      "country": "السعودية",
+      "city": "الرياض",
+      "street": "طريق الملك فهد",
+      "building": "برج النخيل، شقة 104",
+      "is_default": true,
+      "created_at": "..."
+    }
+  ]
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="post-addresses">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/addresses</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">إضافة عنوان جديد.</div><div class="en">Add a new address.</div></div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القاعدة Rule</th></tr>
+        <tr><td><code>label</code></td><td>string</td><td class="opt">اختياري</td><td class="ar-cell">1–50 — إذا فارغ يصبح "المنزل"</td></tr>
+        <tr><td><code>fullName</code></td><td>string</td><td class="req">✔</td><td>2–150</td></tr>
+        <tr><td><code>phone</code></td><td>string</td><td class="req">✔</td><td>7–20</td></tr>
+        <tr><td><code>country</code></td><td>string</td><td class="req">✔</td><td>≥ 2</td></tr>
+        <tr><td><code>city</code></td><td>string</td><td class="req">✔</td><td>≥ 2</td></tr>
+        <tr><td><code>street</code></td><td>string</td><td class="req">✔</td><td>≥ 3</td></tr>
+        <tr><td><code>building</code></td><td>string</td><td class="req">✔</td><td>≥ 1</td></tr>
+        <tr><td><code>isDefault</code></td><td>boolean</td><td class="opt">اختياري</td><td>افتراضي false</td></tr>
+      </table>
+      <pre>{
+  "label": "العمل",
+  "fullName": "أحمد محمد",
+  "phone": "0501234567",
+  "country": "السعودية",
+  "city": "جدة",
+  "street": "طريق المدينة المنورة",
+  "building": "مركز الأعمال، الطابق 4"
+}</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="patch-addresses-id">
+  <div class="ep-head"><span class="method PATCH">PATCH</span><span class="path">/addresses/:addressId</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">تحديث عنوان — جميع الحقول اختيارية (نفس أسماء الحقول أعلاه).</div><div class="en">Update an address — all fields optional (same names as above).</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "city": "الدمام", "isDefault": true }</pre></div></details>
+</section>
+
+<section class="ep" id="delete-addresses-id">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/addresses/:addressId</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">حذف عنوان. إذا كان الافتراضي يصبح أحدث عنوان متبقٍ افتراضياً.</div><div class="en">Delete an address. If it was the default, the most recent remaining becomes default.</div></div>
+</section>
+
+<!-- ============ WISHLIST ============ -->
+<h2 class="res" id="wishlist">💜 Wishlist <span class="en">· المفضلة</span></h2>
+<div class="res-intro">قائمة المفضلة — تتطلب تسجيل دخول. / Wishlist — requires login.</div>
+
+<section class="ep" id="post-wishlists">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/wishlists</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">إضافة منتج للمفضلة (ممنوع التكرار).</div><div class="en">Add a product to the wishlist (no duplicates).</div></div>
+  <details open><summary>📥 Input · مثال</summary><div class="body"><pre>{ "productId": "a1b2c3d4-...." }</pre></div></details>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <div class="label">✅ 201 Created</div>
+    <pre>{ "success": true, "data": { "wishlist_id": "w_1", "user_id": "3f1c9a2e-...", "product_id": "a1b2c3d4-...", "added_at": "..." } }</pre>
+    <div class="label">❌ 400 — مضاف مسبقاً / already in wishlist</div>
+    <pre>{ "success": false, "error": { "status": "fail", "statusCode": 400, "message": "..." } }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="get-wishlists">
+  <div class="ep-head"><span class="method GET">GET</span><span class="path">/wishlists</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">مفضلتي مع بيانات كل منتج (سعر، صورة، تقييم).</div><div class="en">My wishlist with full product details (price, image, rating).</div></div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <pre>{
+  "success": true,
+  "data": [
+    {
+      "wishlist_id": "w_1",
+      "product_id": "a1b2c3d4-...",
+      "added_at": "...",
+      "product": {
+        "product_id": "a1b2c3d4-...",
+        "name": "Samsung Galaxy S24 Ultra",
+        "slug": "samsung-galaxy-s24-ultra",
+        "price": 1199,
+        "discount_price": 1114,
+        "stock_quantity": 30,
+        "rating_avg": 4.7,
+        "image_url": "https://cdn.example.com/s24.jpg",
+        "images": [ ... ]
+      }
+    }
+  ]
+}</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="delete-wishlists-productId">
+  <div class="ep-head"><span class="method DELETE">DELETE</span><span class="path">/wishlists/:productId</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc"><div class="ar">حذف منتج من المفضلة (بـ UUID المنتج).</div><div class="en">Remove a product from the wishlist (by product UUID).</div></div>
+</section>
+
+<!-- ============ PAYMENTS ============ -->
+<h2 class="res" id="payments">💳 Payments <span class="en">· الدفع</span></h2>
+<div class="res-intro">
+  الدفع بالبطاقة (Stripe) أو عند الاستلام (COD). كلها تتطلب تسجيل دخول عدا الـ webhook.<br>
+  Pay by card (Stripe) or cash on delivery (COD). All require login except the webhook.
+</div>
+
+<section class="ep" id="post-payments-process">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/payments/process</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc">
+    <div class="ar">بدء دفع لطلب. مع <strong>COD</strong>: تُسجَّل الدفعة وتُفرَّغ السلة فوراً. مع <strong>بطاقة</strong>: يُنشئ PaymentIntent ويرجع <code class="inline">clientSecret</code> لإتمام الدفع من الواجهة الأمامية عبر Stripe.</div>
+    <div class="en">Start payment for an order. <strong>COD</strong>: payment recorded as pending, cart cleared. <strong>Credit card</strong>: creates a Stripe PaymentIntent and returns <code class="inline">clientSecret</code> for the frontend to complete the payment with Stripe.</div>
+  </div>
+  <details open>
+    <summary>📥 Input · المدخلات</summary>
+    <div class="body">
+      <table>
+        <tr><th>الحقل Field</th><th>النوع Type</th><th>مطلوب Req.</th><th>القيم Allowed</th></tr>
+        <tr><td><code>orderId</code></td><td>string (UUID)</td><td class="req">✔</td><td class="ar-cell">يجب أن يكون طلباً يخص المستخدم</td></tr>
+        <tr><td><code>method</code></td><td>string</td><td class="req">✔</td><td><code>credit_card</code> أو <code>cash_on_delivery</code></td></tr>
+      </table>
+      <pre>{ "orderId": "ord_1-uuid...", "method": "credit_card" }</pre>
+    </div>
+  </details>
+  <details open>
+    <summary>📤 Output · المخرجات</summary>
+    <div class="body">
+      <div class="label">✅ 200 — بطاقة (الخطوة التالية: أكمل الدفع بـ clientSecret عبر Stripe.js)</div>
+      <pre>{
+  "success": true,
+  "message": "...",
+  "data": {
+    "clientSecret": "pi_3Nx..._secret_abc123",
+    "payment": { "payment_id": "pay_1", "order_id": "ord_1-uuid...", "method": "credit_card", "status": "pending", "amount": 1893.8, "transaction_ref": "pi_3Nx..." }
+  }
+}</pre>
+      <div class="label">✅ 201 — عند الاستلام (COD)</div>
+      <pre>{ "success": true, "data": { "payment": { "payment_id": "pay_2", "method": "cash_on_delivery", "status": "pending", "amount": 1893.8 } } }</pre>
+    </div>
+  </details>
+</section>
+
+<section class="ep" id="post-payments-confirm">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/payments/:orderId/confirm</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc">
+    <div class="ar">تأكيد دفع البطاقة بعد إتمامها في الواجهة. الخادم يتحقق من حالة الـ PaymentIntent في Stripe بنفسه (لا يثق بالعميل). يفرّغ السلة ويحوّل الطلب إلى "قيد التجهيز".</div>
+    <div class="en">Confirm a card payment after it completes in the frontend. The server re-verifies the PaymentIntent status with Stripe itself (never trusts the client). Clears the cart and sets the order to "processing".</div>
+  </div>
+  <details open><summary>📤 Output · المخرجات</summary><div class="body">
+    <div class="label">✅ 200 OK</div>
+    <pre>{ "success": true, "message": "...", "data": { "orderId": "ord_1-uuid..." } }</pre>
+    <div class="label">❌ 409 — الدفع لم ينجح في Stripe / payment not succeeded</div>
+    <pre>{ "success": false, "error": { "status": "fail", "statusCode": 409, "message": "..." } }</pre>
+  </div></details>
+</section>
+
+<section class="ep" id="post-payments-cancel">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/payments/:orderId/cancel</span><span class="auth user">🔑 تسجيل دخول / Login</span></div>
+  <div class="desc">
+    <div class="ar">إلغاء طلب لا يزال "قيد الانتظار" — يعيد المخزون، ينقص عداد الكوبون، يحذف الدفعات، ويحوّل الطلب إلى "ملغي".</div>
+    <div class="en">Cancel a still-"pending" order — restores inventory, decrements coupon usage, deletes its payments, sets the order to "cancelled".</div>
+  </div>
+</section>
+
+<section class="ep" id="post-payments-webhook">
+  <div class="ep-head"><span class="method POST">POST</span><span class="path">/payments/webhook</span><span class="auth public">🔓 Stripe فقط / Stripe</span></div>
+  <div class="desc">
+    <div class="ar">نقطة استقبال أحداث Stripe (لا تستخدم كوكي). الخادم يتحقق من توقيع <code class="inline">stripe-signature</code>. يعالج <code class="inline">payment_intent.succeeded</code> (دفع ناجح) و <code class="inline">payment_intent.payment_failed</code> (إلغاء الطلب وإعادة المخزون). يرد دائماً بـ 200.</div>
+    <div class="en">Stripe event receiver (no cookie auth). The server verifies the <code class="inline">stripe-signature</code> header. Handles <code class="inline">payment_intent.succeeded</code> (mark paid, clear cart) and <code class="inline">payment_intent.payment_failed</code> (cancel order, release stock). Always responds 200.</div>
+  </div>
+</section>
+
+<!-- ============ NOTES ============ -->
+<div class="box warn" style="margin-top:40px">
+  <h3>📌 ملاحظات مهمة / Important Notes</h3>
+  <ul>
+    <li class="ar" dir="rtl">الكوكي <code class="inline">token</code> هو وسيلة التوثيق الوحيدة — لا يوجد دعم لـ Authorization Header.</li>
+    <li>There is <strong>no</strong> <code class="inline">Authorization: Bearer</code> support — cookie only.</li>
+    <li class="ar" dir="rtl">الكوبونات تُطبَّق بأحرف كبيرة: <code class="inline">pro2026</code> و <code class="inline">PRO2026</code> متكافئان.</li>
+    <li class="ar" dir="rtl">الدفع بالبطاقة يحتاج خطوتين: <code class="inline">POST /payments/process</code> ثم إتمام الدفع بـ Stripe.js باستخدام <code class="inline">clientSecret</code> ثم <code class="inline">POST /payments/:orderId/confirm</code>.</li>
+    <li class="ar" dir="rtl">قائمة فارغة من بعض واجهات factory قد ترجع <strong>404</strong> بدلاً من مصفوفة فارغة.</li>
+    <li class="ar" dir="rtl">في الطلبات والمفضلة والسلة: معرف المنتج هو <strong>UUID</strong> وليس رقماً — وانتبه لاختلاف الاسم: <code class="inline">productId</code> (Cart/Wishlist) مقابل <code class="inline">product_id</code> (Reviews).</li>
+  </ul>
+</div>
+
+
+
+
+
+<footer>Pro-Store API Docs · توثيق API برو ستور · Generated for the backend team</footer>
+</div>
+</body>
+</html>

@@ -5,16 +5,18 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
   icon?: React.ReactNode;
+  inputId: string;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, icon, className, id, ...props }, ref) => {
-    const inputId = id || (label ? label.replace(/\s+/g, "-").toLowerCase() : undefined);
-
+  ({ label, error, icon, inputId, className, ...props }, ref) => {
     return (
       <div className="w-full flex flex-col gap-1.5 text-start">
         {label && (
-          <label htmlFor={inputId} className="text-xs font-semibold text-[#475569]">
+          <label
+            htmlFor={inputId}
+            className="text-xs font-semibold text-[#475569]"
+          >
             {label}
           </label>
         )}
@@ -31,8 +33,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               "w-full px-4 py-2.5 rounded-xl text-sm bg-white border transition-all duration-200 placeholder:text-[#94A3B8]",
               "border-black/10 focus:border-[#6AABF0] focus:ring-2 focus:ring-[#6AABF0]/20 focus:outline-none",
               icon ? "ps-10" : "",
-              error && "border-[#EF4444] bg-[#FEF2F2] focus:border-[#EF4444] focus:ring-[#EF4444]/20",
-              className
+              error &&
+                "border-[#EF4444] bg-[#FEF2F2] focus:border-[#EF4444] focus:ring-[#EF4444]/20",
+              className,
             )}
             {...props}
           />
@@ -40,7 +43,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {error && <p className="text-xs text-[#EF4444] font-medium">{error}</p>}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

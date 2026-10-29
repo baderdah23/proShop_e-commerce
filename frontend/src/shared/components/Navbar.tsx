@@ -6,23 +6,14 @@ import { usePathname } from "next/navigation";
 import {
   ShoppingBag01Icon,
   FavouriteIcon,
-  User02Icon,
   Search01Icon,
   Menu01Icon,
   Cancel01Icon,
-  Store01Icon,
 } from "hugeicons-react";
-import {
-  DEMO_USER,
-  STATIC_CART,
-  STATIC_WISHLIST,
-} from "@/shared/data/mock-data";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const cartCount = STATIC_CART.length;
-  const wishlistCount = STATIC_WISHLIST.length;
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#F8FBFF]/95 backdrop-blur-xl border-b border-[#D9E6F2] shadow-[0_6px_24px_rgba(20,32,51,0.06)]">
@@ -115,51 +106,32 @@ export function Navbar() {
           </Link>
         </nav>
 
-        {/* Actions (Wishlist Icon with badge + Cart + Profile) */}
+        {/* Actions (Wishlist + Cart + Login) */}
         <div className="flex items-center gap-2.5">
           {/* Heart / Wishlist Icon */}
           <Link
             href="/wishlist"
             aria-label="قائمة المفضلة"
-            className="relative w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#EF4444] transition-colors"
+            className="w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#EF4444] transition-colors"
           >
             <FavouriteIcon size={20} />
-            {wishlistCount > 0 && (
-              <span className="absolute -top-1 -end-1 w-4 h-4 rounded-full bg-[#EF4444] text-[10px] font-bold text-white flex items-center justify-center shadow-xs">
-                {wishlistCount}
-              </span>
-            )}
           </Link>
 
           {/* Cart Icon */}
           <Link
             href="/cart"
             aria-label="سلة المشتريات"
-            className="relative w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#2B7BD4] transition-colors"
+            className="w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#2B7BD4] transition-colors"
           >
             <ShoppingBag01Icon size={20} />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -end-1 w-4 h-4 rounded-full bg-[#6AABF0] text-[10px] font-bold text-white flex items-center justify-center shadow-xs">
-                {cartCount}
-              </span>
-            )}
           </Link>
 
-          <div className="hidden sm:flex items-center gap-2">
-            <Link
-              href="/account"
-              aria-label="الملف الشخصي"
-              className="w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#2B7BD4] transition-colors"
-            >
-              <User02Icon size={20} />
-            </Link>
-            <Link
-              href="/account"
-              className="text-xs font-bold text-[#475569] hover:text-[#2B7BD4]"
-            >
-              مرحباً، {DEMO_USER.full_name}
-            </Link>
-          </div>
+          <Link
+            href="/login"
+            className="hidden sm:inline-flex items-center justify-center h-10 px-4 rounded-xl bg-[#2B70BA] text-white text-xs font-bold shadow-[0_8px_20px_rgba(43,112,186,0.22)] hover:bg-[#205B9B] transition-colors"
+          >
+            تسجيل الدخول
+          </Link>
 
           {/* Mobile Menu Toggle */}
           <button
@@ -215,11 +187,11 @@ export function Navbar() {
             سلة المشتريات
           </Link>
           <Link
-            href="/account"
-            className="block py-2 text-sm font-medium text-[#475569] hover:text-[#2B7BD4]"
+            href="/login"
+            className="block py-2 text-sm font-bold text-[#2B7BD4]"
             onClick={() => setMobileMenuOpen(false)}
           >
-            مرحباً، {DEMO_USER.full_name}
+            تسجيل الدخول
           </Link>
         </div>
       )}

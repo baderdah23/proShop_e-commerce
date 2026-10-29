@@ -1,0 +1,20 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "sovereigneg": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "SovereignEG",
+      "options": {
+        "baseURL": "https://backend.sovereigneg.com/v1",
+        "apiKey": "sk-1c6fd79394189ec2b390317fb56f65c8"
+      },
+      "models": {
+        "SovereignEG/Qwen3.8-27B-FP8": {
+          "name": "SovereignEG/Qwen3.8-27B-FP8 (SovereignEG)",
+          "limit": { "context": 13000, "output": 100000 }
+        }
+      }
+    }
+  },
+  "model": "sovereigneg/SovereignEG/Qwen3.8-27B-FP8"
+}

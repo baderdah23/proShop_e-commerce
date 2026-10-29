@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { ProductCard } from "@/features/products/components/ProductCard";
-import { serverFetch } from "@/lib/api/server";
+import { fetchOrFallback } from "@/lib/api/fetch-or-fallback";
 import type { Brand, Category, Product } from "@/shared/types";
 import { ArrowRight01Icon, FilterIcon, Search01Icon } from "hugeicons-react";
 
@@ -137,15 +137,6 @@ export default async function ProductsPage({
       <Footer />
     </div>
   );
-}
-
-async function fetchOrFallback<T>(path: string, fallback: T): Promise<T> {
-  try {
-    return await serverFetch<T>(path);
-  } catch (error) {
-    console.error(`Failed to fetch ${path}:`, error);
-    return fallback;
-  }
 }
 
 function buildPageHref(pageNumber: number, params: SearchParams): string {

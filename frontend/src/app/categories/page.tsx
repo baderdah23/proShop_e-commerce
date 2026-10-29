@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { SpotlightCard } from "@/shared/components/SpotlightCard";
-import { serverFetch } from "@/lib/api/server";
+import { fetchOrFallback } from "@/lib/api/fetch-or-fallback";
 import type { Category } from "@/shared/types";
 import { ArrowRight01Icon, Folder01Icon } from "hugeicons-react";
 
@@ -13,14 +13,12 @@ interface CategoriesResponse {
 }
 
 export default async function CategoriesPage() {
-  let categories: Category[] = [];
-
-  try {
-    const response = await serverFetch<CategoriesResponse>("categories");
-    categories = response.categories ?? [];
-  } catch (error) {
-    console.error("Failed to fetch categories:", error);
-  }
+  // الباك-إند يعيد 10 تصنيفات افتراضياً، ونطلب 100 لعرض الكل
+  const response = await fetchOrFallback<CategoriesResponse | null>(
+    "categories?limit=100",
+    null,
+  );
+  const categories = response?.categories ?? [];
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">

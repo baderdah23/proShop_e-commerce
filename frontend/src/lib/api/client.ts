@@ -21,13 +21,20 @@ async function getErrorMessage(response: Response): Promise<string> {
   return `Request failed: ${response.status} ${response.statusText}`;
 }
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") || "";
+
 export async function clientFetch<T>(
   path: string,
   init: RequestInit = {},
 ): Promise<T> {
-  if (!path.startsWith("/") || path.startsWith("//")) {
-    throw new Error("clientFetch requires a same-origin path");
+  const isAbsolute = /^https?:\/\//i.test(path);
+
+  if (!isAbsolute && !API_BASE_URL) {
+    throw new Error("Missing NEXT_PUBLIC_API_BASE_URL in environment");
   }
+
+  const url = isAbsolute ? path : `${API_BASE_URL}/${path.replace(/^\//, "")}`;
 
   const headers = new Headers(init.headers);
 
@@ -35,10 +42,10 @@ export async function clientFetch<T>(
     headers.set("Accept", "application/json");
   }
 
-  const response = await fetch(path, {
+  const response = await fetch(url, {
     ...init,
     headers,
-    credentials: init.credentials ?? "same-origin",
+    credentials: init.credentials,
   });
 
   if (!response.ok) {

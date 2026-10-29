@@ -12,7 +12,6 @@ import { Footer } from "@/shared/components/Footer";
 import { SpotlightCard } from "@/shared/components/SpotlightCard";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { HeroSlider } from "@/features/home";
-import { STATIC_PRODUCTS } from "@/shared/data/mock-data";
 import LogoLoop, { type LogoItem } from "@/shared/components/LogoLoop";
 import {
   SiAmd,
@@ -25,7 +24,8 @@ import {
   SiRazer,
   SiStripe,
 } from "react-icons/si";
-import { serverFetch } from "@/lib/api/server";
+import { fetchOrFallback } from "@/lib/api/fetch-or-fallback";
+import type { Product } from "@/shared/types";
 
 type SubCategories = {
   sub_category_id: number;
@@ -43,19 +43,27 @@ type Category = {
   subcategories: SubCategories[];
 };
 
+type ProductsResponse = { success: boolean; products: Product[] };
+type CategoriesResponse = { success: boolean; categories: Category[] };
+
 export default async function HomePage() {
-  const featuredProductsResponse = await serverFetch(
-    "products?sort=rating_desc&page=1&limit=4",
-  );
-  const featuredProducts = featuredProductsResponse?.products || [];
+  // الطلبات الثلاثة مستقلة — موازاة عبر Promise.all بدل انتظار متتالي
+  const [featuredProductsRes, newProductsRes, categoriesRes] =
+    await Promise.all([
+      fetchOrFallback<ProductsResponse | null>(
+        "products?sort=rating_desc&page=1&limit=4",
+        null,
+      ),
+      fetchOrFallback<ProductsResponse | null>(
+        "products?sort=newest&page=1&limit=4",
+        null,
+      ),
+      fetchOrFallback<CategoriesResponse | null>("categories?limit=5", null),
+    ]);
 
-  const newProductsResponse = await serverFetch(
-    "products?sort=newest&page=1&limit=4",
-  );
-  const newProducts = newProductsResponse?.products || [];
-
-  const categories = await serverFetch("categories?limit=5");
-  const catData: Category[] = categories?.categories || [];
+  const featuredProducts = featuredProductsRes?.products ?? [];
+  const newProducts = newProductsRes?.products ?? [];
+  const catData = categoriesRes?.categories ?? [];
 
   const partnerLogos: LogoItem[] = [
     { node: <SiAmd color="#ED1C24" />, title: "AMD" },
