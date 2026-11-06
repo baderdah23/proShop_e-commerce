@@ -18,9 +18,9 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full bg-[#F8FBFF]/95 backdrop-blur-xl border-b border-[#D9E6F2] shadow-[0_6px_24px_rgba(20,32,51,0.06)]">
       {/* Top Banner */}
-      <div className="bg-[#142B45] text-white text-[12px] py-2 px-4 text-center font-medium">
+      <div className="bg-[#111111] text-white text-[12px] py-2 px-4 text-center font-medium">
         <span> شحن مجاني وسريع لكافة الطلبات فوق 100$ | كود خصم إضافي: </span>
-        <span className="font-bold underline tracking-wider text-[#AACFF0]">
+        <span className="font-bold underline tracking-wider text-[#E0E0E0]">
           PRO2026
         </span>
       </div>
@@ -28,7 +28,7 @@ export function Navbar() {
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 h-[76px] flex items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 select-none">
-          <div className="w-11 h-11 rounded-xl bg-[#2B70BA] flex items-center justify-center text-white shadow-lg shadow-[#2B70BA]/25">
+          <div className="w-11 h-11 rounded-xl bg-[#111111] flex items-center justify-center text-white shadow-lg shadow-black/20">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -128,7 +128,7 @@ export function Navbar() {
 
           <Link
             href="/login"
-            className="hidden sm:inline-flex items-center justify-center h-10 px-4 rounded-xl bg-[#2B70BA] text-white text-xs font-bold shadow-[0_8px_20px_rgba(43,112,186,0.22)] hover:bg-[#205B9B] transition-colors"
+            className="hidden sm:inline-flex items-center justify-center h-10 px-4 rounded-xl bg-[#111111] text-white text-xs font-bold shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black transition-colors"
           >
             تسجيل الدخول
           </Link>

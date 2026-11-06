@@ -19,7 +19,7 @@ export function ProductCard({ product }: ProductCardProps) {
     : 0;
 
   return (
-    <SpotlightCard className="h-full flex flex-col group p-4 border border-[#D9E6F2] hover:border-[#4F8FD8]/60 hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_24px_rgba(20,32,51,0.04)]">
+    <SpotlightCard className="h-full flex flex-col group p-4 border border-[#D9E6F2] hover:border-black/25 hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_24px_rgba(20,32,51,0.04)]">
       {/* Product Image & Badges */}
       <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-[#F8FAFC] border border-[#EAF1F8] mb-4 p-2">
         <img
@@ -90,7 +90,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Button
           variant="secondary"
           size="sm"
-          className="rounded-xl px-3 py-1.5 text-xs font-semibold gap-1.5 hover:bg-[#6AABF0] hover:text-white transition-all"
+          className="rounded-xl px-3 py-1.5 text-xs font-semibold gap-1.5 hover:bg-[#111111] hover:text-white transition-all"
         >
           <ShoppingBag01Icon size={14} />
           <span>إضافة</span>

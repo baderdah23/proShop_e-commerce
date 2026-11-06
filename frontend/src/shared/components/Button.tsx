@@ -31,9 +31,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const variantClasses = {
-      primary: "bg-[#2B70BA] text-white hover:bg-[#205B9B] font-semibold shadow-[0_8px_20px_rgba(43,112,186,0.22)] transition-colors",
-      secondary: "bg-[#EAF3FC] text-[#245F9E] hover:bg-[#D7E9FA] font-medium border border-[#BBD9F6] transition-colors",
-      outline: "border-[1.5px] border-[#4F8FD8] text-[#245F9E] bg-transparent hover:bg-[#EAF3FC] font-medium transition-colors",
+      primary: "bg-[#111111] text-white hover:bg-black font-semibold shadow-[0_8px_20px_rgba(0,0,0,0.18)] transition-colors",
+      secondary: "bg-[#F5F5F5] text-[#1A1D2A] hover:bg-[#E8E8E8] font-medium border border-[#D4D4D4] transition-colors",
+      outline: "border-[1.5px] border-[#1A1D2A] text-[#1A1D2A] bg-transparent hover:bg-[#F5F5F5] font-medium transition-colors",
       ghost: "text-[#64748B] hover:text-[#142033] hover:bg-[#EAF1F8] font-medium transition-colors",
       danger: "bg-[#EF4444] text-white hover:bg-[#DC2626] font-medium shadow-sm transition-colors",
       success: "bg-[#22C55E] text-white hover:bg-[#16A34A] font-medium shadow-sm transition-colors",

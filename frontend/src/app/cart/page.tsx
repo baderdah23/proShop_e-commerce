@@ -65,7 +65,7 @@ export default function CartPage() {
                 <div className="flex justify-between"><span>المجموع الفرعي</span><strong>{formatPrice(subtotal)}</strong></div>
                 <div className="flex justify-between"><span>الشحن</span><strong>{shipping === 0 ? "مجاني" : formatPrice(shipping)}</strong></div>
                 <div className="pt-3 border-t flex justify-between font-black"><span>الإجمالي</span><strong>{formatPrice(total)}</strong></div>
-                <Link href="/checkout" className="block text-center bg-[#2B7BD4] text-white rounded-xl py-3 font-bold text-sm">متابعة الشراء</Link>
+                <Link href="/checkout" className="block text-center bg-[#111111] hover:bg-black text-white rounded-xl py-3 font-bold text-sm transition-colors">متابعة الشراء</Link>
               </div>
             </aside>
           </div>

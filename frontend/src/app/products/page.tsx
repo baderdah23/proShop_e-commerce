@@ -197,7 +197,7 @@ function Pagination({
           <span
             key={pageNumber}
             aria-current="page"
-            className="inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-xl bg-[#2B7BD4] text-white text-xs font-bold"
+            className="inline-flex items-center justify-center min-w-9 h-9 px-2 rounded-xl bg-[#111111] text-white text-xs font-bold"
           >
             {pageNumber}
           </span>

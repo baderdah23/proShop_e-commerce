@@ -21,7 +21,7 @@ export function AdminHeader() {
         <input
           type="text"
           placeholder="ابحث عن منتج، طلب، عميل..."
-          className="w-full ps-10 pe-4 py-2 bg-[#F8FAFC] border border-black/8 rounded-xl text-xs focus:outline-none focus:border-[#6AABF0] focus:ring-2 focus:ring-[#6AABF0]/15 transition-all"
+          className="w-full ps-10 pe-4 py-2 bg-[#F8FAFC] border border-black/8 rounded-xl text-xs focus:outline-none focus:border-[#111111] focus:ring-2 focus:ring-black/10 transition-all"
         />
       </div>
 
@@ -45,13 +45,13 @@ export function AdminHeader() {
 
         {/* Admin Profile */}
         <div className="flex items-center gap-3 ps-3 border-s border-black/8">
-          <div className="w-10 h-10 rounded-xl bg-[#EEF5FC] border border-[#AACFF0]/60 flex items-center justify-center text-[#2B7BD4] font-bold">
-            <User02Icon size={20} color="#2B7BD4" />
+          <div className="w-10 h-10 rounded-xl bg-black/5 border border-black/10 flex items-center justify-center text-[#111111] font-bold">
+            <User02Icon size={20} color="#111111" />
           </div>
           <div className="text-start">
             <p className="text-xs font-bold text-[#1A1D2A] flex items-center gap-1.5">
               <span>مدير المتجر</span>
-              <Shield01Icon size={14} color="#6AABF0" />
+              <Shield01Icon size={14} color="#111111" />
             </p>
             <p className="text-[11px] text-[#64748B]">admin@pro-ecommerce.com</p>
           </div>

@@ -10,7 +10,7 @@ export default function TermsPage() {
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
         <div className="flex items-center gap-3 pb-4 border-b border-slate-200">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-black/5 text-[#111111] flex items-center justify-center">
             <File01Icon size={22} />
           </div>
           <div>

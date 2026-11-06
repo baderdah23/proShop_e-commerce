@@ -47,9 +47,11 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// Stripe webhook must receive the raw request body for signature
-// verification, so it is registered before express.json().
-app.post("/payments/webhook", express.raw({ type: "application/json" }), stripeWebhook);
+app.post(
+  "/payments/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook,
+);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("welcome !");

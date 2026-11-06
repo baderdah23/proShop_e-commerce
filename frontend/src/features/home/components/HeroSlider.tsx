@@ -2,33 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
-  PauseIcon,
-  PlayIcon,
+  FlashIcon,
+  Shield01Icon,
+  DeliveryTruck01Icon,
+  Ticket01Icon,
 } from "hugeicons-react";
 import { heroSlides } from "../config/hero-slides";
 
-const AUTOPLAY_DELAY = 5000;
+const AUTOPLAY_DELAY = 6000;
 
 export function HeroSlider() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [progressKey, setProgressKey] = useState(0);
-  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
-  const pointerStart = useRef<number | null>(null);
 
   const goToSlide = useCallback((index: number) => {
     setActiveIndex((index + heroSlides.length) % heroSlides.length);
-    setProgressKey((key) => key + 1);
   }, []);
 
   const goNext = useCallback(
@@ -49,153 +41,204 @@ export function HeroSlider() {
   const activeSlide = heroSlides[activeIndex];
 
   return (
-    <section
-      className="hero-slider relative isolate min-h-[70vh] overflow-hidden bg-[#050914] text-white lg:min-h-[85vh]"
-      aria-label="العروض المميزة"
-      tabIndex={0}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onMouseMove={(event) => {
-        const bounds = event.currentTarget.getBoundingClientRect();
-        setParallaxOffset({
-          x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 12,
-          y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 8,
-        });
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "ArrowLeft") goPrevious();
-        if (event.key === "ArrowRight") goNext();
-      }}
-      onTouchStart={(event) => {
-        pointerStart.current = event.touches[0]?.clientX ?? null;
-      }}
-      onTouchEnd={(event) => {
-        if (pointerStart.current === null) return;
-        const distance =
-          event.changedTouches[0]?.clientX - pointerStart.current;
-        if (Math.abs(distance) > 48) (distance > 0 ? goPrevious : goNext)();
-        pointerStart.current = null;
-      }}
-    >
-      {heroSlides.map((slide, index) => (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* ============================================================
+            MAIN PROMOTIONAL SLIDER (8 Cols on Desktop)
+            ============================================================ */}
         <div
-          key={slide.id}
-          className={`hero-slide absolute inset-0 transition-opacity duration-800 ease-in-out ${
-            index === activeIndex
-              ? "is-active z-10 opacity-100"
-              : "pointer-events-none opacity-0"
-          }`}
-          aria-hidden={index !== activeIndex}
+          className="lg:col-span-8 relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#18191D] via-[#101114] to-[#0A0A0C] text-white border border-white/10 shadow-lg min-h-[420px] sm:min-h-[460px] flex flex-col justify-between"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
-          <Image
-            src={slide.image}
-            alt={slide.alt}
-            fill
-            priority={index === 0}
-            loading={index === 0 ? "eager" : "lazy"}
-            sizes="100vw"
-            className="hero-slide-image object-cover"
-            style={
-              {
-                objectPosition: slide.position,
-                "--parallax-x": `${index === activeIndex ? parallaxOffset.x : 0}px`,
-                "--parallax-y": `${index === activeIndex ? parallaxOffset.y : 0}px`,
-              } as CSSProperties
-            }
+          {/* Subtle Background Pattern */}
+          <div
+            className="absolute inset-0 opacity-[0.06] pointer-events-none"
+            style={{
+              backgroundImage:
+                "radial-gradient(#ffffff 1px, transparent 1px)",
+              backgroundSize: "20px 20px",
+            }}
           />
-        </div>
-      ))}
 
-      <div className="hero-overlay absolute inset-0 z-20" />
-      <div className="absolute inset-0 z-20 bg-[radial-gradient(circle_at_72%_45%,rgba(70,150,255,0.18),transparent_34%)]" />
-
-      <div className="relative z-30 mx-auto flex min-h-[70vh] max-w-7xl items-center px-5 py-24 sm:px-8 lg:min-h-[85vh] lg:px-10">
-        <div
-          key={`${activeSlide.id}-${progressKey}`}
-          className="me-auto max-w-2xl text-start"
-        >
-          <div className="hero-content-item mb-6 inline-flex items-center gap-2 rounded-full border border-[#6AABF0]/35 bg-white/8 px-4 py-2 text-xs font-bold tracking-[0.18em] text-[#B9DCFF] backdrop-blur-md">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#6AABF0] shadow-[0_0_14px_#6AABF0]" />
-            {activeSlide.eyebrow}
+          {/* Slide Visual Background (Clean fade) */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -left-10 -bottom-10 w-80 sm:w-96 aspect-square opacity-20 sm:opacity-30 blur-2xl rounded-full bg-neutral-600" />
+            <div className="absolute left-0 bottom-0 top-0 w-full sm:w-1/2 flex items-center justify-center p-6 opacity-40 sm:opacity-90">
+              <div className="relative w-full h-full max-h-[320px]">
+                <Image
+                  src={activeSlide.image}
+                  alt={activeSlide.alt}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-contain object-center drop-shadow-2xl transition-all duration-700"
+                />
+              </div>
+            </div>
           </div>
-          <h1 className="hero-content-item text-4xl font-black leading-[1.12] tracking-[-0.03em] sm:text-6xl lg:text-7xl">
-            {activeSlide.title}
-            <span className="mt-2 block bg-linear-to-r from-[#A7D5FF] via-[#6AABF0] to-[#B69CFF] bg-clip-text text-transparent">
-              {activeSlide.titleAccent}
-            </span>
-          </h1>
-          <p className="hero-content-item mt-6 max-w-lg text-base leading-8 text-slate-200 sm:text-lg">
-            {activeSlide.subtitle}
-          </p>
-          <div className="hero-content-item mt-8 flex flex-wrap items-center gap-4">
-            <Link
-              href={activeSlide.href}
-              className="hero-primary-button group inline-flex items-center gap-3 rounded-2xl px-6 py-4 text-sm font-extrabold text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#A7D5FF]"
-            >
-              {activeSlide.cta}
-              <ArrowRight01Icon
-                size={18}
-                className="rotate-180 transition-transform group-hover:-translate-x-1"
-              />
-            </Link>
-            <span className="hero-badge rounded-full border border-white/20 bg-white/8 px-4 py-2 text-xs font-bold text-white/85 backdrop-blur-md">
-              {activeSlide.badge}
-            </span>
+
+          {/* Slide Content */}
+          <div className="relative z-10 p-6 sm:p-10 max-w-xl text-start flex-1 flex flex-col justify-center">
+            {/* Tag / Badge */}
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/15">
+                <FlashIcon size={14} className="fill-amber-400 text-amber-400" />
+                <span>{activeSlide.eyebrow}</span>
+              </span>
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#EF4444] text-white">
+                {activeSlide.badge}
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white mb-2">
+              {activeSlide.title}
+              <span className="block text-neutral-300 font-extrabold text-xl sm:text-3xl mt-1">
+                {activeSlide.titleAccent}
+              </span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-md mb-6">
+              {activeSlide.subtitle}
+            </p>
+
+            {/* Price Note & CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <Link
+                href={activeSlide.href}
+                className="inline-flex items-center justify-center gap-2 bg-white text-[#111111] hover:bg-neutral-100 font-black text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]"
+              >
+                <span>{activeSlide.cta}</span>
+                <ArrowRight01Icon size={16} className="rotate-180" />
+              </Link>
+              <div className="text-start">
+                <span className="text-[10px] text-neutral-400 block font-medium">
+                  عرض خاص
+                </span>
+                <span className="text-xs sm:text-sm font-extrabold text-white">
+                  {activeSlide.priceNote}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Slider Controls Bar */}
+          <div className="relative z-10 px-6 sm:px-10 py-4 border-t border-white/10 flex items-center justify-between bg-black/30 backdrop-blur-sm">
+            <div className="flex items-center gap-2" role="tablist" aria-label="اختيار العرض">
+              {heroSlides.map((slide, index) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={index === activeIndex}
+                  aria-label={`شريحة ${index + 1}`}
+                  onClick={() => goToSlide(index)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === activeIndex
+                      ? "w-8 bg-white"
+                      : "w-2 bg-white/30 hover:bg-white/60"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2" dir="ltr">
+              <button
+                type="button"
+                onClick={goPrevious}
+                aria-label="السابق"
+                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+              >
+                <ArrowLeft01Icon size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={goNext}
+                aria-label="التالي"
+                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+              >
+                <ArrowRight01Icon size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ============================================================
+            SIDE PROMO DEAL CARDS (4 Cols on Desktop)
+            ============================================================ */}
+        <div className="lg:col-span-4 flex flex-col gap-4">
+          {/* Card 1: Deal of the Day (صفقة اليوم) */}
+          <div className="bg-white rounded-3xl p-5 border border-black/8 shadow-sm flex-1 flex flex-col justify-between hover:border-black/25 transition-all">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#EF4444] bg-[#EF4444]/10 px-2.5 py-1 rounded-lg">
+                  <FlashIcon size={14} className="fill-[#EF4444]" />
+                  <span>صفقة اليوم السريعة</span>
+                </span>
+                <span className="text-[10px] font-bold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-md">
+                  متبقي 4 قطع
+                </span>
+              </div>
+              <h3 className="font-extrabold text-base text-[#1A1D2A] leading-snug mb-1">
+                NVIDIA GeForce RTX 4090 24GB
+              </h3>
+              <p className="text-xs text-[#64748B] mb-3">
+                أقوى بطاقة رسوميات في العالم مع ضمان رسمي معتمد 3 سنوات.
+              </p>
+            </div>
+
+            <div className="pt-3 border-t border-black/5 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] text-[#94A3B8] line-through block font-medium">
+                  $1,899.00
+                </span>
+                <span className="text-base font-black text-[#1A1D2A]">
+                  $1,749.00
+                </span>
+              </div>
+              <Link
+                href="/products"
+                className="bg-[#111111] hover:bg-black text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors shadow-xs"
+              >
+                شراء الآن
+              </Link>
+            </div>
+          </div>
+
+          {/* Card 2: Coupon & Store Perks */}
+          <div className="bg-gradient-to-br from-[#111111] to-[#1F2228] text-white rounded-3xl p-5 border border-black/10 shadow-sm flex-1 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Ticket01Icon size={18} className="text-amber-400" />
+                <span className="text-xs font-bold text-amber-300 uppercase tracking-wider">
+                  كوبون خصم إضافي
+                </span>
+              </div>
+              <h3 className="font-extrabold text-base text-white leading-snug mb-1">
+                خصم 10% على كل التجميعات
+              </h3>
+              <p className="text-xs text-neutral-300 leading-relaxed mb-3">
+                استخدم الرمز عند الدفع مع شحن مجاني وسريع لكافة المشتريات.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10">
+              <span className="font-mono font-bold text-xs bg-white/15 px-3 py-1.5 rounded-lg border border-white/20 tracking-wider">
+                PRO2026
+              </span>
+              <Link
+                href="/products"
+                className="text-xs font-bold text-[#AACFF0] hover:text-white flex items-center gap-1 transition-colors"
+              >
+                <span>تصفح العروض</span>
+                <ArrowRight01Icon size={14} className="rotate-180" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="absolute bottom-6 left-5 z-40 flex items-center gap-3 sm:left-8 lg:left-10">
-        <div className="flex items-center gap-3" dir="ltr">
-          <button
-            type="button"
-            onClick={goPrevious}
-            className="hero-control"
-            aria-label="العرض السابق"
-          >
-            <ArrowLeft01Icon size={19} />
-          </button>
-          <button
-            type="button"
-            onClick={goNext}
-            className="hero-control"
-            aria-label="العرض التالي"
-          >
-            <ArrowRight01Icon size={19} />
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsPaused((paused) => !paused)}
-            className="hero-control hidden sm:inline-flex"
-            aria-label={isPaused ? "تشغيل العروض" : "إيقاف العروض"}
-          >
-            {isPaused ? <PlayIcon size={17} /> : <PauseIcon size={17} />}
-          </button>
-        </div>
-      </div>
-
-      <div
-        className="absolute bottom-7 right-5 z-40 flex flex-row-reverse items-center gap-2 sm:right-8 lg:right-10"
-        role="tablist"
-        aria-label="اختيار العرض"
-      >
-        {heroSlides.map((slide, index) => (
-          <button
-            key={slide.id}
-            type="button"
-            role="tab"
-            aria-selected={index === activeIndex}
-            aria-label={`العرض ${index + 1}: ${slide.title}`}
-            onClick={() => goToSlide(index)}
-            className={`h-2 rounded-full transition-all duration-500 ${index === activeIndex ? "w-10 bg-[#6AABF0] shadow-[0_0_12px_#6AABF0]" : "w-2 bg-white/45 hover:bg-white/80"}`}
-          />
-        ))}
-      </div>
-
-      <div
-        key={progressKey}
-        className={`hero-progress absolute inset-x-0 bottom-0 z-50 h-1 bg-[#6AABF0] ${isPaused ? "paused" : ""}`}
-      />
     </section>
   );
 }
