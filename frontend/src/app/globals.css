@@ -2,6 +2,8 @@
 
 @layer base {
   :root {
+    --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
+    --font-arabic: 'Rubik', system-ui, -apple-system, sans-serif;
     --primary: #111111;
     --primary-hover: #000000;
     --primary-foreground: #ffffff;

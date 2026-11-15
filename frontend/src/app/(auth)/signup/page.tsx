@@ -18,6 +18,8 @@ import { clientFetch } from "@/lib/api/client";
 import { useFormSubmit } from "@/shared/hooks/useFormSubmit";
 import { SignupSchema } from "@/validations/auth/auth.schema";
 import { toast } from "@/shared/components/Toast";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/features/auth";
 
 interface SignupResponse {
   success: boolean;
@@ -25,6 +27,8 @@ interface SignupResponse {
 }
 
 export default function SignupPage() {
+  const router = useRouter();
+  const auth = useAuth();
   const { isSubmitting, error, submit } = useFormSubmit({
     successMessage: "تم إنشاء الحساب بنجاح",
     fallbackErrorMessage: "تعذر إنشاء الحساب، حاول مرة أخرى",
@@ -59,6 +63,10 @@ export default function SignupPage() {
         body: JSON.stringify(payload),
       }),
     );
+
+    await auth?.refetch();
+
+    router.push("/");
   }
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">

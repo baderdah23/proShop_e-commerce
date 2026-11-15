@@ -4,21 +4,13 @@ import { useRef, useState } from "react";
 import { toast } from "@/shared/components/Toast";
 
 export interface UseFormSubmitOptions {
-  /** Toast shown after a successful submission. Omitted → no success toast. */
   successMessage?: string;
-  /** Used when the thrown value is not an `Error` with a usable message. */
   fallbackErrorMessage?: string;
 }
 
 export interface UseFormSubmitResult {
-  /** True while the submitted request is in flight. */
   isSubmitting: boolean;
-  /** Last failed request's message, for inline display in the form. */
   error: string | null;
-  /**
-   * Runs `request` with centralized loading/error handling and resolves to its
-   * result, or `undefined` when it fails (or is ignored as a duplicate submit).
-   */
   submit: <TData>(request: () => Promise<TData>) => Promise<TData | undefined>;
 }
 
@@ -53,8 +45,6 @@ export function useFormSubmit({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // State updates are asynchronous, so a second click in the same tick would
-  // still see `isSubmitting === false`; the ref is the real duplicate guard.
   const isRequestInFlight = useRef(false);
 
   async function submit<TData>(

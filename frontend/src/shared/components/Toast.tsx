@@ -189,10 +189,6 @@ function ToastCard({ item }: { item: ToastItem }) {
   );
 }
 
-/**
- * حاوية الرسائل — ضعها مرة واحدة داخل layout.tsx.
- * تراقب المتجر الداخلي وتعرض الرسائل الجديدة تلقائياً أعلى الشاشة.
- */
 export function Toaster() {
   const items = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 

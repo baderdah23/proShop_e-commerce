@@ -1,19 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ShoppingBag01Icon,
   FavouriteIcon,
-  Search01Icon,
   Menu01Icon,
   Cancel01Icon,
+  UserIcon,
 } from "hugeicons-react";
+import SearchBar from "./SearchBar";
+import { useAuth } from "@/features/auth";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const auth = useAuth();
+  const user = auth?.user;
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#F8FBFF]/95 backdrop-blur-xl border-b border-[#D9E6F2] shadow-[0_6px_24px_rgba(20,32,51,0.06)]">
@@ -55,20 +59,9 @@ export function Navbar() {
         </Link>
 
         {/* Center Search Bar */}
-        <div className="hidden md:flex flex-1 max-w-md mx-4">
-          <form action="/products" method="GET" className="relative w-full">
-            <Search01Icon
-              size={18}
-              color="#94A3B8"
-              className="absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-            />
-            <input
-              type="text"
-              name="search"
-              autoComplete="off"
-              placeholder="ابحث عن معالجات، كروت شاشة، تجميعات..."
-              className="w-full ps-10 pe-4 py-3 bg-white border border-[#D9E6F2] rounded-2xl text-sm focus:border-[#4F8FD8] focus:ring-4 focus:ring-[#4F8FD8]/10 transition-all placeholder:text-[#94A3B8]"
-            />
+        <div className="hidden md:flex flex-1 max-w-sm mx-4">
+          <form className="relative w-full">
+            <SearchBar />
           </form>
         </div>
 
@@ -126,12 +119,26 @@ export function Navbar() {
             <ShoppingBag01Icon size={20} />
           </Link>
 
-          <Link
-            href="/login"
-            className="hidden sm:inline-flex items-center justify-center h-10 px-4 rounded-xl bg-[#111111] text-white text-xs font-bold shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black transition-colors"
-          >
-            تسجيل الدخول
-          </Link>
+          <div>
+            {!user ? (
+              <Link
+                href="/login"
+                className="hidden sm:inline-flex items-center justify-center h-10 px-4 rounded-xl bg-[#111111] text-white text-xs font-bold shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black transition-colors"
+              >
+                تسجيل الدخول
+              </Link>
+            ) : (
+              <Link
+                href="/account"
+                className="hidden sm:inline-flex items-center gap-2 h-10 px-3.5 rounded-xl bg-[#111111] text-white text-xs font-bold shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black transition-colors"
+              >
+                <span className="w-6 h-6 rounded-lg bg-white/15 flex items-center justify-center text-white">
+                  <UserIcon size={14} />
+                </span>
+                <span className="max-w-[120px] truncate">{user?.full_name || "حسابي"}</span>
+              </Link>
+            )}
+          </div>
 
           {/* Mobile Menu Toggle */}
           <button
@@ -186,13 +193,24 @@ export function Navbar() {
           >
             سلة المشتريات
           </Link>
-          <Link
-            href="/login"
-            className="block py-2 text-sm font-bold text-[#2B7BD4]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            تسجيل الدخول
-          </Link>
+          {!user ? (
+            <Link
+              href="/login"
+              className="block py-2 text-sm font-bold text-[#2B7BD4]"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              تسجيل الدخول
+            </Link>
+          ) : (
+            <Link
+              href="/account"
+              className="flex items-center gap-2 py-2 text-sm font-bold text-[#111111]"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <UserIcon size={18} />
+              <span>{user?.full_name || "حسابي"}</span>
+            </Link>
+          )}
         </div>
       )}
     </header>

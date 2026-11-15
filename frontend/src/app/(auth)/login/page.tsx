@@ -1,11 +1,59 @@
+"use client";
+
 import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { Button } from "@/shared/components/Button";
 import { Input } from "@/shared/components/Input";
 import { Mail01Icon, LockPasswordIcon, Store01Icon } from "hugeicons-react";
+import { useFormSubmit } from "@/shared/hooks/useFormSubmit";
+import type { FormEvent } from "react";
+import { toast } from "@/shared/components/Toast";
+import { LoginSchema } from "@/validations/auth/auth.schema";
+import { clientFetch } from "@/lib/api/client";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/features/auth";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const auth = useAuth();
+  const { error, submit } = useFormSubmit({
+    successMessage: "تم تسجيل الدخول بنجاح",
+    fallbackErrorMessage: "تعذر تسجيل الدخول، حاول مرة أخرى",
+  });
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const payload = {
+      email: String(formData.get("email") ?? ""),
+      password: String(formData.get("password") ?? ""),
+    };
+
+    const result = LoginSchema.safeParse(payload);
+
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      return;
+    }
+
+    await submit(() =>
+      clientFetch("auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }),
+    );
+
+    await auth?.refetch();
+    router.push("/");
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
@@ -22,9 +70,11 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="البريد الإلكتروني"
+              inputId="email"
+              name="email"
               type="email"
               placeholder="name@example.com"
               required
@@ -33,6 +83,8 @@ export default function LoginPage() {
 
             <Input
               label="كلمة المرور"
+              inputId="password"
+              name="password"
               type="password"
               placeholder="••••••••"
               required
@@ -48,13 +100,19 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <Link href="/forgot-password" className="block text-center text-xs font-bold text-[#2B7BD4] hover:underline">
+          <Link
+            href="/forgot-password"
+            className="block text-center text-xs font-bold text-[#2B7BD4] hover:underline"
+          >
             نسيت كلمة المرور؟
           </Link>
 
           <div className="text-center text-xs text-[#64748B]">
             ليس لديك حساب بعد؟{" "}
-            <Link href="/signup" className="font-bold text-[#2B7BD4] hover:underline">
+            <Link
+              href="/signup"
+              className="font-bold text-[#2B7BD4] hover:underline"
+            >
               أنشئ حساباً جديداً
             </Link>
           </div>
