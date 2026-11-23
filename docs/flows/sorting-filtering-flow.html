@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>خطة وتدفق فرز وتصفية المنتجات | Sorting & Filtering Architecture Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0B0F19;
+      --bg-secondary: #111827;
+      --bg-card: #1E293B;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #F3F4F6;
+      --text-muted: #94A3B8;
+      --primary: #38BDF8;
+      --primary-glow: rgba(56, 189, 248, 0.25);
+      --accent: #818CF8;
+      --success: #34D399;
+      --warning: #FBBF24;
+      --danger: #F87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.7;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.1) 0%, transparent 100%);
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      height: 200px;
+      background: var(--primary-glow);
+      filter: blur(90px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 35px;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .icon-blue { background: rgba(56, 189, 248, 0.2); color: var(--primary); }
+    .icon-purple { background: rgba(129, 140, 248, 0.2); color: var(--accent); }
+    .icon-green { background: rgba(52, 211, 153, 0.2); color: var(--success); }
+    .icon-amber { background: rgba(251, 191, 36, 0.2); color: var(--warning); }
+    .icon-red { background: rgba(248, 113, 113, 0.2); color: var(--danger); }
+
+    .mermaid-container {
+      background: #0D1322;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 30px 20px;
+      margin-bottom: 40px;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: right;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .tag-add { background: rgba(52, 211, 153, 0.2); color: var(--success); }
+    .tag-mod { background: rgba(251, 191, 36, 0.2); color: var(--warning); }
+    .tag-stay { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: #38BDF8;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .flow-steps {
+      list-style: none;
+      counter-reset: flow-counter;
+      margin-top: 15px;
+    }
+
+    .flow-steps li {
+      counter-increment: flow-counter;
+      position: relative;
+      padding-right: 48px;
+      margin-bottom: 22px;
+    }
+
+    .flow-steps li::before {
+      content: counter(flow-counter);
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #0B0F19;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .flow-steps h4 {
+      font-size: 1.05rem;
+      color: #FFFFFF;
+      margin-bottom: 4px;
+    }
+
+    .flow-steps p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .highlight-box {
+      border-right: 4px solid var(--primary);
+      background: rgba(56, 189, 248, 0.05);
+      padding: 16px 20px;
+      border-radius: 0 12px 12px 0;
+      margin: 20px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <span class="badge">Architecture & Engineering Plan</span>
+      <h1>مخطط معمارية وتدفق الفرز والتصفية (Sorting & Filtering)</h1>
+      <p class="subtitle">دليل شامل يوضح مسار تدفق البيانات (Data Flow)، الأدوات المقترحة، والملفات المحددة التي سنقوم بإنشائها وتعديلها لجعل الميزة جاهزة للإنتاج (Production-Ready).</p>
+    </header>
+
+    <!-- 1. المخطط الرسومي التفاعلي -->
+    <section class="mermaid-container">
+      <h2 style="margin-bottom: 25px; font-weight: 800; color: #38BDF8;">مخطط تدفق البيانات الشامل (End-to-End Data Flow)</h2>
+      <pre class="mermaid">
+flowchart TD
+    %% User Actions
+    User(["👤 المستخدم ( المتجر )"]) -->|1. يغير الترتيب أو يكتب كلمة بحث أو يختار فئة| UI_Actions["واجهة المستخدم (UI Controls)"]
+
+    subgraph Frontend_Client ["🖥️ Frontend: Client-Side (Interactive Islands)"]
+        UI_Actions --> SortControl["مكون الترتيب SortSelect"]
+        UI_Actions --> SearchControl["مكون البحث SearchInput\n(Debounced 300ms)"]
+        UI_Actions --> FilterControl["مكون الفلاتر Category/Brand Filter"]
+
+        SortControl --> URL_Updater["تحديث الرابط عبر useSearchParams & useRouter"]
+        SearchControl --> URL_Updater
+        FilterControl --> URL_Updater
+        URL_Updater -->|"تحديث الرابط (e.g. ?category=2&sort=price_asc&page=1)"| BrowserURL["🔗 Browser URL SearchParams"]
+    end
+
+    subgraph Frontend_Server ["⚡ Frontend: Next.js Server Component"]
+        BrowserURL -->|2. طلب الصفحة مع المعاملات| PageRSC["app/products/page.tsx\n(Server Component)"]
+        PageRSC --> ParamExtractor["استخراج searchParams والتحقق منها"]
+        ParamExtractor --> Fetcher["fetchOrFallback\n('products?sort=...&category=...&limit=18')"]
+    end
+
+    subgraph Backend_API ["🛡️ Backend: Express.js REST API"]
+        Fetcher -->|3. HTTP GET Request| ProductRouter["Route: /api/v1/products"]
+        ProductRouter --> ZodValidation["التحقق من المعاملات\n(ProductQuerySchema via Zod)"]
+        ZodValidation --> ProductController["product.controller.ts\n(getProducts Handler)"]
+        ProductController --> ProductRepo["product.repo.ts\n(getAllProducts Function)"]
+    end
+
+    subgraph Database_Layer ["🗄️ Database: PostgreSQL"]
+        ProductRepo -->|"4. استعلام الفلترة والترتيب\n(WHERE ... ORDER BY ... LIMIT/OFFSET)"| MainQuery["استعلام المنتجات مع البيانات المجمعة"]
+        ProductRepo -->|"استعلام سريع لحساب الإجمالي\nSELECT COUNT(*) FROM products WHERE ..."| CountQuery["استعلام Count منفصل وسريع"]
+
+        MainQuery -.-> DB_Indexes[("فهارس قاعدة البيانات\nidx_products_price\nidx_products_created_at\nidx_products_name_trgm")]
+        CountQuery -.-> DB_Indexes
+    end
+
+    %% Return Data Flow
+    MainQuery --> DB_Result[("نتائج PostgreSQL")]
+    CountQuery --> DB_Result
+    DB_Result --> HandlersFactory["handlersFactory.ts\n(إرجاع 200 OK ومصفوفة فارغة لو لم توجد نتائج)"]
+    HandlersFactory -->|"5. Response: { success: true, total: X, products: [...] }"| PageRSC
+    PageRSC -->|"6. رندر HTML مع المنتجات الجديدة"| ProductGrid["شبكة المنتجات (ProductGrid) + Pagination"]
+    ProductGrid --> User
+
+    classDef primary fill:#1E293B,stroke:#38BDF8,stroke-width:2px,color:#F3F4F6;
+    classDef highlight fill:#0F172A,stroke:#818CF8,stroke-width:2px,color:#FFFFFF;
+    classDef db fill:#172554,stroke:#38BDF8,stroke-width:2px,color:#93C5FD;
+    
+    class SortControl,SearchControl,FilterControl,PageRSC,ProductController primary;
+    class URL_Updater,BrowserURL,ZodValidation,HandlersFactory highlight;
+    class MainQuery,CountQuery,DB_Indexes db;
+      </pre>
+    </section>
+
+    <!-- 2. بطاقات توضيح المعمارية والمبادئ -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span class="icon icon-blue">🌐</span>
+          <span>لماذا معمارية URL-Driven State؟</span>
+        </div>
+        <ul class="flow-steps">
+          <li>
+            <h4>رابط قابل للمشاركة (Sharable URLs)</h4>
+            <p>يستطيع العميل نسخ رابط الصفحة ومشاركته مع أي شخص، ليفتح نفس الفلاتر ونفس الترتيب تماماً.</p>
+          </li>
+          <li>
+            <h4>تكامل مثالي مع محركات البحث (SEO)</h4>
+            <p>محركات البحث تستطيع الزحف وفهرسة صفحات الأقسام والماركات بشكل مباشر دون الحاجة لجافاسكريبت ثقيل في الكلاينت.</p>
+          </li>
+          <li>
+            <h4>دعم أزرار المتصفح (Back / Forward)</h4>
+            <p>الرجوع للصفحة السابقة في المتصفح يعيد حالة الفلترة السابقة تلقائياً دون أي كود إضافي.</p>
+          </li>
+          <li>
+            <h4>خفة وسرعة الأداء (Zero State Drift)</h4>
+            <p>بدلاً من إنشاء Context أو Redux ضخم، يكون الـ URL هو المصدر الوحيد للحقيقة (Single Source of Truth).</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span class="icon icon-purple">🛠️</span>
+          <span>ما هي التقنيات والأدوات المستخدمة؟</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>الأداة / المكتبة</th>
+              <th>المكان</th>
+              <th>الدور والهدف</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>useSearchParams</code> & <code>useRouter</code></td>
+              <td>Frontend Client</td>
+              <td>قراءة وتعديل بارامترات الرابط بسلاسة وبشكل فوري</td>
+            </tr>
+            <tr>
+              <td><code>useTransition</code> (React 19)</td>
+              <td>Frontend Client</td>
+              <td>إبقاء الواجهة مستجيبة أثناء جلب البيانات وعرض سبينر ناعم</td>
+            </tr>
+            <tr>
+              <td><code>use-debounce</code></td>
+              <td>Frontend Client</td>
+              <td>تأخير البحث النصي 300ms لمنع إرسال طلبات عشوائية مع كل حرف</td>
+            </tr>
+            <tr>
+              <td><code>Zod</code></td>
+              <td>Backend API</td>
+              <td>التحقق الصارم من صحة ونوع معاملات الـ Query (أرقام، نصوص، قيم Enum)</td>
+            </tr>
+            <tr>
+              <td><code>PostgreSQL GIN / B-Tree</code></td>
+              <td>Database</td>
+              <td>فهارس مخصصة على الأسعار والتواريخ والبحث بالاسم لتسريع الاستعلام 20x</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 3. جدول التغييرات والملفات بالضبط -->
+    <div class="card" style="margin-bottom: 35px;">
+      <div class="card-title">
+        <span class="icon icon-green">📝</span>
+        <span>الملفات التي سنغيرها والملفات التي سننشئها (File Change Impact)</span>
+      </div>
+      <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">
+        هذا الجدول يوضح بالدقة متناهية كل ملف في الـ Frontend والـ Backend وما الذي سيتم تعديله أو إضافته فيه:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>الجهة</th>
+            <th>مسار الملف</th>
+            <th>نوع الإجراء</th>
+            <th>التفاصيل والتغيير المطلوب</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Backend</strong></td>
+            <td><code>backend/src/utils/handlersFactory.ts</code></td>
+            <td><span class="tag tag-mod">تعديل</span></td>
+            <td>إصلاح مشكلة <strong>404</strong> عندما تكون الفلترة فارغة؛ وجعلها تعيد <code>200 OK</code> مع <code>results: 0, products: []</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Backend</strong></td>
+            <td><code>backend/src/models/product/product.validation.ts</code></td>
+            <td><span class="tag tag-add">إضافة</span></td>
+            <td>إضافة <code>ProductQuerySchema</code> للتحقق من معاملات <code>page, limit, sort, brand, category, search, minPrice, maxPrice</code> عبر Zod.</td>
+          </tr>
+          <tr>
+            <td><strong>Backend</strong></td>
+            <td><code>backend/src/models/product/product.routes.ts</code></td>
+            <td><span class="tag tag-mod">تعديل</span></td>
+            <td>إضافة ميدلوير التحقق من الـ Query قبل استدعاء <code>getProducts</code> لضمان أمان السيرفر.</td>
+          </tr>
+          <tr>
+            <td><strong>Backend</strong></td>
+            <td><code>backend/src/models/product/product.repo.ts</code></td>
+            <td><span class="tag tag-mod">تحسين أداء</span></td>
+            <td>فصل حساب <code>total_count</code> باستعلام منفصل خفيف بدلاً من <code>COUNT(*) OVER()</code> الثقيل مع تجميع الصور.</td>
+          </tr>
+          <tr>
+            <td><strong>Backend</strong></td>
+            <td><code>backend/src/db/schema.sql</code> (أو ملف migration)</td>
+            <td><span class="tag tag-add">إضافة</span></td>
+            <td>إضافة فهارس <code>idx_products_price</code> و <code>idx_products_created_at</code> وفهرس <code>pg_trgm</code> للبحث النصي.</td>
+          </tr>
+          <tr>
+            <td><strong>Frontend</strong></td>
+            <td><code>frontend/src/app/products/page.tsx</code></td>
+            <td><span class="tag tag-mod">تعديل جوهري</span></td>
+            <td>قراءة كافة الـ <code>searchParams</code> وتمريرها في استدعاء <code>fetchOrFallback</code>، واستبدال عناصر الـ HTML الثابتة بالمكونات التفاعلية.</td>
+          </tr>
+          <tr>
+            <td><strong>Frontend</strong></td>
+            <td><code>frontend/src/features/products/components/ProductSort.tsx</code></td>
+            <td><span class="tag tag-add">جديد</span></td>
+            <td>مكون Client تفاعلي للـ Sort Dropdown متصل بالـ URL عبر <code>useSearchParams</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Frontend</strong></td>
+            <td><code>frontend/src/features/products/components/ProductSearch.tsx</code></td>
+            <td><span class="tag tag-add">جديد</span></td>
+            <td>مكون Client لشريط البحث النصي يدعم الـ Debounce والتصفير التلقائي لرقم الصفحة.</td>
+          </tr>
+          <tr>
+            <td><strong>Frontend</strong></td>
+            <td><code>frontend/src/features/products/components/ProductFilters.tsx</code></td>
+            <td><span class="tag tag-add">جديد</span></td>
+            <td>مكون Client للـ Sidebar يحتوي على فلاتر الفئات والماركات مع زر "إعادة ضبط" لتفريغ الفلاتر.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4. مقارنة الوضع الحالي بالوضع المقترح -->
+    <div class="grid-2">
+      <div class="card" style="border-color: rgba(248, 113, 113, 0.3);">
+        <div class="card-title" style="color: var(--danger);">
+          <span class="icon icon-red">❌</span>
+          <span>الوضع الحالي (Current State)</span>
+        </div>
+        <ul style="padding-right: 20px; font-size: 0.95rem; color: #CBD5E1;">
+          <li style="margin-bottom: 12px;">شريط البحث، دروب داون الترتيب، وفلاتر الفئات في صفحة <code>products/page.tsx</code> هي عناصر HTML ثابتة لا تعمل (غير مربوطة بأي حدث).</li>
+          <li style="margin-bottom: 12px;">طلب البيانات يجلب فقط <code>products?limit=18&page=${page}</code> متجاهلاً أي فرز أو تصفية.</li>
+          <li style="margin-bottom: 12px;">لو قام مستخدم بطلب بحث عن منتج غير موجود، الباك إند يرمي <code>404 Not Found</code> مما يربك التطبيق.</li>
+          <li style="margin-bottom: 12px;">عدم وجود فهارس لقاعدة البيانات على السعر والتواريخ والبحث بالاسم.</li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-color: rgba(52, 211, 153, 0.3);">
+        <div class="card-title" style="color: var(--success);">
+          <span class="icon icon-green">✅</span>
+          <span>وضع الإنتاج المقترح (Target Production State)</span>
+        </div>
+        <ul style="padding-right: 20px; font-size: 0.95rem; color: #CBD5E1;">
+          <li style="margin-bottom: 12px;">كل نقرة فلتر، تغيير ترتيب، أو كتابة بحث تنعكس فوراً في الـ URL بدون وميض في الصفحة (Smooth Transition).</li>
+          <li style="margin-bottom: 12px;">السيرفر في Next.js يستقبل الفلاتر ويجلب فقط المنتجات المطلوبة مع معالجة ذكية للنتائج الفارغة.</li>
+          <li style="margin-bottom: 12px;">الباك إند يعيد <code>200 OK</code> مع قائمة فارغة عند عدم وجود نتائج، وتظهر رسالة لطيفة: "لم نجد منتجات مطابقة لخيارات الفلترة".</li>
+          <li style="margin-bottom: 12px;">استعلامات PostgreSQL فائقة السرعة بفضل الفهارس المتخصصة وعزل استعلام العدّ السريع.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 5. خطوات التنفيذ المنظمة -->
+    <div class="card">
+      <div class="card-title">
+        <span class="icon icon-amber">🚀</span>
+        <span>مراحل التنفيذ المقترحة (Step-by-Step Roadmap)</span>
+      </div>
+      <div class="highlight-box">
+        <strong>تنبيه هندسي:</strong> سنقوم بالتنفيذ على مراحل تبدأ من تجهيز الباك إند وقاعدة البيانات أولاً، حتى تكون الـ API جاهزة ومستقرة، ثم بناء مكونات الواجهة في الفرونت إند وربطها بسلاسة.
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; margin-top: 20px;">
+        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-weight: 800; color: var(--primary); margin-bottom: 8px;">المرحلة 1: Backend Foundation</div>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">إصلاح الـ 404 في <code>handlersFactory.ts</code> وإضافة فهارس PostgreSQL للسرعة العالية.</p>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-weight: 800; color: var(--accent); margin-bottom: 8px;">المرحلة 2: Zod & Route Security</div>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">إضافة Zod Query Validation للتأكد من أمان وصحة جميع قيم الـ Query الممرة.</p>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-weight: 800; color: var(--warning); margin-bottom: 8px;">المرحلة 3: Frontend Server Page</div>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">تحديث <code>page.tsx</code> لاستقبال كافة معاملات الرابط وتمريرها لمسار جلب المنتجات.</p>
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.03); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+          <div style="font-weight: 800; color: var(--success); margin-bottom: 8px;">المرحلة 4: Interactive Client Islands</div>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">بناء مكونات الترتيب والبحث والفلاتر مع Debounce وإدارة الـ URL بسلاسة تامة.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      تم إعداد هذه الوثيقة وفقاً لمعايير الدستور البرمجي للمشروع (AGENTS.md) والـ Production-First Mindset.
+    </footer>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      fontFamily: 'Cairo',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+  </script>
+</body>
+</html>
