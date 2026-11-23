@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Search01Icon, Cancel01Icon } from "hugeicons-react";
 import { useDebounce } from "use-debounce";
 import { clientFetch } from "@/lib/api/client";
 import { Product } from "@/shared/types";
-import SearchDialog from "./SearchDialog";
+import SearchDialog, { SearchDialogRef } from "./SearchDialog";
 import { toast } from "./Toast";
 
 interface ProductsResponse {
@@ -21,6 +21,9 @@ const SearchBar = () => {
   const [error, setError] = useState<string | null>(null);
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
   const [debouncedSearch] = useDebounce(searchQuery, 500);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const searchDialogRef = useRef<SearchDialogRef>(null);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -43,6 +46,23 @@ const SearchBar = () => {
     setError(null);
     setIsLoading(false);
     setIsDismissed(true);
+    inputRef.current?.focus();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      if (isOpen && products.length > 0) {
+        e.preventDefault();
+        searchDialogRef.current?.focusFirstItem();
+      }
+    } else if (e.key === "ArrowUp") {
+      if (isOpen && products.length > 0) {
+        e.preventDefault();
+        searchDialogRef.current?.focusLastItem();
+      }
+    } else if (e.key === "Escape") {
+      handleClose();
+    }
   };
 
   const searchReq = async (query: string): Promise<Product[]> => {
@@ -110,22 +130,28 @@ const SearchBar = () => {
     <>
       <Search01Icon
         size={18}
-        color="#94A3B8"
-        className="absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+        className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-muted"
       />
       <input
+        ref={inputRef}
         type="text"
         name="search"
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-autocomplete="list"
+        aria-controls="search-results-listbox"
         autoComplete="off"
         value={searchQuery}
         onChange={handleSearch}
+        onKeyDown={handleKeyDown}
         onFocus={() => {
           if (searchQuery.trim()) {
             setIsDismissed(false);
           }
         }}
         placeholder="ابحث عن معالجات، كروت شاشة، تجميعات..."
-        className="w-full ps-10 pe-10 py-3 bg-white border border-[#D9E6F2] rounded-2xl text-sm focus:border-[#4F8FD8] focus:ring-4 focus:ring-[#4F8FD8]/10 transition-all placeholder:text-[#94A3B8]"
+        className="h-11 w-full rounded-xl border border-line bg-surface ps-11 pe-10 text-[13px] text-ink outline-none transition-all placeholder:text-muted/70 hover:border-ink/20 focus:border-brand focus:ring-4 focus:ring-brand/10"
       />
 
       {searchQuery && (
@@ -133,18 +159,21 @@ const SearchBar = () => {
           type="button"
           onClick={handleClear}
           aria-label="مسح البحث وإغلاق النتائج"
-          className="absolute end-3.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg flex items-center justify-center text-[#94A3B8] hover:text-[#EF4444] hover:bg-[#FEE2E2] transition-colors cursor-pointer"
+          tabIndex={-1}
+          className="absolute end-3.5 top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded-lg text-muted transition-colors hover:bg-sale/10 hover:text-sale focus:outline-none"
         >
           <Cancel01Icon size={14} />
         </button>
       )}
 
       <SearchDialog
+        ref={searchDialogRef}
         isOpen={isOpen}
         isLoading={isLoading}
         error={error}
         items={products}
         onClose={handleClose}
+        onReturnFocusToInput={() => inputRef.current?.focus()}
       />
     </>
   );
