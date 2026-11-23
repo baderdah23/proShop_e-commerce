@@ -18,54 +18,72 @@ export default function CartPage() {
 
   return (
     <PageShell>
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <h1 className="text-2xl sm:text-3xl font-black text-[#1A1D2A] mb-8">
-          سلة المشتريات ({items.length} منتجات)
-        </h1>
+      <main className="shell flex-1 py-10 sm:py-14">
+        <div className="mb-9">
+          <span className="eyebrow flex items-center gap-2 text-brand">
+            <span className="size-1.5 rounded-full bg-signal" />
+            YOUR CART / 01
+          </span>
+          <h1 className="mt-2 text-[28px] font-black leading-tight tracking-[-0.03em] text-ink sm:text-[36px]">
+            سلة المشتريات ({items.length} منتجات)
+          </h1>
+        </div>
         {items.length === 0 ? (
-          <EmptyState title="سلة المشتريات فارغة" action={<Link href="/products" className="text-[#2B7BD4] underline">تصفح المنتجات</Link>} />
+          <EmptyState title="سلة المشتريات فارغة" action={<Link href="/products" className="text-[13px] font-bold text-brand underline decoration-brand/40 underline-offset-4 hover:text-brand-deep">تصفح المنتجات</Link>} />
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-8 bg-white p-6 rounded-3xl border border-black/8 shadow-sm divide-y divide-black/5">
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
+            <div className="surface divide-y divide-line p-2 shadow-[0_2px_16px_rgba(10,11,10,0.05)] sm:p-3 lg:col-span-8">
               {items.map((item) => (
-                <div key={item.cart_item_id} className="py-4 first:pt-0 last:pb-0 flex flex-wrap items-center gap-4">
+                <div key={item.cart_item_id} className="flex flex-wrap items-center gap-4 px-3 py-5 sm:px-4">
                   <img
                     src={item.product_image}
                     alt={item.product_name}
-                    className="w-20 h-20 rounded-xl object-contain p-1 bg-[#F1F5F9]"
+                    className="size-20 rounded-2xl border border-line bg-paper object-contain p-2"
                   />
-                  <div className="flex-1 min-w-40">
-                    <h2 className="font-bold text-sm">{item.product_name}</h2>
-                    <p className="text-xs text-[#64748B]">{formatPrice(Number(item.product_price))}</p>
+                  <div className="min-w-40 flex-1">
+                    <h2 className="text-[14px] font-black text-ink">{item.product_name}</h2>
+                    <p className="font-latin mt-1 text-xs text-muted">{formatPrice(Number(item.product_price))}</p>
                   </div>
-                  <div className="flex items-center border rounded-xl overflow-hidden">
-                    <button type="button" className="w-8 h-8">−</button>
-                    <span className="w-8 text-center text-xs">{item.quantity}</span>
-                    <button type="button" className="w-8 h-8">+</button>
+                  <div className="flex items-center overflow-hidden rounded-xl border border-line bg-paper">
+                    <button type="button" className="size-8 text-base text-ink transition-colors hover:bg-brand-soft hover:text-brand">−</button>
+                    <span className="font-latin w-8 text-center text-[13px] font-bold text-ink">{item.quantity}</span>
+                    <button type="button" className="size-8 text-base text-ink transition-colors hover:bg-brand-soft hover:text-brand">+</button>
                   </div>
-                  <strong className="w-24 text-end text-sm">{formatPrice(Number(item.total_item_price))}</strong>
-                  <button type="button" className="p-2 text-red-500" aria-label="حذف المنتج">
+                  <strong className="font-latin w-24 text-end text-[15px] font-black text-ink">{formatPrice(Number(item.total_item_price))}</strong>
+                  <button type="button" className="grid size-9 place-items-center rounded-xl text-sale transition-colors hover:bg-sale/10" aria-label="حذف المنتج">
                     <Delete01Icon size={16} />
                   </button>
                 </div>
               ))}
             </div>
-            <aside className="lg:col-span-4 space-y-6">
-              <div className="bg-white p-5 rounded-3xl border shadow-sm">
+            <aside className="space-y-5 lg:col-span-4">
+              <div className="coupon-edge border border-line bg-surface p-5 shadow-[0_2px_16px_rgba(10,11,10,0.05)]">
                 <form className="space-y-3">
-                  <label className="text-xs font-bold flex items-center gap-2"><Ticket01Icon size={16} />هل لديك كوبون؟</label>
+                  <div className="h-0.5 w-8 rounded-full bg-signal" />
+                  <label className="flex items-center gap-2 text-[13px] font-black text-ink"><Ticket01Icon size={16} className="text-brand" />هل لديك كوبون؟</label>
                   <div className="flex gap-2">
-                    <input className="min-w-0 flex-1 px-3 py-2 border rounded-xl text-xs" placeholder="رمز الكوبون" />
-                    <Button type="button" variant="secondary" size="sm">تطبيق</Button>
+                    <input className="h-11 min-w-0 flex-1 rounded-xl border border-line bg-paper px-3 font-latin text-xs text-ink outline-none placeholder:text-muted focus:border-brand focus:bg-surface" placeholder="رمز الكوبون" />
+                    <Button type="button" variant="outline" size="sm">تطبيق</Button>
                   </div>
                 </form>
               </div>
-              <div className="bg-white p-6 rounded-3xl border shadow-sm space-y-3 text-sm">
-                <h2 className="font-black">ملخص الطلب</h2>
-                <div className="flex justify-between"><span>المجموع الفرعي</span><strong>{formatPrice(subtotal)}</strong></div>
-                <div className="flex justify-between"><span>الشحن</span><strong>{shipping === 0 ? "مجاني" : formatPrice(shipping)}</strong></div>
-                <div className="pt-3 border-t flex justify-between font-black"><span>الإجمالي</span><strong>{formatPrice(total)}</strong></div>
-                <Link href="/checkout" className="block text-center bg-[#111111] hover:bg-black text-white rounded-xl py-3 font-bold text-sm transition-colors">متابعة الشراء</Link>
+              <div className="surface space-y-4 p-6 shadow-[0_2px_16px_rgba(10,11,10,0.05)]">
+                <div className="border-b border-line pb-4">
+                  <span className="eyebrow flex items-center gap-2 text-brand">
+                    <span className="size-1.5 rounded-full bg-signal" />
+                    ORDER SUMMARY
+                  </span>
+                  <h2 className="mt-1.5 text-xl font-black tracking-tight text-ink">ملخص الطلب</h2>
+                </div>
+                <div className="space-y-3 text-[13px]">
+                  <div className="flex justify-between text-muted"><span>المجموع الفرعي</span><strong className="font-latin font-bold text-ink">{formatPrice(subtotal)}</strong></div>
+                  <div className="flex justify-between text-muted"><span>الشحن</span><strong className="font-latin font-bold text-ink">{shipping === 0 ? "مجاني" : formatPrice(shipping)}</strong></div>
+                </div>
+                <div className="flex items-end justify-between border-t border-line pt-4">
+                  <span className="text-sm font-black text-ink">الإجمالي</span>
+                  <strong className="font-latin text-[30px] font-black leading-none tracking-[-0.04em] text-brand-deep sm:text-[34px]">{formatPrice(total)}</strong>
+                </div>
+                <Link href="/checkout" className="liquid-glass-btn flex h-12 items-center justify-center rounded-xl text-[13px] font-bold">متابعة الشراء</Link>
               </div>
             </aside>
           </div>
@@ -76,9 +94,9 @@ export default function CartPage() {
 }
 
 function PageShell({ children }: { children: React.ReactNode }) {
-  return <div className="min-h-screen flex flex-col bg-[#F8FAFC]"><Navbar />{children}<Footer /></div>;
+  return <div className="flex min-h-screen flex-col bg-paper"><Navbar />{children}<Footer /></div>;
 }
 
 function EmptyState({ title, action }: { title: string; action: React.ReactNode }) {
-  return <div className="flex-1 max-w-7xl w-full mx-auto px-4 py-20 text-center"><p className="font-bold text-[#1A1D2A] mb-3">{title}</p>{action}</div>;
+  return <div className="shell flex-1 py-24 text-center"><p className="mb-3 text-lg font-black text-ink">{title}</p>{action}</div>;
 }

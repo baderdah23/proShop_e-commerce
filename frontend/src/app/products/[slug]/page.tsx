@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { Button } from "@/shared/components/Button";
+import { SectionHeading } from "@/shared/components/SectionHeading";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { ProductGallery } from "@/features/products/components/ProductGallery";
 import { AddReviewButton } from "@/features/products/components/AddReviewButton";
@@ -13,7 +14,6 @@ import {
   DeliveryTruck01Icon,
   ShoppingBag01Icon,
   CheckmarkCircle01Icon,
-  ArrowRight01Icon,
   FavouriteIcon,
 } from "hugeicons-react";
 import { fetchOrFallback } from "@/lib/api/fetch-or-fallback";
@@ -44,11 +44,14 @@ export default async function ProductDetailPage({
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+      <div className="flex min-h-screen flex-col bg-paper">
         <Navbar />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="p-12 text-center bg-white rounded-2xl border border-black/8">
-            <p className="text-sm font-bold text-[#1A1D2A]">
+        <main className="flex flex-1 items-center justify-center px-4">
+          <div className="w-full max-w-md rounded-[24px] border border-line bg-surface px-6 py-14 text-center shadow-[0_6px_24px_rgba(10,11,10,0.05)]">
+            <span className="mx-auto mb-4 grid size-11 place-items-center rounded-2xl bg-brand-soft text-brand">
+              <ShoppingBag01Icon size={20} />
+            </span>
+            <p className="text-[15px] font-black text-ink">
               لم نجد هذا المنتج
             </p>
           </div>
@@ -65,178 +68,188 @@ export default async function ProductDetailPage({
   const relatedProducts = relatedProductsRes?.products ?? [];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="flex min-h-screen flex-col bg-paper">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-        {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs text-[#64748B] font-medium">
-          <Link href="/" className="hover:text-[#2B7BD4] transition-colors">
+      <main className="shell flex-1 py-10 sm:py-12">
+        <nav
+          aria-label="مسار التنقل"
+          className="mb-8 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted"
+        >
+          <Link href="/" className="transition-colors hover:text-brand">
             الرئيسية
           </Link>
-          <span>/</span>
+          <span className="text-line" aria-hidden="true">
+            /
+          </span>
           <Link
             href="/products"
-            className="hover:text-[#2B7BD4] transition-colors"
+            className="transition-colors hover:text-brand"
           >
             المنتجات
           </Link>
-          <span>/</span>
+          <span className="text-line" aria-hidden="true">
+            /
+          </span>
           <Link
             href={`/products?category=${product.category_id}`}
-            className="hover:text-[#2B7BD4] transition-colors"
+            className="transition-colors hover:text-brand"
           >
             {product.category_name}
           </Link>
-          <span>/</span>
-          <span className="text-[#1A1D2A] font-bold truncate max-w-xs">
+          <span className="text-line" aria-hidden="true">
+            /
+          </span>
+          <span
+            aria-current="page"
+            className="max-w-xs truncate font-bold text-ink"
+          >
             {product.name}
           </span>
         </nav>
 
-        {/* Product Showcase Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 bg-white p-6 sm:p-10 rounded-3xl border border-black/8 shadow-sm">
-          {/* Product Gallery (5 Cols) */}
+        <div className="grid grid-cols-1 gap-8 rounded-2xl border border-line bg-surface p-6 shadow-[0_8px_30px_rgba(10,11,10,0.05)] sm:p-10 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-5">
             <ProductGallery
               images={product.images ?? []}
               productName={product.name}
               badge={
                 product.discount_price ? (
-                  <span className="absolute top-4 start-4 bg-[#EF4444] text-white text-xs font-black px-3.5 py-1.5 rounded-xl shadow-md">
+                  <span className="absolute start-4 top-4 rounded-xl bg-sale px-3.5 py-1.5 text-[11px] font-black text-white shadow-lg">
                     خصم خاص
                   </span>
                 ) : undefined
               }
             />
 
-            {/* Quality badges */}
-            <div className="grid grid-cols-3 gap-2.5 pt-2 text-center">
-              <div className="p-3 rounded-xl bg-[#EEF5FC] border border-[#AACFF0]/40 text-[#1F63B3]">
-                <Shield01Icon
-                  size={18}
-                  className="mx-auto mb-1 text-[#2B7BD4]"
-                />
-                <span className="text-[11px] font-bold block">
+            <div className="mt-4 grid grid-cols-3 gap-2.5 text-center">
+              <div className="rounded-lg border border-line bg-paper p-3">
+                <Shield01Icon size={18} className="mx-auto mb-1.5 text-brand" />
+                <span className="block text-[10px] font-bold leading-4 text-ink">
                   ضمان {product.warranty_months} شهراً
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#EEF5FC] border border-[#AACFF0]/40 text-[#1F63B3]">
+              <div className="rounded-lg border border-line bg-paper p-3">
                 <DeliveryTruck01Icon
                   size={18}
-                  className="mx-auto mb-1 text-[#2B7BD4]"
+                  className="mx-auto mb-1.5 text-brand"
                 />
-                <span className="text-[11px] font-bold block">شحن فوري</span>
+                <span className="block text-[10px] font-bold leading-4 text-ink">
+                  شحن فوري
+                </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#F0FDF4] border border-[#22C55E]/20 text-[#16A34A]">
+              <div className="rounded-lg border border-line bg-brand-soft p-3">
                 <CheckmarkCircle01Icon
                   size={18}
-                  className="mx-auto mb-1 text-[#22C55E]"
+                  className="mx-auto mb-1.5 text-brand"
                 />
-                <span className="text-[11px] font-bold block">أصلي 100%</span>
+                <span className="block text-[10px] font-bold leading-4 text-ink">
+                  أصلي 100%
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Product Info & Actions (7 Cols) */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              {/* Category, Brand, SKU */}
+          <div className="flex flex-col justify-between gap-8 lg:col-span-7">
+            <div className="space-y-5">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold text-[#1F63B3] bg-[#EEF5FC] px-3 py-1 rounded-full border border-[#AACFF0]/40">
+                <span className="inline-flex items-center gap-2 rounded-full border border-line bg-brand-soft px-3 py-1 text-[11px] font-bold text-ink">
+                  <span
+                    aria-hidden="true"
+                    className="size-1.5 rounded-full bg-signal"
+                  />
                   {product.category_name}
                 </span>
-                <span className="text-xs font-semibold text-[#64748B]">
+                <span className="text-[12px] text-muted">
                   الماركة:{" "}
-                  <strong className="text-[#1A1D2A]">
+                  <strong className="font-bold text-ink">
                     {product.brand_name}
                   </strong>
                 </span>
-                <span className="text-xs font-mono text-[#94A3B8]">
+                <span className="font-latin text-[11px] font-medium text-muted">
                   SKU: {product.sku}
                 </span>
               </div>
 
-              {/* Title */}
-              <h1 className="text-2xl sm:text-3xl font-black text-[#1A1D2A] leading-tight">
+              <h1 className="text-[28px] font-black leading-[1.15] tracking-[-0.03em] text-ink sm:text-[38px]">
                 {product.name}
               </h1>
 
-              {/* Rating and Stock */}
-              <div className="flex items-center gap-3 text-xs">
-                <div className="flex items-center text-[#F59E0B]">
-                  <StarIcon
-                    size={16}
-                    color="#F59E0B"
-                    className="fill-[#F59E0B]"
-                  />
-                  <span className="ms-1.5 font-bold text-[#1A1D2A] text-sm">
+              <div className="flex flex-wrap items-center gap-3 text-[12px]">
+                <div className="flex items-center text-brand">
+                  <StarIcon size={16} className="fill-brand text-brand" />
+                  <span className="font-latin ms-1.5 text-[14px] font-black text-ink">
                     {product.rating_avg}
                   </span>
                 </div>
-                <span className="text-[#94A3B8]">
+                <span className="text-muted">
                   ({product.rating_count} تقييم)
                 </span>
-                <span className="text-[#CBD5E1]">•</span>
-                <span className="text-[#16A34A] font-bold bg-[#22C55E]/10 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <CheckmarkCircle01Icon size={14} color="#22C55E" />
+                <span className="text-line" aria-hidden="true">
+                  •
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full border border-line bg-brand-soft px-2.5 py-1 font-bold text-ink">
+                  <CheckmarkCircle01Icon size={14} className="text-brand" />
                   <span>متوفر بالمخزون ({product.stock_quantity} قطعة)</span>
                 </span>
               </div>
 
-              {/* Price Banner */}
-              <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-black/5 flex items-baseline gap-4">
-                <span className="text-3xl sm:text-4xl font-black text-[#1A1D2A] tracking-tight">
-                  {formatPrice(product.discount_price || product.price)}
-                </span>
-                {product.discount_price && (
-                  <span className="text-base text-[#94A3B8] line-through font-semibold">
-                    {formatPrice(product.price)}
+              <div className="relative overflow-hidden rounded-xl border border-line bg-paper p-5 sm:p-6">
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-0 h-0.5 bg-signal"
+                />
+                <div className="flex flex-wrap items-baseline gap-4">
+                  <span className="font-latin text-[32px] font-black tracking-tight text-ink sm:text-[42px]">
+                    {formatPrice(product.discount_price || product.price)}
                   </span>
-                )}
-                <span className="text-xs text-[#2B7BD4] font-semibold ms-auto bg-white px-3 py-1 rounded-lg border border-[#AACFF0]/40 shadow-xs">
-                  شامل ضريبة القيمة المضافة
-                </span>
+                  {product.discount_price && (
+                    <span className="font-latin text-[15px] font-semibold text-muted line-through">
+                      {formatPrice(product.price)}
+                    </span>
+                  )}
+                  <span className="ms-auto rounded-lg border border-line bg-surface px-3 py-1.5 text-[11px] font-bold text-muted shadow-sm">
+                    شامل ضريبة القيمة المضافة
+                  </span>
+                </div>
               </div>
 
-              {/* Description */}
               <div>
-                <h3 className="text-xs font-bold text-[#64748B] uppercase tracking-wider mb-2">
-                  نظرة عامة عن المنتج:
-                </h3>
-                <p className="text-sm text-[#475569] leading-relaxed">
+                <div className="mb-2.5 flex items-center gap-2 text-[12px] font-black text-muted">
+                  <span className="h-0.5 w-6 rounded-full bg-signal" />
+                  نظرة عامة عن المنتج
+                </div>
+                <p className="text-[13px] leading-7 text-ink/75">
                   {product.description_ar}
                 </p>
               </div>
 
-              {/* Technical Specifications */}
-              <div className="p-4 rounded-2xl bg-[#EEF5FC]/60 border border-[#AACFF0]/30 space-y-1.5">
-                <h4 className="text-xs font-bold text-[#164A88] flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#6AABF0]" />
-                  <span>المواصفات الفنية المعتمدة:</span>
+              <div className="rounded-xl border border-line bg-brand-soft p-5">
+                <h4 className="mb-2.5 flex items-center gap-2 text-[12px] font-black text-ink">
+                  <span className="size-1.5 rounded-full bg-signal" />
+                  المواصفات الفنية المعتمدة
                 </h4>
-                <p className="text-xs font-mono text-[#1F63B3] leading-relaxed">
+                <p className="text-[12px] leading-7 text-ink/80">
                   {product.specs_ar}
                 </p>
               </div>
             </div>
 
-            {/* Quantity and Cart Actions */}
-            <div className="pt-6 border-t border-black/8 space-y-4">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <div className="flex items-center justify-between sm:justify-start border border-black/10 rounded-xl overflow-hidden bg-white p-1">
+            <div className="space-y-4 border-t border-line pt-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex items-center justify-between rounded-xl border border-line bg-paper p-1 sm:justify-start">
                   <button
                     type="button"
-                    className="w-10 h-10 flex items-center justify-center text-sm font-bold text-[#64748B] hover:bg-[#F8FAFC] rounded-lg transition-colors cursor-pointer"
+                    className="flex size-10 items-center justify-center rounded-lg text-[14px] font-bold text-muted transition-colors hover:bg-surface hover:text-ink"
                   >
                     -
                   </button>
-                  <span className="w-12 text-center text-sm font-bold text-[#1A1D2A]">
+                  <span className="font-latin w-12 text-center text-[14px] font-black text-ink">
                     1
                   </span>
                   <button
                     type="button"
-                    className="w-10 h-10 flex items-center justify-center text-sm font-bold text-[#64748B] hover:bg-[#F8FAFC] rounded-lg transition-colors cursor-pointer"
+                    className="flex size-10 items-center justify-center rounded-lg text-[14px] font-bold text-muted transition-colors hover:bg-surface hover:text-ink"
                   >
                     +
                   </button>
@@ -247,15 +260,15 @@ export default async function ProductDetailPage({
                   size="lg"
                   aria-label="إضافة إلى المفضلة"
                   title="إضافة إلى المفضلة"
-                  className="gap-2 px-4 cursor-pointer"
+                  className="gap-2 px-4 cursor-pointer text-muted hover:text-brand"
                 >
-                  <FavouriteIcon size={20} color="#475569" />
+                  <FavouriteIcon size={20} />
                 </Button>
 
                 <Button
                   variant="primary"
                   size="lg"
-                  className="flex-1 gap-2.5 text-base py-3.5 shadow-lg shadow-[#6AABF0]/30 cursor-pointer"
+                  className="flex-1 gap-2.5 py-3.5 text-[15px] cursor-pointer"
                 >
                   <ShoppingBag01Icon size={20} />
                   <span>إضافة إلى سلة المشتريات</span>
@@ -265,14 +278,17 @@ export default async function ProductDetailPage({
           </div>
         </div>
 
-        {/* Customer Reviews Section */}
-        <section className="bg-white p-6 sm:p-10 rounded-3xl border border-black/8 shadow-sm space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-black/5">
+        <section className="mt-12 rounded-2xl border border-line bg-surface p-6 shadow-[0_8px_30px_rgba(10,11,10,0.05)] sm:p-10">
+          <div className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-[#1A1D2A]">
+              <div className="mb-2.5 flex items-center gap-2">
+                <span className="size-1.5 rounded-full bg-signal" />
+                <span className="eyebrow text-brand">REVIEWS / 02</span>
+              </div>
+              <h2 className="text-[22px] font-black leading-tight tracking-tight text-ink sm:text-[28px]">
                 تقييمات وآراء المشترين ({product.rating_count})
               </h2>
-              <p className="text-xs text-[#64748B] mt-1">
+              <p className="mt-2 text-[12px] leading-6 text-muted">
                 تجارب حقيقية لعملاء قاموا باقتناء هذا المنتج واستخدامه
               </p>
             </div>
@@ -282,34 +298,32 @@ export default async function ProductDetailPage({
             />
           </div>
 
-          {/* Reviews Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="mt-7 grid grid-cols-1 gap-4 md:grid-cols-2">
             {reviews.map((rev) => (
               <div
                 key={rev.review_id}
-                className="p-5 rounded-2xl bg-[#F8FAFC] border border-black/5 space-y-2.5"
+                className="space-y-3 rounded-xl border border-line bg-paper p-5"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-[#EEF5FC] text-[#2B7BD4] flex items-center justify-center font-bold text-xs">
+                    <span className="grid size-9 place-items-center rounded-lg bg-ink text-[12px] font-black text-white">
                       {rev.customer_name.charAt(0)}
-                    </div>
-                    <span className="font-bold text-xs text-[#1A1D2A]">
+                    </span>
+                    <span className="text-[12px] font-bold text-ink">
                       {rev.customer_name}
                     </span>
                   </div>
-                  <div className="flex items-center text-[#F59E0B]">
+                  <div className="flex items-center text-brand">
                     {Array.from({ length: rev.rating }).map((_, i) => (
                       <StarIcon
                         key={i}
                         size={14}
-                        color="#F59E0B"
-                        className="fill-[#F59E0B]"
+                        className="fill-brand text-brand"
                       />
                     ))}
                   </div>
                 </div>
-                <p className="text-xs text-[#475569] leading-relaxed">
+                <p className="text-[13px] leading-7 text-ink/75">
                   &ldquo;{rev.comment}&rdquo;
                 </p>
               </div>
@@ -317,28 +331,16 @@ export default async function ProductDetailPage({
           </div>
         </section>
 
-        {/* Similar / Related Products Section */}
         {relatedProducts.length > 0 && (
-          <section className="space-y-6">
-            <div className="flex items-end justify-between">
-              <div>
-                <span className="text-xs font-bold text-[#6AABF0] uppercase tracking-wider block mb-1">
-                  اقتراحات مماثلة
-                </span>
-                <h2 className="text-xl sm:text-2xl font-black text-[#1A1D2A]">
-                  منتجات ذات صلة من نفس الفئة
-                </h2>
-              </div>
-              <Link
-                href="/products"
-                className="text-xs sm:text-sm font-bold text-[#2B7BD4] hover:text-[#1F63B3] flex items-center gap-1"
-              >
-                <span>مشاهدة الكل</span>
-                <ArrowRight01Icon size={16} className="rotate-180" />
-              </Link>
-            </div>
+          <section className="mt-16 space-y-8">
+            <SectionHeading
+              index="03 /"
+              eyebrow="اقتراحات مماثلة"
+              title="منتجات ذات صلة من نفس الفئة"
+              action={{ label: "مشاهدة الكل", href: "/products" }}
+            />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {relatedProducts.slice(0, 4).map((p) => (
                 <ProductCard key={p.product_id} product={p} />
               ))}

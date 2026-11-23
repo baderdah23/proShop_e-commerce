@@ -6,9 +6,6 @@ import { useCallback, useEffect, useState } from "react";
 import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
-  FlashIcon,
-  Shield01Icon,
-  DeliveryTruck01Icon,
   Ticket01Icon,
 } from "hugeicons-react";
 import { heroSlides } from "../config/hero-slides";
@@ -41,91 +38,113 @@ export function HeroSlider() {
   const activeSlide = heroSlides[activeIndex];
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* ============================================================
-            MAIN PROMOTIONAL SLIDER (8 Cols on Desktop)
-            ============================================================ */}
+    <section className="shell pt-5 sm:pt-8">
+      <div className="grid gap-4 lg:grid-cols-12">
         <div
-          className="lg:col-span-8 relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#18191D] via-[#101114] to-[#0A0A0C] text-white border border-white/10 shadow-lg min-h-[420px] sm:min-h-[460px] flex flex-col justify-between"
+          className="overflow-hidden rounded-[28px] border border-line bg-surface shadow-[0_18px_50px_-32px_rgba(10,11,10,0.28)] lg:col-span-8"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {/* Subtle Background Pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.06] pointer-events-none"
-            style={{
-              backgroundImage:
-                "radial-gradient(#ffffff 1px, transparent 1px)",
-              backgroundSize: "20px 20px",
-            }}
-          />
+          <div className="flex items-center justify-between border-b border-line px-5 py-3 sm:px-8">
+            <div className="flex items-center gap-3">
+              <span className="font-latin text-[10px] font-bold tracking-[0.22em] text-muted">
+                PROSTORE / SELECTED HARDWARE
+              </span>
+              <span className="size-1.5 rounded-full bg-signal" />
+            </div>
+            <span className="font-latin text-[11px] font-bold tracking-[0.16em] text-ink">
+              {String(activeIndex + 1).padStart(2, "0")}
+              <span className="mx-1.5 text-line">/</span>
+              {String(heroSlides.length).padStart(2, "0")}
+            </span>
+          </div>
 
-          {/* Slide Visual Background (Clean fade) */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -left-10 -bottom-10 w-80 sm:w-96 aspect-square opacity-20 sm:opacity-30 blur-2xl rounded-full bg-neutral-600" />
-            <div className="absolute left-0 bottom-0 top-0 w-full sm:w-1/2 flex items-center justify-center p-6 opacity-40 sm:opacity-90">
-              <div className="relative w-full h-full max-h-[320px]">
+          <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
+            <div className="order-2 flex flex-col justify-between px-5 pb-8 pt-8 sm:px-8 sm:pt-10 lg:order-1 lg:min-h-[430px] lg:px-10 lg:py-12">
+              <div>
+                <div className="mb-7 flex items-center gap-2.5">
+                  <span className="grid size-6 place-items-center rounded-md bg-signal">
+                    <span className="size-1.5 rounded-full bg-ink" />
+                  </span>
+                  <span className="text-[11px] font-bold text-ink/70">
+                    {activeSlide.eyebrow}
+                  </span>
+                </div>
+
+                <h1 className="max-w-xl text-[34px] font-black leading-[1.1] tracking-[-0.045em] text-ink sm:text-[46px] lg:text-[50px]">
+                  {activeSlide.title}
+                  <span className="mt-2 block text-muted">{activeSlide.titleAccent}</span>
+                </h1>
+
+                <div className="mt-7 flex items-center gap-3">
+                  <span className="h-[3px] w-12 rounded-full bg-ink" />
+                  <span className="font-latin text-[10px] font-bold tracking-[0.18em] text-muted">
+                    FEATURED / {activeSlide.id.toUpperCase()}
+                  </span>
+                </div>
+
+                <p className="mt-6 max-w-md text-[13px] leading-7 text-muted">
+                  {activeSlide.subtitle}
+                </p>
+
+                <div className="mt-8 flex flex-wrap items-center gap-5">
+                  <Link
+                    href={activeSlide.href}
+                    className="liquid-glass-btn inline-flex h-12 items-center gap-2.5 rounded-xl px-6 text-[13px] font-bold"
+                  >
+                    {activeSlide.cta}
+                    <ArrowRight01Icon size={16} className="rotate-180" />
+                  </Link>
+                  <div className="border-s-2 border-signal ps-3.5">
+                    <span className="block text-[10px] font-semibold text-muted">السعر / العرض</span>
+                    <span className="font-latin mt-0.5 block text-[13px] font-black text-ink">
+                      {activeSlide.priceNote}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-10 grid grid-cols-3 border-t border-line pt-5">
+                {[
+                  { label: "الحالة", value: "متوفر" },
+                  { label: "الضمان", value: "36 شهراً" },
+                  { label: "التوصيل", value: "مجاني" },
+                ].map((cell) => (
+                  <div key={cell.label} className="px-3 first:ps-0 last:pe-0">
+                    <span className="block text-[10px] text-muted">{cell.label}</span>
+                    <span className="mt-1 block text-[12px] font-bold text-ink">{cell.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="blueprint relative flex min-h-[290px] items-center justify-center overflow-hidden border-t border-line p-8 lg:order-2 lg:min-h-[430px] lg:border-s lg:border-t-0">
+              <span className="font-latin pointer-events-none absolute -bottom-6 -start-4 text-[140px] font-black leading-none tracking-[-0.09em] text-ink/[0.035] sm:text-[180px]">
+                {String(activeIndex + 1).padStart(2, "0")}
+              </span>
+              <span className="absolute inset-4 rounded-[20px] border border-line/80" />
+              <span className="absolute start-6 top-6 size-4 border-s-2 border-t-2 border-ink/25" />
+              <span className="absolute end-6 bottom-6 size-4 border-b-2 border-e-2 border-ink/25" />
+
+              <div className="relative size-full max-h-[330px]">
                 <Image
                   src={activeSlide.image}
                   alt={activeSlide.alt}
                   fill
                   priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-contain object-center drop-shadow-2xl transition-all duration-700"
+                  sizes="(max-width: 1024px) 100vw, 34vw"
+                  className="object-contain object-center drop-shadow-[0_22px_28px_rgba(10,11,10,0.16)] transition-all duration-700"
                 />
               </div>
-            </div>
-          </div>
 
-          {/* Slide Content */}
-          <div className="relative z-10 p-6 sm:p-10 max-w-xl text-start flex-1 flex flex-col justify-center">
-            {/* Tag / Badge */}
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/15">
-                <FlashIcon size={14} className="fill-amber-400 text-amber-400" />
-                <span>{activeSlide.eyebrow}</span>
-              </span>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#EF4444] text-white">
+              <span className="absolute end-5 top-5 flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2 text-[10px] font-bold text-ink shadow-sm">
+                <span className="size-1.5 rounded-full bg-signal" />
                 {activeSlide.badge}
               </span>
             </div>
-
-            {/* Title */}
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white mb-2">
-              {activeSlide.title}
-              <span className="block text-neutral-300 font-extrabold text-xl sm:text-3xl mt-1">
-                {activeSlide.titleAccent}
-              </span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-md mb-6">
-              {activeSlide.subtitle}
-            </p>
-
-            {/* Price Note & CTA Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Link
-                href={activeSlide.href}
-                className="inline-flex items-center justify-center gap-2 bg-white text-[#111111] hover:bg-neutral-100 font-black text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]"
-              >
-                <span>{activeSlide.cta}</span>
-                <ArrowRight01Icon size={16} className="rotate-180" />
-              </Link>
-              <div className="text-start">
-                <span className="text-[10px] text-neutral-400 block font-medium">
-                  عرض خاص
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-white">
-                  {activeSlide.priceNote}
-                </span>
-              </div>
-            </div>
           </div>
 
-          {/* Slider Controls Bar */}
-          <div className="relative z-10 px-6 sm:px-10 py-4 border-t border-white/10 flex items-center justify-between bg-black/30 backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-4 border-t border-line bg-paper/60 px-5 py-3.5 sm:px-8">
             <div className="flex items-center gap-2" role="tablist" aria-label="اختيار العرض">
               {heroSlides.map((slide, index) => (
                 <button
@@ -135,21 +154,25 @@ export function HeroSlider() {
                   aria-selected={index === activeIndex}
                   aria-label={`شريحة ${index + 1}`}
                   onClick={() => goToSlide(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
                     index === activeIndex
-                      ? "w-8 bg-white"
-                      : "w-2 bg-white/30 hover:bg-white/60"
+                      ? "w-9 bg-ink"
+                      : "w-2 bg-ink/15 hover:bg-ink/40"
                   }`}
                 />
               ))}
             </div>
+
+            <span className="hidden font-latin text-[10px] font-bold tracking-[0.18em] text-muted sm:block">
+              {activeSlide.eyebrow}
+            </span>
 
             <div className="flex items-center gap-2" dir="ltr">
               <button
                 type="button"
                 onClick={goPrevious}
                 aria-label="السابق"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+                className="grid size-9 place-items-center rounded-lg border border-line bg-surface text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
               >
                 <ArrowLeft01Icon size={16} />
               </button>
@@ -157,7 +180,7 @@ export function HeroSlider() {
                 type="button"
                 onClick={goNext}
                 aria-label="التالي"
-                className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+                className="grid size-9 place-items-center rounded-lg border border-line bg-surface text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
               >
                 <ArrowRight01Icon size={16} />
               </button>
@@ -165,74 +188,69 @@ export function HeroSlider() {
           </div>
         </div>
 
-        {/* ============================================================
-            SIDE PROMO DEAL CARDS (4 Cols on Desktop)
-            ============================================================ */}
-        <div className="lg:col-span-4 flex flex-col gap-4">
-          {/* Card 1: Deal of the Day (صفقة اليوم) */}
-          <div className="bg-white rounded-3xl p-5 border border-black/8 shadow-sm flex-1 flex flex-col justify-between hover:border-black/25 transition-all">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#EF4444] bg-[#EF4444]/10 px-2.5 py-1 rounded-lg">
-                  <FlashIcon size={14} className="fill-[#EF4444]" />
-                  <span>صفقة اليوم السريعة</span>
+        <div className="grid gap-4 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-1">
+          <div className="group relative flex min-h-[210px] flex-col justify-between overflow-hidden rounded-[24px] border border-line bg-surface p-6 lg:min-h-0 lg:flex-1">
+            <span className="font-latin pointer-events-none absolute -bottom-8 -start-4 text-[88px] font-black leading-none tracking-[-0.08em] text-ink/[0.03]">
+              4090
+            </span>
+            <div className="relative">
+              <div className="mb-5 flex items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-signal px-2.5 py-1 text-[10px] font-black text-ink">
+                  صفقة اليوم
                 </span>
-                <span className="text-[10px] font-bold text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-md">
-                  متبقي 4 قطع
+                <span className="font-latin rounded-md border border-line px-2 py-1 text-[10px] font-bold text-muted">
+                  4 LEFT
                 </span>
               </div>
-              <h3 className="font-extrabold text-base text-[#1A1D2A] leading-snug mb-1">
+              <h3 className="max-w-xs text-[18px] font-black leading-snug tracking-tight text-ink">
                 NVIDIA GeForce RTX 4090 24GB
               </h3>
-              <p className="text-xs text-[#64748B] mb-3">
-                أقوى بطاقة رسوميات في العالم مع ضمان رسمي معتمد 3 سنوات.
+              <p className="mt-2 max-w-xs text-[12px] leading-6 text-muted">
+                أقوى أداء رسومي مع ضمان رسمي معتمد لثلاث سنوات.
               </p>
             </div>
-
-            <div className="pt-3 border-t border-black/5 flex items-center justify-between">
+            <div className="relative mt-6 flex items-end justify-between border-t border-line pt-4">
               <div>
-                <span className="text-[10px] text-[#94A3B8] line-through block font-medium">
+                <div className="font-latin text-[11px] font-medium text-muted/70 line-through">
                   $1,899.00
-                </span>
-                <span className="text-base font-black text-[#1A1D2A]">
+                </div>
+                <div className="font-latin mt-0.5 text-xl font-black tracking-tight text-ink">
                   $1,749.00
-                </span>
+                </div>
               </div>
               <Link
                 href="/products"
-                className="bg-[#111111] hover:bg-black text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-colors shadow-xs"
+                className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-ink px-4 text-[12px] font-bold text-white transition-colors hover:bg-brand-deep"
               >
                 شراء الآن
+                <ArrowRight01Icon size={14} className="rotate-180" />
               </Link>
             </div>
           </div>
 
-          {/* Card 2: Coupon & Store Perks */}
-          <div className="bg-gradient-to-br from-[#111111] to-[#1F2228] text-white rounded-3xl p-5 border border-black/10 shadow-sm flex-1 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Ticket01Icon size={18} className="text-amber-400" />
-                <span className="text-xs font-bold text-amber-300 uppercase tracking-wider">
-                  كوبون خصم إضافي
-                </span>
+          <div className="relative flex min-h-[210px] flex-col justify-between overflow-hidden rounded-[24px] border border-line bg-paper p-6 lg:min-h-0 lg:flex-1">
+            <div className="pointer-events-none absolute -end-16 -top-16 size-48 rounded-full border border-line" />
+            <div className="relative">
+              <div className="mb-4 flex items-center gap-2 text-ink">
+                <Ticket01Icon size={18} />
+                <span className="eyebrow">كوبون إضافي</span>
               </div>
-              <h3 className="font-extrabold text-base text-white leading-snug mb-1">
+              <h3 className="max-w-xs text-[18px] font-black leading-snug tracking-tight text-ink">
                 خصم 10% على كل التجميعات
               </h3>
-              <p className="text-xs text-neutral-300 leading-relaxed mb-3">
-                استخدم الرمز عند الدفع مع شحن مجاني وسريع لكافة المشتريات.
+              <p className="mt-2 max-w-xs text-[12px] leading-6 text-muted">
+                استخدم الرمز عند الدفع مع شحن مجاني لكل المشتريات.
               </p>
             </div>
-
-            <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10">
-              <span className="font-mono font-bold text-xs bg-white/15 px-3 py-1.5 rounded-lg border border-white/20 tracking-wider">
+            <div className="relative mt-6 flex items-center justify-between gap-3 border-t border-line pt-4">
+              <span className="coupon-edge bg-signal px-4 py-2 font-latin text-xs font-black tracking-[0.16em] text-ink">
                 PRO2026
               </span>
               <Link
                 href="/products"
-                className="text-xs font-bold text-[#AACFF0] hover:text-white flex items-center gap-1 transition-colors"
+                className="inline-flex items-center gap-1.5 border-b border-ink/20 pb-0.5 text-[12px] font-bold text-ink transition-colors hover:border-ink"
               >
-                <span>تصفح العروض</span>
+                تصفح العروض
                 <ArrowRight01Icon size={14} className="rotate-180" />
               </Link>
             </div>

@@ -26,9 +26,9 @@ export function Badge({ variant = "active", children, className, ...props }: Bad
       dot: "bg-[#EF4444]",
     },
     completed: {
-      bg: "bg-[#6AABF0]/10",
-      text: "text-[#2B7BD4]",
-      dot: "bg-[#6AABF0]",
+      bg: "bg-brand-soft",
+      text: "text-ink",
+      dot: "bg-ink",
     },
     draft: {
       bg: "bg-[#94A3B8]/10",
@@ -42,7 +42,7 @@ export function Badge({ variant = "active", children, className, ...props }: Bad
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold select-none",
+        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold select-none",
         current.bg,
         current.text,
         className

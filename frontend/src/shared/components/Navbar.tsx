@@ -9,9 +9,18 @@ import {
   Menu01Icon,
   Cancel01Icon,
   UserIcon,
+  ArrowRight01Icon,
 } from "hugeicons-react";
 import SearchBar from "./SearchBar";
+import { BrandMark } from "./BrandMark";
 import { useAuth } from "@/features/auth";
+import { cn } from "@/shared/utils";
+
+const links = [
+  { href: "/", label: "الرئيسية" },
+  { href: "/products", label: "كافة المنتجات" },
+  { href: "/categories", label: "التصنيفات" },
+];
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -20,197 +29,155 @@ export function Navbar() {
   const user = auth?.user;
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#F8FBFF]/95 backdrop-blur-xl border-b border-[#D9E6F2] shadow-[0_6px_24px_rgba(20,32,51,0.06)]">
-      {/* Top Banner */}
-      <div className="bg-[#111111] text-white text-[12px] py-2 px-4 text-center font-medium">
-        <span> شحن مجاني وسريع لكافة الطلبات فوق 100$ | كود خصم إضافي: </span>
-        <span className="font-bold underline tracking-wider text-[#E0E0E0]">
-          PRO2026
-        </span>
+    <header className="relative z-40">
+      <div className="border-b border-line bg-surface text-ink">
+        <div className="shell flex h-9 items-center justify-between gap-4 text-[11px] font-medium">
+          <div className="flex items-center gap-2.5">
+            <span className="size-1.5 rounded-full bg-signal" />
+            <span>شحن مجاني وسريع للطلبات فوق 100$</span>
+          </div>
+          <div className="hidden items-center gap-5 text-muted sm:flex">
+            <span>ضمان رسمي 36 شهراً</span>
+            <span className="hidden h-3 w-px bg-line md:block" />
+            <span className="hidden items-center gap-2 font-latin md:flex">
+              كود الخصم
+              <span className="font-bold tracking-[0.14em] text-ink">PRO2026</span>
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 h-[76px] flex items-center justify-between gap-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 select-none">
-          <div className="w-11 h-11 rounded-xl bg-[#111111] flex items-center justify-center text-white shadow-lg shadow-black/20">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="size-6"
+      <div className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-xl">
+        <div className="shell flex h-[76px] items-center gap-5">
+          <BrandMark />
+
+          <div className="hidden flex-1 justify-center md:flex">
+            <form className="relative w-full max-w-[420px]">
+              <SearchBar />
+            </form>
+          </div>
+
+          <nav className="hidden items-center gap-7 xl:flex">
+            {links.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "relative py-2 text-[13px] font-bold transition-colors",
+                    isActive ? "text-brand" : "text-ink/65 hover:text-ink",
+                  )}
+                >
+                  {link.label}
+                  {isActive && (
+                    <span className="absolute -bottom-0.5 inset-x-0 h-0.5 rounded-full bg-brand" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/wishlist"
+              aria-label="قائمة المفضلة"
+              className="grid size-10 place-items-center rounded-xl border border-line bg-surface text-ink/60 transition-all hover:border-sale/30 hover:bg-sale/5 hover:text-sale"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z"
-              />
-            </svg>
-          </div>
-          <div>
-            <span className="font-extrabold text-xl tracking-tight text-[#1A1D2A] block leading-none">
-              PRO<span className="text-[#6AABF0]">STORE</span>
-            </span>
-            <span className="text-[10px] text-[#64748B] font-medium tracking-wide">
-              متجر الحواسيب والعتاد الاحترافي
-            </span>
-          </div>
-        </Link>
+              <FavouriteIcon size={19} />
+            </Link>
+            <Link
+              href="/cart"
+              aria-label="سلة المشتريات"
+              className="grid size-10 place-items-center rounded-xl border border-line bg-surface text-ink/60 transition-all hover:border-brand/30 hover:bg-brand-soft hover:text-brand"
+            >
+              <ShoppingBag01Icon size={19} />
+            </Link>
 
-        {/* Center Search Bar */}
-        <div className="hidden md:flex flex-1 max-w-sm mx-4">
-          <form className="relative w-full">
-            <SearchBar />
-          </form>
+            <div className="hidden sm:block">
+              {!user ? (
+                <Link
+                  href="/login"
+                  className="liquid-glass-btn inline-flex h-10 items-center justify-center rounded-xl px-5 text-xs font-bold"
+                >
+                  تسجيل الدخول
+                </Link>
+              ) : (
+                <Link
+                  href="/account"
+                  className="inline-flex h-10 items-center gap-2.5 rounded-xl bg-ink px-3.5 text-xs font-bold text-white transition-colors hover:bg-brand"
+                >
+                  <span className="grid size-6 place-items-center rounded-lg bg-white/15">
+                    <UserIcon size={14} />
+                  </span>
+                  <span className="max-w-[110px] truncate">{user.full_name || "حسابي"}</span>
+                </Link>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((open) => !open)}
+              aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
+              aria-expanded={mobileMenuOpen}
+              className="grid size-10 place-items-center rounded-xl border border-line bg-surface text-ink lg:hidden"
+            >
+              {mobileMenuOpen ? <Cancel01Icon size={20} /> : <Menu01Icon size={20} />}
+            </button>
+          </div>
         </div>
+      </div>
 
-        {/* Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-[#475569]">
-          <Link
-            href="/"
-            className={`transition-colors ${
-              pathname === "/"
-                ? "text-[#2B7BD4] font-bold"
-                : "hover:text-[#6AABF0]"
-            }`}
-          >
-            الرئيسية
-          </Link>
-          <Link
-            href="/products"
-            className={`transition-colors ${
-              pathname === "/products"
-                ? "text-[#2B7BD4] font-bold"
-                : "hover:text-[#6AABF0]"
-            }`}
-          >
-            كافة المنتجات
-          </Link>
-          <Link
-            href="/categories"
-            className={`transition-colors ${
-              pathname === "/categories"
-                ? "text-[#2B7BD4] font-bold"
-                : "hover:text-[#6AABF0]"
-            }`}
-          >
-            التصنيفات
-          </Link>
-        </nav>
-
-        {/* Actions (Wishlist + Cart + Login) */}
-        <div className="flex items-center gap-2.5">
-          {/* Heart / Wishlist Icon */}
-          <Link
-            href="/wishlist"
-            aria-label="قائمة المفضلة"
-            className="w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#EF4444] transition-colors"
-          >
-            <FavouriteIcon size={20} />
-          </Link>
-
-          {/* Cart Icon */}
-          <Link
-            href="/cart"
-            aria-label="سلة المشتريات"
-            className="w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569] hover:bg-[#EEF5FC] hover:text-[#2B7BD4] transition-colors"
-          >
-            <ShoppingBag01Icon size={20} />
-          </Link>
-
-          <div>
+      {mobileMenuOpen && (
+        <div className="border-b border-line bg-surface shadow-[0_20px_40px_rgba(16,22,30,0.08)] lg:hidden">
+          <nav className="shell divide-y divide-line py-2">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between py-4 text-sm font-bold text-ink/80"
+              >
+                {link.label}
+                <ArrowRight01Icon size={16} className="rotate-180 text-muted" />
+              </Link>
+            ))}
+            <Link
+              href="/wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between py-4 text-sm font-bold text-ink/80"
+            >
+              قائمة المفضلة
+              <ArrowRight01Icon size={16} className="rotate-180 text-muted" />
+            </Link>
+            <Link
+              href="/cart"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between py-4 text-sm font-bold text-ink/80"
+            >
+              سلة المشتريات
+              <ArrowRight01Icon size={16} className="rotate-180 text-muted" />
+            </Link>
             {!user ? (
               <Link
                 href="/login"
-                className="hidden sm:inline-flex items-center justify-center h-10 px-4 rounded-xl bg-[#111111] text-white text-xs font-bold shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between py-4 text-sm font-bold text-brand"
               >
                 تسجيل الدخول
+                <ArrowRight01Icon size={16} className="rotate-180" />
               </Link>
             ) : (
               <Link
                 href="/account"
-                className="hidden sm:inline-flex items-center gap-2 h-10 px-3.5 rounded-xl bg-[#111111] text-white text-xs font-bold shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 py-4 text-sm font-bold text-ink"
               >
-                <span className="w-6 h-6 rounded-lg bg-white/15 flex items-center justify-center text-white">
-                  <UserIcon size={14} />
-                </span>
-                <span className="max-w-[120px] truncate">{user?.full_name || "حسابي"}</span>
+                <UserIcon size={18} />
+                <span>{user.full_name || "حسابي"}</span>
               </Link>
             )}
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden w-10 h-10 rounded-xl border border-black/8 flex items-center justify-center text-[#475569]"
-          >
-            {mobileMenuOpen ? (
-              <Cancel01Icon size={20} />
-            ) : (
-              <Menu01Icon size={20} />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-black/10 px-6 py-4 space-y-3">
-          <Link
-            href="/"
-            className="block py-2 text-sm font-medium text-[#475569] hover:text-[#6AABF0]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            الصفحة الرئيسية
-          </Link>
-          <Link
-            href="/products"
-            className="block py-2 text-sm font-medium text-[#475569] hover:text-[#6AABF0]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            كافة المنتجات
-          </Link>
-          <Link
-            href="/categories"
-            className="block py-2 text-sm font-medium text-[#475569] hover:text-[#6AABF0]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            التصنيفات
-          </Link>
-          <Link
-            href="/wishlist"
-            className="block py-2 text-sm font-medium text-[#475569] hover:text-[#EF4444]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            قائمة المفضلة
-          </Link>
-          <Link
-            href="/cart"
-            className="block py-2 text-sm font-medium text-[#475569] hover:text-[#6AABF0]"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            سلة المشتريات
-          </Link>
-          {!user ? (
-            <Link
-              href="/login"
-              className="block py-2 text-sm font-bold text-[#2B7BD4]"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              تسجيل الدخول
-            </Link>
-          ) : (
-            <Link
-              href="/account"
-              className="flex items-center gap-2 py-2 text-sm font-bold text-[#111111]"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <UserIcon size={18} />
-              <span>{user?.full_name || "حسابي"}</span>
-            </Link>
-          )}
+          </nav>
         </div>
       )}
     </header>

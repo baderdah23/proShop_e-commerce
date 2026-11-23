@@ -1,10 +1,7 @@
-import React from "react";
 import Link from "next/link";
 import { StarIcon, ShoppingBag01Icon, FavouriteIcon } from "hugeicons-react";
-import { Product } from "@/shared/types";
+import type { Product } from "@/shared/types";
 import { formatPrice } from "@/shared/utils";
-import { SpotlightCard } from "@/shared/components/SpotlightCard";
-import { Button } from "@/shared/components/Button";
 
 interface ProductCardProps {
   product: Product;
@@ -13,89 +10,89 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const hasDiscount = product.discount_price < product.price;
   const discountPercent = hasDiscount
-    ? Math.round(
-        ((product.price - product.discount_price) / product.price) * 100,
-      )
+    ? Math.round(((product.price - product.discount_price) / product.price) * 100)
     : 0;
 
   return (
-    <SpotlightCard className="h-full flex flex-col group p-4 border border-[#D9E6F2] hover:border-black/25 hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_24px_rgba(20,32,51,0.04)]">
-      {/* Product Image & Badges */}
-      <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-[#F8FAFC] border border-[#EAF1F8] mb-4 p-2">
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface p-3 transition-all duration-300 hover:-translate-y-1 hover:border-ink/25 hover:shadow-[0_18px_40px_rgba(10,11,10,0.08)]">
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-0.5 bg-signal opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      />
+
+      <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-lg bg-paper p-5">
         <img
           src={product.image_url}
           alt={product.name}
-          className="block w-full h-full object-contain object-center"
+          loading="lazy"
+          className="size-full object-contain object-center transition-transform duration-500 group-hover:scale-[1.06]"
         />
 
-        {/* Discount Badge */}
         {hasDiscount && (
-          <span className="absolute top-2.5 start-2.5 bg-[#EF4444] text-white text-[11px] font-bold px-2 py-0.5 rounded-lg shadow-sm">
-            خصم {discountPercent}%
+          <span className="absolute top-3 start-3 rounded-md bg-sale px-2.5 py-1 font-latin text-[11px] font-bold text-white shadow-sm">
+            -{discountPercent}%
           </span>
         )}
 
-        {/* Wishlist Button */}
         <button
           type="button"
           aria-label="إضافة للمفضلة"
-          className="absolute top-2.5 end-2.5 w-8 h-8 rounded-lg bg-white/90 backdrop-blur-sm border border-black/8 flex items-center justify-center text-[#64748B] hover:text-[#EF4444] transition-colors shadow-sm"
+          className="absolute end-3 top-3 grid size-8 place-items-center rounded-lg border border-line bg-surface/90 text-muted backdrop-blur-sm transition-colors hover:border-brand hover:text-brand"
         >
           <FavouriteIcon size={16} />
         </button>
       </div>
 
-      {/* Product Category & Brand */}
-      <div className="flex items-center justify-between text-xs text-[#64748B] mb-1.5 font-medium">
-        <span>{product.category_name || "منتجات تقنية"}</span>
-        <span className="text-[#2B7BD4] font-semibold">
+      <div className="mb-2 flex items-center justify-between gap-2 px-1">
+        <span className="flex min-w-0 items-center gap-1.5 text-[11px] font-semibold text-muted">
+          <span
+            aria-hidden="true"
+            className="size-1.5 shrink-0 rounded-full bg-signal"
+          />
+          <span className="truncate">
+            {product.category_name || "عتاد تقني"}
+          </span>
+        </span>
+        <span className="font-latin shrink-0 text-[10px] font-bold uppercase tracking-[0.14em] text-brand">
           {product.brand_name}
         </span>
       </div>
 
-      {/* Product Title */}
       <Link
         href={`/products/${encodeURIComponent(product.slug)}?id=${encodeURIComponent(product.product_id)}`}
-        className="block mb-2 group-hover:text-[#6AABF0] transition-colors"
+        className="px-1 transition-colors group-hover:text-brand"
       >
-        <h3 className="font-bold text-sm text-[#1A1D2A] line-clamp-2 leading-snug">
+        <h3 className="line-clamp-2 text-[14px] font-bold leading-snug text-ink">
           {product.name}
         </h3>
       </Link>
 
-      {/* Ratings */}
-      <div className="flex items-center gap-1.5 mb-3 text-xs">
-        <div className="flex items-center text-[#F59E0B]">
-          <StarIcon size={14} color="#F59E0B" className="fill-[#F59E0B]" />
-          <span className="ms-1 font-bold text-[#1A1D2A]">
-            {product.rating_avg}
-          </span>
-        </div>
-        <span className="text-[#94A3B8]">({product.rating_count} تقييم)</span>
+      <div className="mt-2.5 flex items-center gap-1.5 px-1 text-[11px]">
+        <StarIcon size={13} className="fill-brand text-brand" />
+        <span className="font-latin font-bold text-ink">{product.rating_avg}</span>
+        <span className="text-muted">({product.rating_count} تقييم)</span>
       </div>
 
-      {/* Price & Add to Cart */}
-      <div className="mt-auto pt-3 border-t border-black/5 flex items-center justify-between gap-2">
+      <div className="mt-auto flex items-end justify-between gap-2 border-t border-line px-1 pt-4">
         <div>
-          <div className="font-extrabold text-base text-[#1A1D2A]">
+          <div className="font-latin text-[17px] font-extrabold tracking-tight text-ink">
             {formatPrice(product.discount_price || product.price)}
           </div>
           {hasDiscount && (
-            <div className="text-xs text-[#94A3B8] line-through font-medium">
+            <div className="font-latin mt-0.5 text-[11px] font-medium text-muted/70 line-through">
               {formatPrice(product.price)}
             </div>
           )}
         </div>
 
-        <Button
-          variant="secondary"
-          size="sm"
-          className="rounded-xl px-3 py-1.5 text-xs font-semibold gap-1.5 hover:bg-[#111111] hover:text-white transition-all"
+        <button
+          type="button"
+          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-brand px-3 text-[11px] font-bold text-white transition-colors hover:bg-ink"
         >
           <ShoppingBag01Icon size={14} />
           <span>إضافة</span>
-        </Button>
+        </button>
       </div>
-    </SpotlightCard>
+    </div>
   );
 }

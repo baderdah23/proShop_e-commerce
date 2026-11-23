@@ -11,18 +11,18 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, icon, inputId, className, ...props }, ref) => {
     return (
-      <div className="w-full flex flex-col gap-1.5 text-start">
+      <div className="flex w-full flex-col gap-2 text-start">
         {label && (
           <label
             htmlFor={inputId}
-            className="text-xs font-semibold text-[#475569]"
+            className="text-[12px] font-bold text-ink/75"
           >
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {icon && (
-            <div className="absolute start-3.5 text-[#94A3B8] pointer-events-none flex items-center justify-center">
+            <div className="pointer-events-none absolute start-4 flex items-center justify-center text-muted">
               {icon}
             </div>
           )}
@@ -30,17 +30,16 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             ref={ref}
             className={cn(
-              "w-full px-4 py-2.5 rounded-xl text-sm bg-white border transition-all duration-200 placeholder:text-[#94A3B8]",
-              "border-black/10 focus:border-[#111111] focus:ring-2 focus:ring-black/15 focus:outline-none",
-              icon ? "ps-10" : "",
-              error &&
-                "border-[#EF4444] bg-[#FEF2F2] focus:border-[#EF4444] focus:ring-[#EF4444]/20",
+              "h-12 w-full rounded-xl border border-line bg-surface px-4 text-[13px] text-ink outline-none transition-all placeholder:text-muted/70",
+              "hover:border-ink/20 focus:border-brand focus:ring-4 focus:ring-brand/10",
+              icon && "ps-11",
+              error && "border-sale bg-[#fff5f5] focus:border-sale focus:ring-sale/10",
               className,
             )}
             {...props}
           />
         </div>
-        {error && <p className="text-xs text-[#EF4444] font-medium">{error}</p>}
+        {error && <p className="text-[11px] font-semibold text-sale">{error}</p>}
       </div>
     );
   },

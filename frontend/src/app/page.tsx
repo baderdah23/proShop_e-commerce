@@ -3,17 +3,16 @@ import {
   Shield01Icon,
   DeliveryTruck01Icon,
   CustomerSupportIcon,
-  ArrowRight01Icon,
   DiamondIcon,
   StarIcon,
   CreditCardIcon,
   CheckmarkCircle02Icon,
-  FlashIcon,
 } from "hugeicons-react";
 import { Navbar } from "@/shared/components/Navbar";
 import { Footer } from "@/shared/components/Footer";
 import { ProductCard } from "@/features/products/components/ProductCard";
 import { HeroSlider } from "@/features/home";
+import { SectionHeading } from "@/shared/components/SectionHeading";
 import LogoLoop, { type LogoItem } from "@/shared/components/LogoLoop";
 import {
   SiAmd,
@@ -48,6 +47,47 @@ type Category = {
 
 type ProductsResponse = { success: boolean; products: Product[] };
 type CategoriesResponse = { success: boolean; categories: Category[] };
+
+const trustItems = [
+  {
+    icon: DeliveryTruck01Icon,
+    title: "شحن سريع ومجاني",
+    detail: "للطلبات فوق $100 مع تتبع لحظي",
+  },
+  {
+    icon: Shield01Icon,
+    title: "ضمان رسمي 36 شهراً",
+    detail: "استبدال مباشر ضد عيوب الصناعة",
+  },
+  {
+    icon: DiamondIcon,
+    title: "قطع أصلية 100%",
+    detail: "من الوكلاء والموزعين الرسميين",
+  },
+  {
+    icon: CustomerSupportIcon,
+    title: "دعم فني متخصص",
+    detail: "استشارة مجانية من خبراء التجميع",
+  },
+];
+
+const promises = [
+  {
+    icon: CheckmarkCircle02Icon,
+    title: "فحص واختبار التجميعات",
+    detail: "نختبر استقرار كل بطاقة ومعالج ومزود طاقة تحت أقصى ضغط قبل التغليف والشحن.",
+  },
+  {
+    icon: CreditCardIcon,
+    title: "دفع إلكتروني محمي",
+    detail: "عمليات الدفع مشفرة عبر بوابات معتمدة عالمياً مع حماية كاملة لبياناتك.",
+  },
+  {
+    icon: Shield01Icon,
+    title: "استرجاع واستبدال مرن",
+    detail: "إمكانية إرجاع أو استبدال المنتج خلال 14 يوماً وفق السياسات المعتمدة.",
+  },
+];
 
 export default async function HomePage() {
   const [featuredProductsRes, newProductsRes, categoriesRes] =
@@ -89,7 +129,7 @@ export default async function HomePage() {
     { node: <SiAmd color="#ED1C24" />, title: "AMD" },
     { node: <SiNvidia color="#76B900" />, title: "NVIDIA" },
     { node: <SiSamsung color="#1428A0" />, title: "Samsung" },
-    { node: <SiHonor color="#000000" />, title: "HONOR" },
+    { node: <SiHonor color="#111111" />, title: "HONOR" },
     { node: <SiApple color="#555555" />, title: "Apple" },
     { node: <SiXiaomi color="#FF6900" />, title: "Xiaomi" },
     { node: <SiRedragon color="#E21B23" />, title: "Redragon" },
@@ -98,120 +138,70 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="flex min-h-screen flex-col">
       <Navbar />
 
-      <main className="flex-1 space-y-16 sm:space-y-24">
-        {/* ============================================================
-            HERO SLIDER
-            ============================================================ */}
+      <main className="flex-1">
         <HeroSlider />
 
-        {/* ============================================================
-            TRUST BAR & VALUE PROPOSITIONS
-            ============================================================ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-2xl p-5 border border-black/8 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-              <div className="w-12 h-12 rounded-xl bg-[#111111] text-white flex items-center justify-center shrink-0">
-                <DeliveryTruck01Icon size={24} />
+        <section className="shell mt-8 sm:mt-12">
+          <div className="grid grid-cols-1 divide-y divide-line rounded-[24px] border border-line bg-surface sm:grid-cols-2 sm:divide-x lg:grid-cols-4 lg:divide-y-0">
+            {trustItems.map(({ icon: Icon, title, detail }) => (
+              <div key={title} className="flex items-center gap-4 p-5 sm:p-6">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-ink text-white">
+                  <Icon size={20} />
+                </span>
+                <div>
+                  <h3 className="text-[13px] font-black text-ink">{title}</h3>
+                  <p className="mt-1 text-[11px] leading-5 text-muted">{detail}</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-bold text-sm text-[#1A1D2A]">
-                  شحن سريع ومجاني
-                </h4>
-                <p className="text-xs text-[#64748B] mt-0.5">
-                  للطلبات فوق $100 مع تتبع لحظي
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-5 border border-black/8 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-              <div className="w-12 h-12 rounded-xl bg-[#111111] text-white flex items-center justify-center shrink-0">
-                <Shield01Icon size={24} />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-[#1A1D2A]">
-                  ضمان رسمي معتمد 36 شهراً
-                </h4>
-                <p className="text-xs text-[#64748B] mt-0.5">
-                  استبدال مباشر ضد عيوب الصناعة
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-5 border border-black/8 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-              <div className="w-12 h-12 rounded-xl bg-[#111111] text-white flex items-center justify-center shrink-0">
-                <DiamondIcon size={24} />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-[#1A1D2A]">
-                  قطع أصلية 100%
-                </h4>
-                <p className="text-xs text-[#64748B] mt-0.5">
-                  من الوكلاء والموزعين الرسميين
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-5 border border-black/8 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
-              <div className="w-12 h-12 rounded-xl bg-[#111111] text-white flex items-center justify-center shrink-0">
-                <CustomerSupportIcon size={24} />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-[#1A1D2A]">
-                  دعم فني وتوافق القطع
-                </h4>
-                <p className="text-xs text-[#64748B] mt-0.5">
-                  استشارة مجانية من خبراء التجميع
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
-        {/* ============================================================
-            FEATURED CATEGORIES (تصفح الأقسام)
-            ============================================================ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8 pb-4 border-b border-black/5">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] block mb-1">
-                تسوّق حسب القسم
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#1A1D2A]">
-                فئات المنتجات والعتاد
-              </h2>
-            </div>
-            <Link
-              href="/categories"
-              className="text-xs sm:text-sm font-bold text-[#2B7BD4] hover:text-[#1F63B3] flex items-center gap-1.5 transition-colors"
-            >
-              <span>عرض كافة الفئات</span>
-              <ArrowRight01Icon size={16} className="rotate-180" />
-            </Link>
-          </div>
+        <section className="shell pt-16 sm:pt-24">
+          <SectionHeading
+            index="01 /"
+            eyebrow="تصفح حسب القسم"
+            title="ابدأ من حيث يهمك"
+            description="أقسام منتقية تضم العتاد الذي يثق به المحترفون."
+            action={{ label: "كل الفئات", href: "/categories" }}
+          />
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {catData.map((cat) => (
+          <div className="mt-9 grid grid-cols-2 gap-4 md:grid-cols-4 md:grid-rows-2">
+            {catData.map((cat, index) => (
               <Link
                 key={cat.category_id}
                 href={`/products?category=${cat.category_id}`}
-                className="group relative bg-white rounded-2xl p-4 border border-black/8 shadow-xs hover:border-black/30 hover:shadow-md transition-all duration-300 flex flex-col"
+                className={`group relative flex min-h-[180px] flex-col overflow-hidden rounded-[24px] border border-line bg-surface p-4 transition-all duration-300 hover:-translate-y-1 hover:border-brand/30 hover:shadow-[0_20px_44px_rgba(16,22,30,0.08)] md:min-h-[200px] ${
+                  index === 0 ? "col-span-2 md:row-span-2" : ""
+                }`}
               >
-                <div className="w-full aspect-square rounded-xl overflow-hidden bg-[#F1F5F9] mb-3 flex items-center justify-center p-2">
+                <div className="relative flex-1 overflow-hidden rounded-2xl bg-paper">
                   <img
                     src={cat.image_url}
                     alt={cat.category_name_ar || cat.category_name_en || ""}
-                    className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-500"
+                    className="size-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/25 to-transparent" />
+                  <span className="font-latin absolute bottom-3 start-4 text-[11px] font-bold tracking-[0.18em] text-white/80">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
                 </div>
-                <div className="text-center mt-auto">
-                  <h3 className="font-bold text-sm text-[#1A1D2A] group-hover:text-[#2B7BD4] transition-colors">
-                    {cat.category_name_ar}
-                  </h3>
-                  <span className="text-[11px] text-[#94A3B8] block mt-0.5">
-                    {cat.category_name_en}
+                <div className="flex items-end justify-between gap-2 px-1 pt-4">
+                  <div>
+                    <h3 className="text-[14px] font-black text-ink transition-colors group-hover:text-brand">
+                      {cat.category_name_ar}
+                    </h3>
+                    <span className="font-latin mt-1 block text-[10px] font-semibold uppercase tracking-[0.12em] text-muted">
+                      {cat.category_name_en}
+                    </span>
+                  </div>
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-paper text-ink transition-colors group-hover:bg-brand group-hover:text-white">
+                    <svg viewBox="0 0 20 20" className="size-4 rotate-180" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                      <path d="M4 10h12m0 0-5-5m5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
                   </span>
                 </div>
               </Link>
@@ -219,212 +209,182 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ============================================================
-            HOT DEALS & OFFERS (عروض حصرية وخصومات)
-            ============================================================ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8 pb-4 border-b border-black/5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#EF4444]/10 text-[#EF4444] flex items-center justify-center">
-                <FlashIcon size={22} className="fill-[#EF4444]" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-[#EF4444] uppercase tracking-wider block">
-                  عروض حصرية وتخفيضات
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#1A1D2A]">
-                  أحدث المنتجات والعروض 🔥
-                </h2>
-              </div>
-            </div>
-            <Link
-              href="/products"
-              className="text-xs sm:text-sm font-bold text-[#2B7BD4] hover:text-[#1F63B3] flex items-center gap-1.5 transition-colors"
-            >
-              <span>كافة المنتجات</span>
-              <ArrowRight01Icon size={16} className="rotate-180" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="shell pt-16 sm:pt-24">
+          <SectionHeading
+            index="02 /"
+            eyebrow="وصل حديثاً"
+            title="عتاد جديد، اختيار مدروس"
+            description="أحدث الإصدارات التي أضفناها إلى المخزون هذا الأسبوع."
+            action={{ label: "تصفح المنتجات", href: "/products" }}
+          />
+          <div className="mt-9 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {newProducts.map((product) => (
               <ProductCard key={product.product_id} product={product} />
             ))}
           </div>
         </section>
 
-        {/* ============================================================
-            PROMOTIONAL COMMERCE BANNER (كوبون وتخفيض)
-            ============================================================ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative rounded-3xl overflow-hidden bg-[#111111] text-white p-8 sm:p-12 shadow-xl">
-            <div
-              className="absolute inset-0 opacity-10 pointer-events-none"
-              style={{
-                backgroundImage:
-                  "radial-gradient(#ffffff 1px, transparent 1px)",
-                backgroundSize: "24px 24px",
-              }}
-            />
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="max-w-xl text-center md:text-start">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold mb-4 border border-white/15">
-                  <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
-                  <span>تخفيضات الموسم الاحترافية</span>
+        <section className="shell pt-16 sm:pt-24">
+          <div className="blueprint relative overflow-hidden rounded-[32px] border border-line px-6 py-12 sm:px-12 sm:py-14">
+            <div className="pointer-events-none absolute -end-20 top-0 size-72 rounded-full bg-signal/20 blur-[100px]" />
+            <div className="relative grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
+              <div>
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-surface px-3 py-1.5 text-[11px] font-bold text-ink">
+                  <span className="size-1.5 rounded-full bg-signal" />
+                  تخفيضات الموسم
                 </div>
-                <h3 className="text-2xl sm:text-4xl font-black leading-tight mb-3">
-                  ترقية تجميعتك بأقوى العتاد وبأفضل الأسعار
-                </h3>
-                <p className="text-sm text-neutral-300 leading-relaxed mb-4">
-                  احصل على خصم فوري عند استخدام رمز القسيمة. شحن سريع مع فحص
-                  وضمان شامل لجميع المكونات.
+                <h2 className="max-w-2xl text-[30px] font-black leading-[1.2] tracking-[-0.03em] text-ink sm:text-[40px]">
+                  تجميعتك تستحق عتاداً أفضل <span className="text-muted">بسعر أذكى</span>
+                </h2>
+                <p className="mt-4 max-w-xl text-[13px] leading-7 text-muted">
+                  استخدم رمز الخصم عند إتمام الطلب، مع فحص شامل وضمان معتمد لكل قطعة.
                 </p>
-                <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-xs font-mono">
-                  <span className="text-neutral-400 font-sans">كود الخصم:</span>
-                  <span className="font-bold text-white text-sm tracking-wider">
-                    PRO2026
-                  </span>
-                </div>
               </div>
-              <div className="shrink-0 flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+
+              <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center lg:justify-end">
+                <div className="coupon-edge min-w-44 bg-signal px-6 py-4 text-center text-ink">
+                  <span className="block text-[10px] font-bold">كود الخصم</span>
+                  <span className="font-latin mt-1 block text-xl font-black tracking-[0.14em]">PRO2026</span>
+                </div>
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center gap-2 bg-white text-[#111111] hover:bg-neutral-100 font-extrabold text-sm px-8 py-4 rounded-xl shadow-lg transition-colors"
+                  className="liquid-glass-btn inline-flex h-12 items-center gap-2 rounded-xl px-6 text-[13px] font-bold"
                 >
-                  <span>تسوق العروض الآن</span>
-                  <ArrowRight01Icon size={16} className="rotate-180" />
-                </Link>
-                <Link
-                  href="/categories"
-                  className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold text-sm px-6 py-4 rounded-xl transition-colors"
-                >
-                  <span>تصفح الأقسام</span>
+                  تسوق العروض
+                  <ArrowGlyph />
                 </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ============================================================
-            TOP RATED & BEST SELLERS (الأكثر طلباً ومبيعاً)
-            ============================================================ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8 pb-4 border-b border-black/5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center">
-                <StarIcon size={22} className="fill-[#F59E0B]" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-[#F59E0B] uppercase tracking-wider block">
-                  الأعلى تقييماً
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black text-[#1A1D2A]">
-                  أفضل المنتجات مبيعاً وطلباً ⭐
-                </h2>
-              </div>
+        <section className="mt-16 border-y border-line bg-surface py-16 sm:mt-24 sm:py-20">
+          <div className="shell">
+            <SectionHeading
+              index="03 /"
+              eyebrow="الأكثر طلباً"
+              title="اختيارات يثق بها المحترفون"
+              description="منتجات حصدت أعلى تقييمات من عملائنا هذا الموسم."
+              action={{ label: "كل المنتجات", href: "/products" }}
+              icon={<StarIcon size={15} className="fill-signal text-ink" />}
+            />
+            <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.product_id} product={product} />
+              ))}
             </div>
-            <Link
-              href="/products"
-              className="text-xs sm:text-sm font-bold text-[#2B7BD4] hover:text-[#1F63B3] flex items-center gap-1.5 transition-colors"
-            >
-              <span>مشاهدة الكل</span>
-              <ArrowRight01Icon size={16} className="rotate-180" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.product_id} product={product} />
-            ))}
           </div>
         </section>
 
-        {/* ============================================================
-            WHY CHOOSE PROSTORE (مزايا المتجر وخدمات العملاء)
-            ============================================================ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-black/8 shadow-xs">
-            <div className="text-center max-w-2xl mx-auto mb-10">
-              <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider block mb-2">
-                لماذا يفضل المحترفون متجرنا
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#1A1D2A]">
-                تجربة تسوق عتاد متكاملة ومضمونة
+        <section className="shell py-16 sm:py-24">
+          <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-20">
+            <div className="lg:col-span-5">
+              <span className="eyebrow text-brand">لماذا نحن</span>
+              <h2 className="mt-4 text-[30px] font-black leading-[1.25] tracking-[-0.03em] text-ink sm:text-[38px]">
+                ليس مجرد متجر.
+                <br />
+                <span className="text-muted">شريكك في كل ترقية.</span>
               </h2>
+              <div className="mt-8 space-y-0 border-t border-line">
+                {promises.map(({ icon: Icon, title, detail }, index) => (
+                  <div key={title} className="flex gap-5 border-b border-line py-6">
+                    <span className="font-latin pt-0.5 text-[11px] font-bold text-brand">
+                      0{index + 1}
+                    </span>
+                    <div>
+                      <div className="mb-2 flex items-center gap-2.5">
+                        <Icon size={17} className="text-brand" />
+                        <h3 className="text-[15px] font-black text-ink">{title}</h3>
+                      </div>
+                      <p className="max-w-md text-[12px] leading-6 text-muted">{detail}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-black/5 text-[#111111] flex items-center justify-center shrink-0">
-                  <CheckmarkCircle02Icon size={24} />
-                </div>
+            <div className="blueprint relative min-h-[420px] overflow-hidden rounded-[32px] border border-line p-6 sm:p-9 lg:col-span-7">
+              <div className="flex items-center justify-between border-b border-line pb-5">
                 <div>
-                  <h3 className="font-bold text-base text-[#1A1D2A] mb-1">
-                    فحص واختبار التجميعات
-                  </h3>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
-                    نقوم باختبار استقرار كل بطاقة ومعالج ومزود طاقة تحت أقصى ضغط
-                    قبل التغليف والشحن.
-                  </p>
+                  <span className="eyebrow text-muted">SYSTEM CHECK</span>
+                  <p className="mt-2 text-lg font-black text-ink">كل قطعة تمر بخطة فحص واضحة</p>
                 </div>
+                <span className="rounded-full border border-ink/10 bg-surface px-3 py-1 font-latin text-[10px] font-bold text-ink">
+                  VERIFIED
+                </span>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-black/5 text-[#111111] flex items-center justify-center shrink-0">
-                  <CreditCardIcon size={24} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-base text-[#1A1D2A] mb-1">
-                    دفع إلكتروني محمي 100%
-                  </h3>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
-                    عمليات الدفع مشفرة عبر بوابات معتمدة عالمياً مع حماية كاملة
-                    لحسابك وبياناتك.
-                  </p>
-                </div>
+              <div className="mt-7 space-y-5">
+                {[
+                  { label: "فحص المكونات ومطابقة المواصفات", value: 100 },
+                  { label: "اختبار الاستقرار تحت الضغط", value: 92 },
+                  { label: "التغليف الآمن والتتبع", value: 86 },
+                ].map((row) => (
+                  <div key={row.label}>
+                    <div className="mb-2 flex items-center justify-between text-[12px]">
+                      <span className="text-muted">{row.label}</span>
+                      <span className="font-latin font-bold text-ink">{row.value}%</span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-ink/10">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-ink to-signal"
+                        style={{ width: `${row.value}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-black/5 text-[#111111] flex items-center justify-center shrink-0">
-                  <Shield01Icon size={24} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-base text-[#1A1D2A] mb-1">
-                    استرجاع واستبدال مرن
-                  </h3>
-                  <p className="text-xs text-[#64748B] leading-relaxed">
-                    إمكانية إرجاع أو استبدال المنتج خلال 14 يوماً بكل سهولة ووفق
-                    السياسات المعتمدة.
-                  </p>
-                </div>
+              <div className="mt-9 grid grid-cols-3 gap-3">
+                {[
+                  { value: "24h", label: "تجهيز الطلب" },
+                  { value: "36", label: "شهر ضمان" },
+                  { value: "100%", label: "فحص قبل الشحن" },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-2xl border border-line bg-surface p-4">
+                    <div className="font-latin text-xl font-black text-ink">{stat.value}</div>
+                    <div className="mt-1 text-[10px] text-muted">{stat.label}</div>
+                  </div>
+                ))}
               </div>
+
+              <div className="pointer-events-none absolute -bottom-16 -start-16 size-64 rounded-full border border-line" />
             </div>
           </div>
         </section>
 
-        {/* ============================================================
-            OFFICIAL BRANDS & PARTNERS
-            ============================================================ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-8">
-          <p className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider mb-8">
-            شركاء ووكلاء معتمدون لأكبر الشركات التقنية العالمية
-          </p>
-          <LogoLoop
-            logos={partnerLogos}
-            speed={100}
-            direction="left"
-            logoHeight={60}
-            gap={60}
-            hoverSpeed={0}
-            scaleOnHover
-            fadeOut
-            fadeOutColor="#F8FAFC"
-            ariaLabel="شعارات شركاء التقنية"
-          />
+        <section className="shell pb-16 sm:pb-24">
+          <div className="rounded-[28px] border border-line bg-surface px-6 py-8 sm:px-10">
+            <div className="flex flex-col items-center gap-8">
+              <p className="eyebrow text-center text-muted">شركاء ووكلاء معتمدون</p>
+              <div className="w-full">
+                <LogoLoop
+                  logos={partnerLogos}
+                  speed={100}
+                  direction="left"
+                  logoHeight={54}
+                  gap={64}
+                  hoverSpeed={0}
+                  scaleOnHover
+                  fadeOut
+                  fadeOutColor="#ffffff"
+                  ariaLabel="شعارات شركاء التقنية"
+                />
+              </div>
+            </div>
+          </div>
         </section>
       </main>
 
       <Footer />
     </div>
+  );
+}
+
+function ArrowGlyph() {
+  return (
+    <svg viewBox="0 0 20 20" className="size-4 rotate-180" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <path d="M4 10h12m0 0-5-5m5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }

@@ -29,8 +29,12 @@ export function AddReviewButton({
         variant="outline"
         size="md"
         onClick={() => setIsOpen(true)}
-        className="gap-2 cursor-pointer self-start sm:self-auto"
+        className="gap-2 cursor-pointer self-start rounded-lg border-line bg-surface text-[12px] font-bold text-ink shadow-sm hover:border-brand hover:bg-brand-soft hover:text-brand sm:self-auto"
       >
+        <span
+          aria-hidden="true"
+          className="size-1.5 shrink-0 rounded-full bg-signal"
+        />
         <Add01Icon size={16} />
         <span>أضف تقييمك للمنتج</span>
       </Button>

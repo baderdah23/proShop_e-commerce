@@ -20,23 +20,23 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     const sizeClasses = {
-      xs: "px-3 py-1.5 text-xs rounded-lg gap-1.5",
-      sm: "px-3.5 py-2 text-sm rounded-xl gap-2",
-      md: "px-5 py-2.5 text-sm rounded-xl gap-2.5",
-      lg: "px-6 py-3 text-base rounded-xl gap-3",
-      xl: "px-8 py-4 text-base font-semibold rounded-2xl gap-3.5",
+      xs: "h-8 px-3 text-[11px] rounded-lg gap-1.5",
+      sm: "h-10 px-4 text-xs rounded-xl gap-2",
+      md: "h-11 px-5 text-[13px] rounded-xl gap-2",
+      lg: "h-12 px-6 text-sm rounded-xl gap-2.5",
+      xl: "h-14 px-8 text-sm rounded-2xl gap-3",
     };
 
     const variantClasses = {
-      primary: "bg-[#111111] text-white hover:bg-black font-semibold shadow-[0_8px_20px_rgba(0,0,0,0.18)] transition-colors",
-      secondary: "bg-[#F5F5F5] text-[#1A1D2A] hover:bg-[#E8E8E8] font-medium border border-[#D4D4D4] transition-colors",
-      outline: "border-[1.5px] border-[#1A1D2A] text-[#1A1D2A] bg-transparent hover:bg-[#F5F5F5] font-medium transition-colors",
-      ghost: "text-[#64748B] hover:text-[#142033] hover:bg-[#EAF1F8] font-medium transition-colors",
-      danger: "bg-[#EF4444] text-white hover:bg-[#DC2626] font-medium shadow-sm transition-colors",
-      success: "bg-[#22C55E] text-white hover:bg-[#16A34A] font-medium shadow-sm transition-colors",
+      primary: "liquid-glass-btn font-bold",
+      secondary: "bg-brand-soft text-brand-deep hover:bg-[#dfeafa] font-bold",
+      outline: "border border-ink/15 bg-surface text-ink hover:border-brand hover:text-brand font-semibold",
+      ghost: "text-muted hover:bg-ink/5 hover:text-ink font-semibold",
+      danger: "bg-sale text-white hover:brightness-95 font-semibold shadow-[0_6px_18px_rgba(229,72,77,0.22)]",
+      success: "bg-[#169f68] text-white hover:brightness-95 font-semibold",
     };
 
     return (
@@ -44,20 +44,20 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          "inline-flex items-center justify-center select-none active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed",
+          "inline-flex shrink-0 items-center justify-center whitespace-nowrap select-none active:scale-[0.985] disabled:pointer-events-none disabled:opacity-50",
           sizeClasses[size],
           variantClasses[variant],
-          className
+          className,
         )}
         {...props}
       >
         {isLoading && (
-          <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
         )}
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

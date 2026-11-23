@@ -133,7 +133,7 @@ const typeStyles: Record<ToastType, { chip: string; icon: React.ReactNode }> = {
     ),
   },
   info: {
-    chip: "text-[#2B7BD4] bg-[#EEF5FC]",
+    chip: "text-ink bg-brand-soft",
     icon: (
       <svg
         viewBox="0 0 20 20"
@@ -158,7 +158,7 @@ function ToastCard({ item }: { item: ToastItem }) {
     <div
       role="status"
       dir="rtl"
-      className="toast-item pointer-events-auto flex items-start gap-3 w-full bg-white border border-black/10 rounded-2xl shadow-[0_10px_30px_rgba(20,32,51,0.15)] px-4 py-3"
+      className="toast-item pointer-events-auto flex w-full items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-[0_18px_45px_rgba(16,22,30,0.16)]"
     >
       <span
         className={`shrink-0 w-8 h-8 rounded-xl flex items-center justify-center ${style.chip}`}
@@ -166,7 +166,7 @@ function ToastCard({ item }: { item: ToastItem }) {
         {style.icon}
       </span>
 
-      <p className="flex-1 text-sm font-semibold text-[#1A1D2A] leading-relaxed pt-1">
+      <p className="flex-1 pt-1 text-[13px] font-bold leading-relaxed text-ink">
         {item.message}
       </p>
 
@@ -174,7 +174,7 @@ function ToastCard({ item }: { item: ToastItem }) {
         type="button"
         onClick={() => toast.dismiss(item.id)}
         aria-label="إغلاق الرسالة"
-        className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-[#94A3B8] hover:text-[#1A1D2A] hover:bg-[#F1F5F9] transition-colors"
+        className="grid size-7 shrink-0 place-items-center rounded-lg text-muted transition-colors hover:bg-paper hover:text-ink"
       >
         <svg
           viewBox="0 0 20 20"

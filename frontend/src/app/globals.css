@@ -1,105 +1,173 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --font-sans: 'Outfit', system-ui, -apple-system, sans-serif;
-    --font-arabic: 'Rubik', system-ui, -apple-system, sans-serif;
-    --primary: #111111;
-    --primary-hover: #000000;
-    --primary-foreground: #ffffff;
-    --background: #F8FAFC;
-    --foreground: #1A1D2A;
-    --card: #ffffff;
-    --card-foreground: #1A1D2A;
-    --muted: #F1F5F9;
-    --muted-foreground: #64748B;
-    --accent: #F5F5F5;
-    --accent-foreground: #111111;
-    --border: rgba(0, 0, 0, 0.08);
-    --ring: #111111;
-    --destructive: #EF4444;
-    --radius: 0.75rem;
+@theme {
+  --color-ink: #0a0b0a;
+  --color-ink-2: #1b1d1b;
+  --color-paper: #f4f5f3;
+  --color-surface: #ffffff;
+  --color-line: #e1e4df;
+  --color-muted: #6f7671;
+  --color-brand: #0d0f0d;
+  --color-brand-deep: #000000;
+  --color-brand-soft: #eaede8;
+  --color-signal: #d9f45c;
+  --color-sale: #d6453d;
+  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+  --font-arabic: "Rubik", system-ui, -apple-system, sans-serif;
+}
 
-    /* Cornflower Blue Scale */
-    --brand-50: #EEF5FC;
-    --brand-100: #D5E8F8;
-    --brand-200: #AACFF0;
-    --brand-300: #8ABFE9;
-    --brand-400: #6AABF0;
-    --brand-500: #4D95E8;
-    --brand-600: #2B7BD4;
-    --brand-700: #1F63B3;
-    --brand-800: #164A88;
-    --brand-900: #0E3060;
+:root {
+  --radius: 0.75rem;
+}
 
-    /* Sidebar Dark Tokens */
-    --sidebar-bg-from: #0D1B2A;
-    --sidebar-bg-to: #0A1520;
-    --sidebar-border: rgba(106, 171, 240, 0.08);
-    --sidebar-hover: rgba(106, 171, 240, 0.12);
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-arabic), var(--font-sans), system-ui, -apple-system, sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-arabic), var(--font-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 ::selection {
-  background: #D4D4D4;
-  color: #000000;
+  background: var(--color-signal);
+  color: var(--color-ink);
 }
 
 :focus-visible {
-  outline: 3px solid rgba(0, 0, 0, 0.4);
+  outline: 2px solid var(--color-brand);
   outline-offset: 3px;
 }
 
-/* Glassmorphism & Liquid Glass Utilities */
+.font-latin {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.shell {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .shell { padding-inline: 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .shell { padding-inline: 2.5rem; }
+}
+
+.surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 1.5rem;
+}
+
+.hairline {
+  border-color: var(--color-line);
+}
+
+.eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.blueprint {
+  background-color: #f1f3ef;
+  background-image:
+    linear-gradient(rgba(10, 11, 10, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 11, 10, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 78% 18%, rgba(217, 244, 92, 0.24), transparent 52%);
+  background-size: 28px 28px, 28px 28px, 100% 100%;
+}
+
+.coupon-edge {
+  -webkit-mask-image: radial-gradient(circle at 0 50%, transparent 10px, #000 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, #000 10.5px);
+  mask-image: radial-gradient(circle at 0 50%, transparent 10px, #000 10.5px), radial-gradient(circle at 100% 50%, transparent 10px, #000 10.5px);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
 .liquid-glass-btn {
   position: relative;
-  background: linear-gradient(135deg, rgba(30, 30, 30, 0.92), rgba(0, 0, 0, 0.96));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1b1d1b 0%, #050505 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid #0a0b0a;
+  box-shadow:
+    0 10px 24px rgba(10, 11, 10, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
   color: #ffffff;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.liquid-glass-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(115deg, transparent 30%, rgba(217, 244, 92, 0.26) 48%, transparent 62%);
+  transform: translateX(-120%);
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .liquid-glass-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, rgba(40, 40, 40, 1), rgba(10, 10, 10, 1));
+  filter: brightness(1.06);
+  box-shadow:
+    0 16px 32px rgba(10, 11, 10, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.liquid-glass-btn:hover::after {
+  transform: translateX(120%);
 }
 
 .liquid-glass-btn:active {
-  transform: translateY(0px) scale(0.98);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(0) scale(0.985);
+  box-shadow: 0 4px 12px rgba(10, 11, 10, 0.2);
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #c9cfcb;
+  border: 2px solid var(--color-paper);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #aab3ac;
 }
 
 .logoloop {
   --logoloop-gap: 32px;
   --logoloop-logo-height: 28px;
-  --logoloop-fade-color: #F8FAFC;
+  --logoloop-fade-color: #f4f5f3;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -202,7 +270,19 @@ body {
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
 
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.toast-item {
+  animation: toast-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   .logoloop__track { transform: none !important; }
   .toast-item { animation: none; }
+  .liquid-glass-btn,
+  .liquid-glass-btn::after { transition: none; }
 }

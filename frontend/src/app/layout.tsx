@@ -28,7 +28,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased min-h-screen flex flex-col bg-[#F8FAFC] text-[#1A1D2A]">
+      <body className="min-h-screen flex flex-col">
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
       </body>

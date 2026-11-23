@@ -90,9 +90,9 @@ export default function AccountPage() {
   if (auth?.isLoading || (isLoading && !addresses.length && !orders.length)) {
     return (
       <Shell>
-        <div className="flex-1 flex flex-col items-center justify-center py-20 text-[#64748B] gap-3">
-          <SpinerLoader className="w-8 h-8 border-[#2B7BD4]" />
-          <span className="text-sm font-medium">
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 py-24 text-muted">
+          <SpinerLoader className="size-8 border-brand" />
+          <span className="text-[13px] font-bold">
             جاري تحميل بيانات الحساب...
           </span>
         </div>
@@ -102,19 +102,26 @@ export default function AccountPage() {
 
   return (
     <Shell>
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      <main className="shell flex-1 space-y-7 py-10 sm:py-14">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black">حسابي</h1>
-          <p className="text-sm text-[#64748B] mt-2">
+          <span className="eyebrow flex items-center gap-2 text-brand">
+            <span className="size-1.5 rounded-full bg-signal" />
+            ACCOUNT / OVERVIEW
+          </span>
+          <h1 className="mt-2 text-[28px] font-black leading-tight tracking-[-0.03em] text-ink sm:text-[36px]">حسابي</h1>
+          <p className="mt-2 text-[13px] text-muted">
             إدارة معلوماتك وعناوينك وطلباتك
           </p>
         </div>
 
-        <section className="bg-white rounded-3xl border p-6">
-          <h2 className="font-black flex items-center gap-2 mb-5">
-            <User02Icon size={18} /> المعلومات الشخصية
-          </h2>
-          <form className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <section className="surface p-6 sm:p-8">
+          <div className="mb-6 flex items-center gap-3 border-b border-line pb-5">
+            <span className="grid size-9 place-items-center rounded-xl bg-brand-soft text-brand">
+              <User02Icon size={18} />
+            </span>
+            <h2 className="text-lg font-black tracking-tight text-ink">المعلومات الشخصية</h2>
+          </div>
+          <form className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Field label="الاسم الكامل" defaultValue={user?.full_name ?? ""} />
             <Field
               label="البريد الإلكتروني"
@@ -128,43 +135,43 @@ export default function AccountPage() {
           </form>
         </section>
 
-        <section className="bg-white rounded-3xl border p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-black">العناوين</h2>
+        <section className="surface p-6 sm:p-8">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-5">
+            <h2 className="text-lg font-black tracking-tight text-ink">العناوين</h2>
             <Button type="button" size="sm">
               إضافة عنوان
             </Button>
           </div>
           {addresses?.length === 0 && (
-            <p className="text-sm text-[#64748B] mb-5">
+            <p className="mb-5 text-[13px] text-muted">
               لا توجد عناوين محفوظة.
             </p>
           )}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {addresses.map((address) => (
               <div
                 key={address.address_id}
-                className="border rounded-2xl p-4 space-y-3"
+                className="space-y-3 rounded-2xl border border-line bg-paper p-4 transition-colors hover:border-brand/30 hover:bg-surface"
               >
-                <div className="flex justify-between gap-3">
+                <div className="flex flex-wrap justify-between gap-3">
                   <div>
-                    <strong>{address.label}</strong>
+                    <strong className="text-[13px] font-black text-ink">{address.label}</strong>
                     {address.is_default && (
-                      <span className="text-xs text-green-600 ms-2">
+                      <span className="ms-2 rounded-full bg-brand-soft px-2.5 py-1 text-[10px] font-bold text-brand-deep">
                         الافتراضي
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-3 text-xs">
-                    <button type="button" className="text-[#2B7BD4] underline">
+                  <div className="flex gap-3 text-[12px] font-bold">
+                    <button type="button" className="text-brand underline decoration-brand/40 underline-offset-4 hover:text-brand-deep">
                       تعديل
                     </button>
-                    <button type="button" className="text-red-600 underline">
+                    <button type="button" className="text-sale underline decoration-sale/40 underline-offset-4 hover:text-sale/80">
                       حذف
                     </button>
                   </div>
                 </div>
-                <p className="text-sm text-[#64748B]">
+                <p className="text-[12px] leading-6 text-muted">
                   {address.full_name}، {address.phone}
                   <br />
                   {address.country}، {address.city}، {address.street}،{" "}
@@ -175,38 +182,40 @@ export default function AccountPage() {
           </div>
         </section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Link
             href="/wishlist"
-            className="bg-white rounded-3xl border p-6 hover:border-[#6AABF0]"
+            className="surface group flex min-h-28 flex-col justify-between p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-[0_18px_40px_rgba(10,11,10,0.08)]"
           >
-            <h2 className="font-black flex items-center gap-2">
+            <h2 className="flex items-center gap-3 text-lg font-black tracking-tight text-ink transition-colors group-hover:text-brand">
               <FavouriteIcon size={18} /> المفضلة
             </h2>
           </Link>
-          <section className="bg-white rounded-3xl border p-6">
-            <h2 className="font-black flex items-center gap-2">
+          <section className="surface p-6">
+            <h2 className="flex items-center gap-3 border-b border-line pb-4 text-lg font-black tracking-tight text-ink">
               <Settings01Icon size={18} /> الإعدادات
             </h2>
-            <Link
-              href="/forgot-password"
-              className="text-sm text-[#2B7BD4] underline mx-1"
-            >
-              تغيير كلمة المرور
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="text-sm text-[#ee0000] underline mx-1 cursor-pointer"
-            >
-              تسجيل خروج
-            </button>
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <Link
+                href="/forgot-password"
+                className="text-[12px] font-bold text-brand underline decoration-brand/40 underline-offset-4 hover:text-brand-deep"
+              >
+                تغيير كلمة المرور
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="cursor-pointer text-[12px] font-bold text-sale underline decoration-sale/40 underline-offset-4 hover:text-sale/80"
+              >
+                تسجيل خروج
+              </button>
+            </div>
           </section>
         </div>
 
-        <section className="bg-white rounded-3xl border p-6">
-          <h2 className="font-black mb-5">طلباتي السابقة</h2>
+        <section className="surface p-6 sm:p-8">
+          <h2 className="mb-6 border-b border-line pb-5 text-lg font-black tracking-tight text-ink">طلباتي السابقة</h2>
           {orders.length === 0 ? (
-            <p className="text-sm text-[#64748B]">لا توجد طلبات حتى الآن.</p>
+            <p className="text-[13px] text-muted">لا توجد طلبات حتى الآن.</p>
           ) : (
             <div className="space-y-3">
               {orders.map((order) => (
@@ -230,12 +239,12 @@ function Field({
   type?: string;
 }) {
   return (
-    <label className="block text-xs font-bold">
+    <label className="block text-[12px] font-bold text-ink/80">
       {label}
       <input
         type={type}
         defaultValue={defaultValue}
-        className="mt-1 w-full px-3 py-2.5 rounded-xl border text-sm font-normal"
+        className="mt-1.5 h-11 w-full rounded-xl border border-line bg-paper px-3.5 text-[13px] font-normal text-ink outline-none transition-colors placeholder:text-muted focus:border-brand focus:bg-surface focus:ring-4 focus:ring-brand/10"
       />
     </label>
   );
@@ -246,38 +255,38 @@ function OrderTracking({ order }: { order: Order }) {
   const currentStage =
     order.status === "cancelled" ? -1 : stages.indexOf(order.status);
   return (
-    <details className="border-b last:border-0 py-4">
+    <details className="group rounded-2xl border border-line bg-paper px-4 py-4 open:bg-surface">
       <summary className="flex flex-wrap items-center justify-between gap-3 cursor-pointer list-none">
         <div>
-          <strong className="block text-sm">{order.order_number}</strong>
-          <span className="text-xs text-[#64748B]">
+          <strong className="font-latin block text-[13px] font-black text-ink">{order.order_number}</strong>
+          <span className="mt-1 block text-[11px] text-muted">
             {new Date(order.created_at).toLocaleDateString("ar")}
           </span>
         </div>
-        <span className="text-xs font-bold rounded-lg px-3 py-1 bg-[#EEF5FC] text-[#2B7BD4]">
+        <span className="rounded-lg bg-brand-soft px-3 py-1 text-[11px] font-bold text-brand-deep">
           {order.status}
         </span>
         <div className="flex items-center gap-3">
-          <strong className="text-sm">
+          <strong className="font-latin text-[13px] font-black text-ink">
             {formatPrice(Number(order.total_amount))}
           </strong>
           <Link
             href={`/invoice/${order.order_id}`}
-            className="text-xs text-[#2B7BD4] underline font-bold"
+            className="text-[12px] font-bold text-brand underline decoration-brand/40 underline-offset-4 hover:text-brand-deep"
           >
             الفاتورة
           </Link>
         </div>
       </summary>
-      <div className="pt-5 mt-4 border-t border-black/5 grid grid-cols-4 gap-2">
+      <div className="mt-4 grid grid-cols-4 gap-2 border-t border-line pt-5">
         {stages.map((stage, index) => (
           <div key={stage} className="text-center">
             <div
-              className={`mx-auto w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black ${index <= currentStage ? "bg-[#111111] text-white" : "bg-[#E2E8F0] text-[#64748B]"}`}
+              className={`mx-auto grid size-7 place-items-center rounded-full text-[10px] font-black ${index === currentStage ? "bg-signal text-ink" : index < currentStage ? "bg-ink text-white" : "bg-line text-muted"}`}
             >
               {index + 1}
             </div>
-            <span className="block mt-2 text-[10px] text-[#64748B]">
+            <span className="mt-2 block text-[10px] font-semibold text-muted">
               {stage}
             </span>
           </div>
@@ -289,7 +298,7 @@ function OrderTracking({ order }: { order: Order }) {
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
+    <div className="flex min-h-screen flex-col bg-paper">
       <Navbar />
       {children}
       <Footer />

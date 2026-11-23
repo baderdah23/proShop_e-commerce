@@ -10,7 +10,6 @@ import {
   Add01Icon,
   StarIcon,
 } from "hugeicons-react";
-import { SpotlightCard } from "@/shared/components/SpotlightCard";
 import { Button } from "@/shared/components/Button";
 import { Badge } from "@/shared/components/Badge";
 import { formatPrice, formatDate } from "@/shared/utils";
@@ -32,10 +31,13 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Top Banner / Welcome */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-black/8 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-surface p-6 rounded-2xl border border-line shadow-[0_2px_10px_rgba(10,11,10,0.04)]">
         <div>
-          <h2 className="text-xl font-black text-[#1A1D2A]">مرحباً بك في لوحة تحكم المتجر 👋</h2>
-          <p className="text-xs text-[#64748B] mt-1">
+          <span className="eyebrow text-brand">PROSTORE / OVERVIEW</span>
+          <h2 className="mt-2 text-2xl font-black tracking-[-0.02em] text-ink">
+            مرحباً بك في لوحة تحكم المتجر
+          </h2>
+          <p className="mt-1.5 text-sm text-muted">
             إليك ملخص الأداء والإحصائيات الحية لمتجرك اليوم.
           </p>
         </div>
@@ -53,73 +55,73 @@ export default function AdminDashboardPage() {
       {/* KPI Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* KPI 1: Sales */}
-        <SpotlightCard className="p-5 border border-black/8 hover:border-[#6AABF0]/30 transition-all">
+        <div className="surface p-6 hover:border-brand/30 transition-all">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-[#64748B]">إجمالي المبيعات</span>
-            <div className="w-10 h-10 rounded-xl bg-[#22C55E]/10 text-[#16A34A] flex items-center justify-center">
-              <Money01Icon size={20} color="#16A34A" />
+            <span className="text-xs font-semibold text-muted">إجمالي المبيعات</span>
+            <div className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
+              <Money01Icon size={20} className="text-brand" />
             </div>
           </div>
-          <div className="text-2xl font-black text-[#1A1D2A] mb-1">
+          <div className="font-latin tabular-nums text-3xl font-black text-ink mb-1">
             {formatPrice(totalSales)}
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-[#16A34A] font-semibold">
-            <ArrowUp01Icon size={14} color="#16A34A" />
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-brand">
+            <ArrowUp01Icon size={14} className="text-brand" />
             <span>+14.8% مقارنة بالشهر السابق</span>
           </div>
-        </SpotlightCard>
+        </div>
 
         {/* KPI 2: Orders */}
-        <SpotlightCard className="p-5 border border-black/8 hover:border-[#6AABF0]/30 transition-all">
+        <div className="surface p-6 hover:border-brand/30 transition-all">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-[#64748B]">إجمالي الطلبات</span>
-            <div className="w-10 h-10 rounded-xl bg-[#6AABF0]/10 text-[#2B7BD4] flex items-center justify-center">
-              <Invoice01Icon size={20} color="#2B7BD4" />
+            <span className="text-xs font-semibold text-muted">إجمالي الطلبات</span>
+            <div className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
+              <Invoice01Icon size={20} className="text-brand" />
             </div>
           </div>
-          <div className="text-2xl font-black text-[#1A1D2A] mb-1">{totalOrders} طلب</div>
-          <div className="flex items-center gap-1.5 text-xs text-[#16A34A] font-semibold">
-            <ArrowUp01Icon size={14} color="#16A34A" />
+          <div className="font-latin tabular-nums text-3xl font-black text-ink mb-1">{totalOrders} طلب</div>
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-brand">
+            <ArrowUp01Icon size={14} className="text-brand" />
             <span>+8.2% نمو أسبوعي</span>
           </div>
-        </SpotlightCard>
+        </div>
 
         {/* KPI 3: Products */}
-        <SpotlightCard className="p-5 border border-black/8 hover:border-[#6AABF0]/30 transition-all">
+        <div className="surface p-6 hover:border-brand/30 transition-all">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-[#64748B]">المنتجات النشطة</span>
-            <div className="w-10 h-10 rounded-xl bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center">
-              <ShoppingBag01Icon size={20} color="#D97706" />
+            <span className="text-xs font-semibold text-muted">المنتجات النشطة</span>
+            <div className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
+              <ShoppingBag01Icon size={20} className="text-brand" />
             </div>
           </div>
-          <div className="text-2xl font-black text-[#1A1D2A] mb-1">{activeProducts} منتج</div>
-          <div className="text-xs text-[#64748B]">متوفرة في 5 فئات رئيسية</div>
-        </SpotlightCard>
+          <div className="font-latin tabular-nums text-3xl font-black text-ink mb-1">{activeProducts} منتج</div>
+          <div className="text-xs text-muted">متوفرة في 5 فئات رئيسية</div>
+        </div>
 
         {/* KPI 4: Customers */}
-        <SpotlightCard className="p-5 border border-black/8 hover:border-[#6AABF0]/30 transition-all">
+        <div className="surface p-6 hover:border-brand/30 transition-all">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-[#64748B]">العملاء المسجلين</span>
-            <div className="w-10 h-10 rounded-xl bg-[#0D1B2A]/5 text-[#0D1B2A] flex items-center justify-center">
-              <UserGroupIcon size={20} color="#1A1D2A" />
+            <span className="text-xs font-semibold text-muted">العملاء المسجلين</span>
+            <div className="grid size-10 place-items-center rounded-xl bg-brand-soft text-brand">
+              <UserGroupIcon size={20} className="text-brand" />
             </div>
           </div>
-          <div className="text-2xl font-black text-[#1A1D2A] mb-1">{totalCustomers} عميل</div>
-          <div className="flex items-center gap-1.5 text-xs text-[#16A34A] font-semibold">
-            <ArrowUp01Icon size={14} color="#16A34A" />
+          <div className="font-latin tabular-nums text-3xl font-black text-ink mb-1">{totalCustomers} عميل</div>
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-brand">
+            <ArrowUp01Icon size={14} className="text-brand" />
             <span>+24 عميل جديد هذا الأسبوع</span>
           </div>
-        </SpotlightCard>
+        </div>
       </div>
 
       {/* Grid: Recent Orders & Quick Management */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Orders Table (Col Span 2) */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-black/8 p-6 shadow-sm">
+        <div className="lg:col-span-2 bg-surface rounded-2xl border border-line p-6 shadow-[0_2px_10px_rgba(10,11,10,0.04)]">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="font-bold text-base text-[#1A1D2A]">أحدث طلبات المتجر</h3>
-              <p className="text-xs text-[#64748B]">مزامنة مباشرة مع موديل orders في الباك إند</p>
+              <h3 className="font-black text-base text-ink">أحدث طلبات المتجر</h3>
+              <p className="mt-1 text-xs text-muted">مزامنة مباشرة مع موديل orders في الباك إند</p>
             </div>
             <Link href="/admin/orders">
               <Button variant="ghost" size="xs">
@@ -131,7 +133,7 @@ export default function AdminDashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-start text-xs">
               <thead>
-                <tr className="border-b border-black/5 text-[#64748B] font-semibold">
+                <tr className="border-b border-line text-muted font-semibold">
                   <th className="pb-3 text-start">رقم الطلب</th>
                   <th className="pb-3 text-start">العميل</th>
                   <th className="pb-3 text-start">الإجمالي</th>
@@ -139,26 +141,26 @@ export default function AdminDashboardPage() {
                   <th className="pb-3 text-start">التاريخ</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/5">
+              <tbody className="divide-y divide-line">
                 {orders.slice(0, 5).map((order) => (
-                  <tr key={order.order_id} className="hover:bg-[#F8FAFC] transition-colors">
-                    <td className="py-3.5 font-bold text-[#1A1D2A]">
+                  <tr key={order.order_id} className="hover:bg-paper/70 transition-colors">
+                    <td className="font-latin py-3.5 font-bold text-ink">
                       {order.order_number}
                     </td>
                     <td className="py-3.5">
-                      <div className="font-medium text-[#1A1D2A]">{order.customer_name}</div>
-                      <div className="text-[11px] text-[#94A3B8]">{order.customer_email}</div>
+                      <div className="font-medium text-ink">{order.customer_name}</div>
+                      <div className="font-latin text-[11px] text-muted">{order.customer_email}</div>
                     </td>
-                    <td className="py-3.5 font-extrabold text-[#1A1D2A]">
+                    <td className="font-latin py-3.5 font-extrabold tabular-nums text-ink">
                       {formatPrice(order.total_amount)}
                     </td>
                     <td className="py-3.5">
-                      {order.status === "delivered" && <Badge variant="active">تم التوصيل</Badge>}
-                      {order.status === "processing" && <Badge variant="completed">قيد التجهيز</Badge>}
-                      {order.status === "pending" && <Badge variant="pending">في الانتظار</Badge>}
-                      {order.status === "cancelled" && <Badge variant="cancelled">ملغي</Badge>}
+                      {order.status === "delivered" && <Badge variant="active" className="bg-brand-soft text-ink [&>span]:bg-brand">تم التوصيل</Badge>}
+                      {order.status === "processing" && <Badge variant="completed" className="bg-brand-soft text-ink [&>span]:bg-brand">قيد التجهيز</Badge>}
+                      {order.status === "pending" && <Badge variant="pending" className="bg-brand-soft text-ink [&>span]:bg-signal">في الانتظار</Badge>}
+                      {order.status === "cancelled" && <Badge variant="cancelled" className="bg-paper text-sale [&>span]:bg-sale">ملغي</Badge>}
                     </td>
-                    <td className="py-3.5 text-[#64748B]">
+                    <td className="font-latin py-3.5 text-muted">
                       {formatDate(order.created_at)}
                     </td>
                   </tr>
@@ -171,52 +173,52 @@ export default function AdminDashboardPage() {
         {/* Quick Operations & Active Coupons (Col Span 1) */}
         <div className="space-y-6">
           {/* Active Coupons Box */}
-          <div className="bg-white rounded-2xl border border-black/8 p-6 shadow-sm">
+          <div className="bg-surface rounded-2xl border border-line p-6 shadow-[0_2px_10px_rgba(10,11,10,0.04)]">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Ticket01Icon size={18} color="#6AABF0" />
-                <h4 className="font-bold text-sm text-[#1A1D2A]">الكوبونات النشطة</h4>
+                <Ticket01Icon size={18} className="text-brand" />
+                <h4 className="font-black text-sm text-ink">الكوبونات النشطة</h4>
               </div>
-              <Link href="/admin/coupons" className="text-xs text-[#2B7BD4] hover:underline">
+              <Link href="/admin/coupons" className="text-xs font-bold text-brand hover:text-brand-deep hover:underline">
                 إدارة
               </Link>
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 rounded-xl bg-[#F8FAFC] border border-black/5 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-paper border border-line flex items-center justify-between">
                 <div>
-                  <span className="font-mono font-bold text-xs text-[#2B7BD4] bg-[#EEF5FC] px-2 py-0.5 rounded-md">
+                  <span className="font-latin font-bold text-xs text-brand-deep bg-brand-soft px-2 py-0.5 rounded-md">
                     PRO2026
                   </span>
-                  <p className="text-[11px] text-[#64748B] mt-1">خصم 50$ مباشر | استخدام 84/500</p>
+                  <p className="text-[11px] text-muted mt-1">خصم 50$ مباشر | استخدام 84/500</p>
                 </div>
-                <Badge variant="active">فعال</Badge>
+                <Badge variant="active" className="bg-brand-soft text-ink [&>span]:bg-brand">فعال</Badge>
               </div>
 
-              <div className="p-3 rounded-xl bg-[#F8FAFC] border border-black/5 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-paper border border-line flex items-center justify-between">
                 <div>
-                  <span className="font-mono font-bold text-xs text-[#2B7BD4] bg-[#EEF5FC] px-2 py-0.5 rounded-md">
+                  <span className="font-latin font-bold text-xs text-brand-deep bg-brand-soft px-2 py-0.5 rounded-md">
                     GAMER10
                   </span>
-                  <p className="text-[11px] text-[#64748B] mt-1">خصم 10% | استخدام 142/200</p>
+                  <p className="text-[11px] text-muted mt-1">خصم 10% | استخدام 142/200</p>
                 </div>
-                <Badge variant="active">فعال</Badge>
+                <Badge variant="active" className="bg-brand-soft text-ink [&>span]:bg-brand">فعال</Badge>
               </div>
             </div>
           </div>
 
           {/* Quick Review Banner */}
-          <div className="bg-gradient-to-br from-[#0D1B2A] to-[#1F63B3] text-white rounded-2xl p-6 shadow-md">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#6AABF0] mb-2">
-              <StarIcon size={16} color="#6AABF0" />
+          <div className="blueprint rounded-3xl border border-line p-6 text-ink shadow-[0_16px_36px_-24px_rgba(10,11,10,0.18)]">
+            <div className="flex items-center gap-2 text-xs font-bold text-brand mb-2">
+              <StarIcon size={16} className="text-brand" />
               <span>تقييمات المتجر</span>
             </div>
-            <h4 className="font-bold text-base mb-1">متوسط تقييم 4.9 من 5</h4>
-            <p className="text-xs text-[#AACFF0] leading-relaxed mb-4">
+            <h4 className="font-black text-base text-ink mb-1">متوسط تقييم 4.9 من 5</h4>
+            <p className="text-xs text-muted leading-relaxed mb-4">
               تم تلقي 12 تقييم إيجابي جديد خلال الـ 24 ساعة الماضية.
             </p>
             <Link href="/admin/reviews">
-              <Button variant="secondary" size="xs" className="w-full text-xs">
+              <Button variant="secondary" size="xs" className="w-full text-xs hover:bg-brand hover:text-white">
                 مراجعة التقييمات والتعليقات
               </Button>
             </Link>

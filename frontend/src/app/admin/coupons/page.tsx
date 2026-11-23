@@ -12,41 +12,44 @@ export default function AdminCouponsPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h2 className="text-xl font-black text-[#1A1D2A]">إدارة كوبونات الخصم</h2>
-        <p className="text-xs text-[#64748B] mt-0.5">
+        <h2 className="text-2xl font-black tracking-[-0.02em] text-ink">إدارة كوبونات الخصم</h2>
+        <p className="mt-1 text-sm text-muted">
           إنشاء وتفعيل كوبونات الخصم الثابتة والنسبية المتوافقة مع موديل coupons في الباك إند
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Create Coupon Form (Col Span 1) */}
-        <div className="bg-white p-6 rounded-2xl border border-black/8 shadow-sm h-fit">
-          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-black/5">
-            <Ticket01Icon size={18} color="#6AABF0" />
-            <h3 className="font-bold text-sm text-[#1A1D2A]">إضافة كوبون جديد</h3>
+        <div className="bg-surface p-6 rounded-2xl border border-line shadow-[0_2px_10px_rgba(10,11,10,0.04)] h-fit">
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-line">
+            <span className="grid size-9 place-items-center rounded-xl bg-brand-soft text-brand">
+              <Ticket01Icon size={18} />
+            </span>
+            <h3 className="font-black text-sm text-ink">إضافة كوبون جديد</h3>
           </div>
 
           <form className="space-y-4">
             <Input
               label="رمز الكوبون (Coupon Code)"
               placeholder="مثال: SUMMER25"
+              className="font-latin"
               required
             />
 
             <div>
-              <label className="text-xs font-semibold text-[#475569] block mb-1.5">
+              <label className="text-xs font-bold text-muted block mb-1.5">
                 نوع الخصم (Discount Type)
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  className="py-2 text-xs font-bold rounded-xl border border-[#6AABF0] bg-[#EEF5FC] text-[#2B7BD4] transition-all"
+                  className="py-2.5 text-xs font-bold rounded-xl border border-brand bg-brand-soft text-brand-deep transition-all"
                 >
                   نسبة مئوية (%)
                 </button>
                 <button
                   type="button"
-                  className="py-2 text-xs font-bold rounded-xl border border-black/10 text-[#64748B] transition-all"
+                  className="py-2.5 text-xs font-bold rounded-xl border border-line text-muted hover:border-brand/40 hover:text-brand transition-all"
                 >
                   مبلغ ثابت ($)
                 </button>
@@ -57,6 +60,7 @@ export default function AdminCouponsPage() {
               label="قيمة الخصم (%)"
               type="number"
               placeholder="15"
+              className="font-latin"
               required
             />
 
@@ -64,6 +68,7 @@ export default function AdminCouponsPage() {
               label="الحد الأقصى للاستخدام (Max Uses)"
               type="number"
               defaultValue="100"
+              className="font-latin"
             />
 
             <Button variant="primary" size="md" className="w-full gap-2 mt-2">
@@ -74,15 +79,15 @@ export default function AdminCouponsPage() {
         </div>
 
         {/* Coupons List (Col Span 2) */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-black/8 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-black/5 flex items-center justify-between">
-            <h3 className="font-bold text-sm text-[#1A1D2A]">الكوبونات المسجلة</h3>
-            <span className="text-xs text-[#64748B]">{coupons.length} كوبون نشط</span>
+        <div className="lg:col-span-2 bg-surface rounded-2xl border border-line shadow-[0_2px_10px_rgba(10,11,10,0.04)] overflow-hidden">
+          <div className="p-4 border-b border-line flex items-center justify-between gap-4">
+            <h3 className="font-black text-sm text-ink">الكوبونات المسجلة</h3>
+            <span className="text-xs text-muted tabular-nums">{coupons.length} كوبون نشط</span>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-start text-xs">
-              <thead className="bg-[#F8FAFC] border-b border-black/8 text-[#64748B] font-semibold">
+              <thead className="bg-paper border-b border-line text-muted font-semibold">
                 <tr>
                   <th className="py-3 px-4 text-start">الكود</th>
                   <th className="py-3 px-4 text-start">النوع</th>
@@ -92,30 +97,30 @@ export default function AdminCouponsPage() {
                   <th className="py-3 px-4 text-end">حذف</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/5">
+              <tbody className="divide-y divide-line">
                 {coupons.map((c) => (
-                  <tr key={c.coupon_id} className="hover:bg-[#F8FAFC]">
+                  <tr key={c.coupon_id} className="hover:bg-paper/70 transition-colors">
                     <td className="py-3.5 px-4">
-                      <span className="font-mono font-bold text-xs text-[#2B7BD4] bg-[#EEF5FC] px-2 py-0.5 rounded-md">
+                      <span className="font-latin font-bold text-xs text-brand-deep bg-brand-soft px-2 py-0.5 rounded-md">
                         {c.code}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-[#475569]">
+                    <td className="py-3.5 px-4 text-muted">
                       {c.discount_type === "percentage" ? "نسبة مئوية" : "مبلغ ثابت"}
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-[#1A1D2A]">
+                    <td className="py-3.5 px-4 font-black tabular-nums text-ink">
                       {c.discount_type === "percentage" ? `${c.discount_value}%` : `$${c.discount_value}`}
                     </td>
-                    <td className="py-3.5 px-4 text-[#64748B]">
+                    <td className="py-3.5 px-4 text-muted tabular-nums">
                       {c.used_count} / {c.max_uses}
                     </td>
                     <td className="py-3.5 px-4">
-                      {c.is_active ? <Badge variant="active">نشط</Badge> : <Badge variant="cancelled">معطل</Badge>}
+                      {c.is_active ? <Badge variant="active" className="bg-brand-soft text-ink [&>span]:bg-brand">نشط</Badge> : <Badge variant="cancelled" className="bg-paper text-sale [&>span]:bg-sale">معطل</Badge>}
                     </td>
                     <td className="py-3.5 px-4 text-end">
                       <button
                         type="button"
-                        className="p-1.5 rounded-lg border border-black/8 text-[#EF4444] hover:bg-[#EF4444]/10"
+                        className="grid size-8 place-items-center rounded-lg border border-sale/20 text-sale hover:bg-sale/10 transition-colors"
                       >
                         <Delete01Icon size={14} />
                       </button>

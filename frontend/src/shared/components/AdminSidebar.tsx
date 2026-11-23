@@ -30,18 +30,18 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 min-h-screen bg-[#eee] border-e border-[#d0d0d0] flex flex-col justify-between shrink-0 select-none z-30">
+    <aside className="w-64 min-h-screen bg-surface border-e border-line flex flex-col justify-between shrink-0 select-none z-30">
       <div>
         {/* Brand / Logo */}
-        <div className="p-6 flex items-center gap-3 border-b border-slate-800/80">
-          <div className="w-10 h-10 rounded-xl bg-[#111111] flex items-center justify-center text-white shadow-md shadow-black/20">
-            <Store01Icon size={22} color="white" />
+        <div className="p-6 flex items-center gap-3 border-b border-line">
+          <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand text-white">
+            <Store01Icon size={22} className="text-white" />
           </div>
           <div>
-            <h1 className="text-black font-bold text-base tracking-wide">
+            <h1 className="text-ink font-bold text-base tracking-tight">
               برو ستور
             </h1>
-            <span className="text-[11px] font-semibold text-neutral-600 bg-black/5 px-2.5 py-0.5 rounded-full inline-block mt-0.5 border border-black/10">
+            <span className="text-[11px] font-semibold text-muted bg-brand-soft px-2.5 py-0.5 rounded-full inline-block mt-0.5 border border-line">
               لوحة الإدارة
             </span>
           </div>
@@ -60,13 +60,14 @@ export function AdminSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "relative flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
+                  "relative flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm transition-all duration-200",
+                  "before:absolute before:inset-y-2 before:start-0 before:w-[3px] before:rounded-full before:content-['']",
                   isActive
-                    ? "bg-[#111111] text-white font-bold shadow-md shadow-black/20"
-                    : "text-black hover:bg-black/10",
+                    ? "bg-brand-soft text-ink font-bold before:bg-brand"
+                    : "text-muted hover:bg-paper hover:text-ink font-medium before:bg-transparent",
                 )}
               >
-                <Icon size={20} color={isActive ? "white" : "black"} />
+                <Icon size={20} className={isActive ? "text-brand" : "text-muted"} />
                 <span>{item.name}</span>
               </Link>
             );
@@ -75,19 +76,19 @@ export function AdminSidebar() {
       </div>
 
       {/* Bottom Actions */}
-      <div className="p-4 border-t border-slate-800/80 space-y-1">
+      <div className="p-4 border-t border-line space-y-1">
         <Link
           href="/"
-          className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-black hover:text-white hover:bg-[#111111] transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-muted hover:bg-paper hover:text-ink transition-colors"
         >
-          <Store01Icon size={18} color="black" />
+          <Store01Icon size={18} className="text-muted" />
           <span>العودة إلى المتجر الرئيسي</span>
         </Link>
         <button
           type="button"
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs text-sale hover:bg-sale/10 hover:text-sale transition-colors cursor-pointer"
         >
-          <Logout01Icon size={18} color="#FB7185" />
+          <Logout01Icon size={18} className="text-sale" />
           <span>تسجيل خروج الأدمن</span>
         </button>
       </div>
