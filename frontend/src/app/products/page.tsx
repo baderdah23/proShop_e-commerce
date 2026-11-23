@@ -31,13 +31,14 @@ export default async function ProductsPage({
   const params = await searchParams;
   const rawPage = Array.isArray(params.page) ? params.page[0] : params.page;
   const page = Math.max(1, Number.parseInt(rawPage ?? "1", 10) || 1);
-  const search = "";
-  const sort = "";
-  const filter = "";
+  const search = params.search ? params.search : "";
+  const sort = params.sort ? params.sort : "newest";
+  const category = params.category ? params.category : "";
+  const brand = params.brand ? params.brand : "";
 
   const [productsRes, categoriesRes, brandsRes] = await Promise.all([
     fetchOrFallback<ProductsResponse | null>(
-      `products?limit=${PAGE_SIZE}&page=${page}`,
+      `products?limit=${PAGE_SIZE}&page=${page}&sort=${sort}&search=${search}&category=${category}&brand=${brand}`,
       null,
     ),
     fetchOrFallback<{ categories: Category[] } | null>("categories", null),
